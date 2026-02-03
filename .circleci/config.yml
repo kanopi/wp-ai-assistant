@@ -1,0 +1,42 @@
+version: 2.1
+
+jobs:
+  test-plugin:
+    docker:
+      - image: cimg/php:8.2
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - plugin-composer-deps-{{ checksum "composer.lock" }}
+            - plugin-composer-deps-{{ .Branch }}-
+            - plugin-composer-deps-main-
+            - plugin-composer-deps-
+      - run:
+          name: Run Plugin Tests
+          command: .circleci/test-plugin.sh .
+      - save_cache:
+          key: plugin-composer-deps-{{ checksum "composer.lock" }}
+          paths:
+            - vendor
+            - ~/.composer/cache
+      - store_test_results:
+          path: coverage
+      - store_artifacts:
+          path: coverage
+
+  security-audit-composer:
+    docker:
+      - image: cimg/php:8.2
+    steps:
+      - checkout
+      - run:
+          name: Security Audit
+          command: .circleci/security-audit-composer.sh --acf-auth --yoast-auth .
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test-plugin
+      - security-audit-composer
