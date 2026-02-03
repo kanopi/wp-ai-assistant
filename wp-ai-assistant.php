@@ -32,6 +32,12 @@ require_once WP_AI_ASSISTANT_DIR . 'includes/migrations/class-wp-ai-migration.ph
 require_once WP_AI_ASSISTANT_DIR . 'includes/modules/class-wp-ai-chatbot-module.php';
 require_once WP_AI_ASSISTANT_DIR . 'includes/modules/class-wp-ai-search-module.php';
 
+// Load admin notices
+if ( is_admin() ) {
+	require_once WP_AI_ASSISTANT_DIR . 'includes/class-wp-ai-admin-notices.php';
+	new WP_AI_Admin_Notices();
+}
+
 // Load WP-CLI commands if WP-CLI is available
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	require_once WP_AI_ASSISTANT_DIR . 'includes/class-wp-ai-cli.php';
