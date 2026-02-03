@@ -329,5 +329,90 @@ class WP_AI_CLI_Command {
     }
 }
 
+    /**
+     * Install the Node.js indexer package
+     *
+     * ## EXAMPLES
+     *
+     *     wp ai-assistant install-indexer
+     *
+     * @when after_wp_load
+     */
+    public function install_indexer() {
+        WP_CLI::line('Installing @kanopi/wp-ai-indexer...');
+
+        $plugin_dir = dirname(dirname(__FILE__));
+        $indexer_dir = $plugin_dir . '/indexer';
+
+        // Check if Node.js is installed
+        exec('which node 2>&1', $output, $return_code);
+        if ($return_code !== 0) {
+            WP_CLI::error('Node.js not found. Please install Node.js 18+ first: https://nodejs.org/');
+            return;
+        }
+
+        // Get Node.js version
+        exec('node --version 2>&1', $version_output);
+        $node_version = trim($version_output[0]);
+        WP_CLI::log("Found Node.js: {$node_version}");
+
+        // Check directory exists
+        if (!is_dir($indexer_dir)) {
+            WP_CLI::error("Indexer directory not found: {$indexer_dir}");
+            return;
+        }
+
+        // Run npm install
+        WP_CLI::log("Running: cd {$indexer_dir} && npm install");
+        $cmd = sprintf('cd %s && npm install 2>&1', escapeshellarg($indexer_dir));
+        exec($cmd, $install_output, $return_code);
+
+        // Show output
+        foreach ($install_output as $line) {
+            WP_CLI::log($line);
+        }
+
+        if ($return_code === 0) {
+            WP_CLI::success('Indexer installed successfully!');
+            WP_CLI::line('You can now run: wp ai-indexer index');
+        } else {
+            WP_CLI::error('Failed to install indexer. Try manually: cd indexer && npm install');
+        }
+    }
+
+    /**
+     * Check indexer installation status
+     *
+     * ## EXAMPLES
+     *
+     *     wp ai-assistant check-indexer
+     *
+     * @when after_wp_load
+     */
+    public function check_indexer() {
+        $plugin_dir = dirname(dirname(__FILE__));
+        $indexer_path = $plugin_dir . '/indexer/node_modules/@kanopi/wp-ai-indexer';
+
+        if (file_exists($indexer_path)) {
+            WP_CLI::success("Indexer is installed at: {$indexer_path}");
+
+            // Get version
+            $package_json_path = $indexer_path . '/package.json';
+            if (file_exists($package_json_path)) {
+                $package_json = file_get_contents($package_json_path);
+                $package = json_decode($package_json, true);
+                if (isset($package['version'])) {
+                    WP_CLI::log("Version: {$package['version']}");
+                }
+            }
+        } else {
+            WP_CLI::warning('Indexer is not installed.');
+            WP_CLI::line('Install it with: wp ai-assistant install-indexer');
+        }
+    }
+}
+
 // Register commands
 WP_CLI::add_command('ai-indexer', 'WP_AI_CLI_Command');
+WP_CLI::add_command('ai-assistant install-indexer', ['WP_AI_CLI_Command', 'install_indexer']);
+WP_CLI::add_command('ai-assistant check-indexer', ['WP_AI_CLI_Command', 'check_indexer']);
