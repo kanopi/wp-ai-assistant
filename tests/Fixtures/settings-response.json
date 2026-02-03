@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "domain": "example.org",
+  "openai_api_key": "test-openai-key",
+  "pinecone_api_key": "test-pinecone-key",
+  "pinecone_environment": "us-east-1",
+  "pinecone_index": "test-index",
+  "embedding_model": "text-embedding-3-small",
+  "embedding_dimension": 1536,
+  "chunk_size": 1200,
+  "chunk_overlap": 50,
+  "post_types": ["post", "page"],
+  "exclude_ids": [],
+  "clean_deleted": true
+}

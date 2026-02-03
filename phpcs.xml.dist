@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="WP AI Assistant" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xsd">
+
+	<description>WordPress Coding Standards for WP AI Assistant Plugin</description>
+
+	<!-- What to scan -->
+	<file>.</file>
+
+	<!-- Exclude patterns -->
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/tests/*</exclude-pattern>
+	<exclude-pattern>*/coverage/*</exclude-pattern>
+	<exclude-pattern>*/indexer/*</exclude-pattern>
+	<exclude-pattern>*.js</exclude-pattern>
+	<exclude-pattern>*.css</exclude-pattern>
+
+	<!-- How to scan -->
+	<arg value="sp"/> <!-- Show sniff and progress -->
+	<arg name="basepath" value="."/><!-- Strip the file paths down to the relevant bit -->
+	<arg name="colors"/>
+	<arg name="extensions" value="php"/>
+	<arg name="parallel" value="8"/><!-- Enables parallel processing when available for faster results. -->
+
+	<!-- Rules: Check PHP version compatibility -->
+	<config name="testVersion" value="8.0-"/>
+	<rule ref="PHPCompatibilityWP"/>
+
+	<!-- Rules: WordPress Coding Standards -->
+	<rule ref="WordPress-Core">
+		<!-- Allow short array syntax -->
+		<exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
+		<!-- Allow short ternary operator -->
+		<exclude name="WordPress.PHP.DisallowShortTernary"/>
+	</rule>
+
+	<rule ref="WordPress-Docs"/>
+
+	<rule ref="WordPress-Extra">
+		<!-- Allow array short syntax -->
+		<exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
+	</rule>
+
+	<!-- Rules: WordPress VIP Standards (modified for regular WordPress) -->
+	<rule ref="WordPress.Security"/>
+	<rule ref="WordPress.WP">
+		<!-- Allow direct DB queries in specific cases (we use prepared statements) -->
+		<exclude name="WordPress.DB.DirectDatabaseQuery"/>
+	</rule>
+
+	<!-- Enforce text domain -->
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="wp-ai-assistant"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!-- Verify that everything in the global namespace is prefixed -->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="wp_ai"/>
+				<element value="WP_AI"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!-- Set minimum supported WordPress version -->
+	<config name="minimum_supported_wp_version" value="6.0"/>
+
+	<!-- Allow for theme-specific exceptions -->
+	<rule ref="WordPress.Files.FileName">
+		<properties>
+			<property name="strict_class_file_names" value="false"/>
+		</properties>
+	</rule>
+
+	<!-- Check for cross-version support for PHP 8.0+ -->
+	<config name="testVersion" value="8.0-"/>
+
+	<!-- Show details about violated rules -->
+	<arg value="s"/>
+
+</ruleset>

@@ -1,0 +1,9 @@
+{
+  "name": "wp-ai-assistant-indexer",
+  "version": "1.0.0",
+  "description": "Local Node.js indexer for WP AI Assistant plugin",
+  "private": true,
+  "dependencies": {
+    "@kanopi/wp-ai-indexer": "^1.0.0"
+  }
+}

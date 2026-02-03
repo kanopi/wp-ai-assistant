@@ -1,0 +1,3 @@
+{
+  "redefinable-internals": ["exec", "file_exists", "getenv", "defined", "constant"]
+}
