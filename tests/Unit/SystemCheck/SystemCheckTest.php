@@ -1,11 +1,11 @@
 <?php
 /**
- * Tests for WP_AI_System_Check class
+ * Tests for Semantic_Knowledge_System_Check class
  */
 
-namespace WP_AI_Tests\Unit\SystemCheck;
+namespace Semantic_Knowledge_Tests\Unit\SystemCheck;
 
-use WP_AI_Tests\Helpers\TestCase;
+use Semantic_Knowledge_Tests\Helpers\TestCase;
 use WP_Mock;
 use Mockery;
 
@@ -23,9 +23,9 @@ class SystemCheckTest extends TestCase {
             'all_ok' => true,
         ];
 
-        $this->mockGetTransient('wp_ai_assistant_system_check', $cached_status);
+        $this->mockGetTransient('semantic_knowledge_system_check', $cached_status);
 
-        $result = \WP_AI_System_Check::run_checks(true);
+        $result = \Semantic_Knowledge_System_Check::run_checks(true);
 
         $this->assertEquals($cached_status, $result);
     }
@@ -48,9 +48,9 @@ class SystemCheckTest extends TestCase {
      * Test clear_cache
      */
     public function testClearCache() {
-        $this->mockDeleteTransient('wp_ai_assistant_system_check');
+        $this->mockDeleteTransient('semantic_knowledge_system_check');
 
-        \WP_AI_System_Check::clear_cache();
+        \Semantic_Knowledge_System_Check::clear_cache();
 
         $this->assertTrue(true);
     }
@@ -59,7 +59,7 @@ class SystemCheckTest extends TestCase {
      * Test get_indexer_path method exists and signature
      */
     public function testGetIndexerPathMethodExists() {
-        $reflection = new \ReflectionClass('WP_AI_System_Check');
+        $reflection = new \ReflectionClass('Semantic_Knowledge_System_Check');
         $method = $reflection->getMethod('get_indexer_path');
 
         $this->assertTrue($method->isPublic());
@@ -73,7 +73,7 @@ class SystemCheckTest extends TestCase {
      * Test ajax methods exist
      */
     public function testAjaxMethodsExist() {
-        $reflection = new \ReflectionClass('WP_AI_System_Check');
+        $reflection = new \ReflectionClass('Semantic_Knowledge_System_Check');
 
         $this->assertTrue($reflection->hasMethod('ajax_dismiss_notice'));
         $this->assertTrue($reflection->hasMethod('ajax_recheck'));
@@ -94,7 +94,7 @@ class SystemCheckTest extends TestCase {
             ->once()
             ->andReturn(true);
 
-        \WP_AI_System_Check::show_admin_notice();
+        \Semantic_Knowledge_System_Check::show_admin_notice();
 
         $this->assertTrue(true);
     }
@@ -112,7 +112,7 @@ class SystemCheckTest extends TestCase {
             ->with('manage_options')
             ->andReturn(false);
 
-        \WP_AI_System_Check::show_admin_notice();
+        \Semantic_Knowledge_System_Check::show_admin_notice();
 
         $this->assertTrue(true);
     }
@@ -136,10 +136,10 @@ class SystemCheckTest extends TestCase {
 
         WP_Mock::userFunction('get_user_meta')
             ->once()
-            ->with(1, 'wp_ai_assistant_system_notice_dismissed', true)
+            ->with(1, 'semantic_knowledge_system_notice_dismissed', true)
             ->andReturn(true);
 
-        \WP_AI_System_Check::show_admin_notice();
+        \Semantic_Knowledge_System_Check::show_admin_notice();
 
         $this->assertTrue(true);
     }
@@ -148,23 +148,23 @@ class SystemCheckTest extends TestCase {
      * Test constant values
      */
     public function testConstants() {
-        $this->assertEquals('wp_ai_assistant_system_check', \WP_AI_System_Check::CACHE_KEY);
-        $this->assertEquals(3600, \WP_AI_System_Check::CACHE_TTL);
-        $this->assertEquals('18.0.0', \WP_AI_System_Check::MIN_NODE_VERSION);
+        $this->assertEquals('semantic_knowledge_system_check', \Semantic_Knowledge_System_Check::CACHE_KEY);
+        $this->assertEquals(3600, \Semantic_Knowledge_System_Check::CACHE_TTL);
+        $this->assertEquals('18.0.0', \Semantic_Knowledge_System_Check::MIN_NODE_VERSION);
     }
 
     /**
      * Test class exists
      */
     public function testSystemCheckClassExists() {
-        $this->assertTrue(class_exists('WP_AI_System_Check'));
+        $this->assertTrue(class_exists('Semantic_Knowledge_System_Check'));
     }
 
     /**
      * Test class has required static methods
      */
     public function testSystemCheckHasRequiredMethods() {
-        $reflection = new \ReflectionClass('WP_AI_System_Check');
+        $reflection = new \ReflectionClass('Semantic_Knowledge_System_Check');
 
         $this->assertTrue($reflection->hasMethod('run_checks'));
         $this->assertTrue($reflection->hasMethod('get_indexer_path'));
@@ -178,7 +178,7 @@ class SystemCheckTest extends TestCase {
      * Test methods are static
      */
     public function testSystemCheckMethodsAreStatic() {
-        $reflection = new \ReflectionClass('WP_AI_System_Check');
+        $reflection = new \ReflectionClass('Semantic_Knowledge_System_Check');
 
         $this->assertTrue($reflection->getMethod('run_checks')->isStatic());
         $this->assertTrue($reflection->getMethod('get_indexer_path')->isStatic());
@@ -192,7 +192,7 @@ class SystemCheckTest extends TestCase {
      * Test run_checks method signature
      */
     public function testRunChecksSignature() {
-        $reflection = new \ReflectionClass('WP_AI_System_Check');
+        $reflection = new \ReflectionClass('Semantic_Knowledge_System_Check');
         $method = $reflection->getMethod('run_checks');
 
         $this->assertEquals(1, $method->getNumberOfParameters());
@@ -203,7 +203,7 @@ class SystemCheckTest extends TestCase {
      * Test get_indexer_path method signature
      */
     public function testGetIndexerPathSignature() {
-        $reflection = new \ReflectionClass('WP_AI_System_Check');
+        $reflection = new \ReflectionClass('Semantic_Knowledge_System_Check');
         $method = $reflection->getMethod('get_indexer_path');
 
         $this->assertEquals(0, $method->getNumberOfParameters());

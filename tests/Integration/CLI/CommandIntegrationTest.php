@@ -3,9 +3,9 @@
  * Integration tests for WP-CLI command registration and execution
  */
 
-namespace WP_AI_Tests\Integration\CLI;
+namespace Semantic_Knowledge_Tests\Integration\CLI;
 
-use WP_AI_Tests\Helpers\TestCase;
+use Semantic_Knowledge_Tests\Helpers\TestCase;
 use WP_Mock;
 use Mockery;
 
@@ -16,7 +16,7 @@ class CommandIntegrationTest extends TestCase {
     public function testCommandRegistrationPattern() {
         // Test that the command class and WP_CLI class exist
         $this->assertTrue(class_exists('WP_CLI'));
-        $this->assertTrue(class_exists('WP_AI_CLI_Command'));
+        $this->assertTrue(class_exists('Semantic_Knowledge_CLI_Command'));
 
         // Verify WP_CLI has the add_command method
         $this->assertTrue(method_exists('WP_CLI', 'add_command'));
@@ -29,9 +29,9 @@ class CommandIntegrationTest extends TestCase {
      * Test command has required methods
      */
     public function testCommandHasRequiredMethods() {
-        $this->assertTrue(class_exists('WP_AI_CLI_Command'));
+        $this->assertTrue(class_exists('Semantic_Knowledge_CLI_Command'));
 
-        $reflection = new \ReflectionClass('WP_AI_CLI_Command');
+        $reflection = new \ReflectionClass('Semantic_Knowledge_CLI_Command');
 
         // Check public command methods exist
         $this->assertTrue($reflection->hasMethod('index'));
@@ -52,7 +52,7 @@ class CommandIntegrationTest extends TestCase {
      * Test command methods have correct signatures
      */
     public function testCommandMethodSignatures() {
-        $reflection = new \ReflectionClass('WP_AI_CLI_Command');
+        $reflection = new \ReflectionClass('Semantic_Knowledge_CLI_Command');
 
         // All commands should accept ($args, $assoc_args)
         $indexMethod = $reflection->getMethod('index');
@@ -75,9 +75,9 @@ class CommandIntegrationTest extends TestCase {
      * Test SystemCheck class exists and has required methods
      */
     public function testSystemCheckClassExists() {
-        $this->assertTrue(class_exists('WP_AI_System_Check'));
+        $this->assertTrue(class_exists('Semantic_Knowledge_System_Check'));
 
-        $reflection = new \ReflectionClass('WP_AI_System_Check');
+        $reflection = new \ReflectionClass('Semantic_Knowledge_System_Check');
 
         // Check required static methods exist
         $this->assertTrue($reflection->hasMethod('run_checks'));
@@ -94,9 +94,9 @@ class CommandIntegrationTest extends TestCase {
      * Test REST API controller class exists and has required methods
      */
     public function testRestControllerClassExists() {
-        $this->assertTrue(class_exists('WP_AI_Indexer_Settings_Controller'));
+        $this->assertTrue(class_exists('Semantic_Knowledge_Indexer_Settings_Controller'));
 
-        $reflection = new \ReflectionClass('WP_AI_Indexer_Settings_Controller');
+        $reflection = new \ReflectionClass('Semantic_Knowledge_Indexer_Settings_Controller');
 
         // Check required methods exist
         $this->assertTrue($reflection->hasMethod('register_routes'));
@@ -115,7 +115,7 @@ class CommandIntegrationTest extends TestCase {
      * Test REST controller extends WP_REST_Controller
      */
     public function testRestControllerExtendsBase() {
-        $reflection = new \ReflectionClass('WP_AI_Indexer_Settings_Controller');
+        $reflection = new \ReflectionClass('Semantic_Knowledge_Indexer_Settings_Controller');
 
         $this->assertTrue($reflection->isSubclassOf('WP_REST_Controller'));
     }
@@ -124,7 +124,7 @@ class CommandIntegrationTest extends TestCase {
      * Test command documentation (PHPDoc blocks exist)
      */
     public function testCommandDocumentation() {
-        $reflection = new \ReflectionClass('WP_AI_CLI_Command');
+        $reflection = new \ReflectionClass('Semantic_Knowledge_CLI_Command');
 
         // Check index command has docblock
         $indexMethod = $reflection->getMethod('index');
@@ -139,7 +139,7 @@ class CommandIntegrationTest extends TestCase {
      * Test SystemCheck constants are defined correctly
      */
     public function testSystemCheckConstants() {
-        $reflection = new \ReflectionClass('WP_AI_System_Check');
+        $reflection = new \ReflectionClass('Semantic_Knowledge_System_Check');
 
         $constants = $reflection->getConstants();
 
@@ -147,7 +147,7 @@ class CommandIntegrationTest extends TestCase {
         $this->assertArrayHasKey('CACHE_TTL', $constants);
         $this->assertArrayHasKey('MIN_NODE_VERSION', $constants);
 
-        $this->assertEquals('wp_ai_assistant_system_check', $constants['CACHE_KEY']);
+        $this->assertEquals('semantic_knowledge_system_check', $constants['CACHE_KEY']);
         $this->assertEquals(3600, $constants['CACHE_TTL']);
         $this->assertEquals('18.0.0', $constants['MIN_NODE_VERSION']);
     }
@@ -156,7 +156,7 @@ class CommandIntegrationTest extends TestCase {
      * Test REST controller constants are defined correctly
      */
     public function testRestControllerConstants() {
-        $reflection = new \ReflectionClass('WP_AI_Indexer_Settings_Controller');
+        $reflection = new \ReflectionClass('Semantic_Knowledge_Indexer_Settings_Controller');
 
         $constants = $reflection->getConstants();
 
@@ -165,7 +165,7 @@ class CommandIntegrationTest extends TestCase {
         $this->assertArrayHasKey('NAMESPACE', $constants);
 
         $this->assertEquals(1, $constants['SCHEMA_VERSION']);
-        $this->assertEquals('wp_ai_assistant_settings', $constants['OPTION_KEY']);
+        $this->assertEquals('semantic_knowledge_settings', $constants['OPTION_KEY']);
         $this->assertEquals('ai-assistant/v1', $constants['NAMESPACE']);
     }
 
@@ -189,9 +189,9 @@ class CommandIntegrationTest extends TestCase {
      */
     public function testAbspathProtection() {
         // All plugin files should check for ABSPATH
-        $cliFile = WP_AI_PLUGIN_DIR . '/includes/class-wp-ai-cli.php';
-        $systemCheckFile = WP_AI_PLUGIN_DIR . '/includes/class-wp-ai-system-check.php';
-        $controllerFile = WP_AI_PLUGIN_DIR . '/includes/class-wp-ai-indexer-controller.php';
+        $cliFile = Semantic_Knowledge_PLUGIN_DIR . '/includes/class-wp-ai-cli.php';
+        $systemCheckFile = Semantic_Knowledge_PLUGIN_DIR . '/includes/class-wp-ai-system-check.php';
+        $controllerFile = Semantic_Knowledge_PLUGIN_DIR . '/includes/class-wp-ai-indexer-controller.php';
 
         if (file_exists($cliFile)) {
             $content = file_get_contents($cliFile);
@@ -214,13 +214,13 @@ class CommandIntegrationTest extends TestCase {
      */
     public function testClassNaming() {
         // Classes should follow WordPress naming convention
-        $this->assertTrue(class_exists('WP_AI_CLI_Command'));
-        $this->assertTrue(class_exists('WP_AI_System_Check'));
-        $this->assertTrue(class_exists('WP_AI_Indexer_Settings_Controller'));
+        $this->assertTrue(class_exists('Semantic_Knowledge_CLI_Command'));
+        $this->assertTrue(class_exists('Semantic_Knowledge_System_Check'));
+        $this->assertTrue(class_exists('Semantic_Knowledge_Indexer_Settings_Controller'));
 
         // Classes should have WP_AI prefix
-        $this->assertStringStartsWith('WP_AI', 'WP_AI_CLI_Command');
-        $this->assertStringStartsWith('WP_AI', 'WP_AI_System_Check');
-        $this->assertStringStartsWith('WP_AI', 'WP_AI_Indexer_Settings_Controller');
+        $this->assertStringStartsWith('WP_AI', 'Semantic_Knowledge_CLI_Command');
+        $this->assertStringStartsWith('WP_AI', 'Semantic_Knowledge_System_Check');
+        $this->assertStringStartsWith('WP_AI', 'Semantic_Knowledge_Indexer_Settings_Controller');
     }
 }

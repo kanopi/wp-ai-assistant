@@ -11,7 +11,18 @@
       "Bash(bd update:*)",
       "Bash(bd close:*)",
       "Bash(git add:*)",
-      "Bash(bd sync:*)"
+      "Bash(bd sync:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nFix security vulnerabilities identified by Snyk code analysis\n\nFixed all 18 security vulnerabilities across 3 categories:\n\n1. DOM-based XSS vulnerability \\(P1 - Medium severity\\)\n   - File: assets/js/search.js\n   - Replaced innerHTML with safe DOM methods \\(createElement, textContent, setAttribute\\)\n   - Prevents injection of unsanitized remote data as HTML\n\n2. X-Frame-Options header configuration \\(P1 - Medium severity\\)\n   - File: wp-ai-assistant.php\n   - Replaced manual header\\(\\) call with WordPress x_frame_options_header filter\n   - Follows WordPress best practices while maintaining SAMEORIGIN security\n\n3. Insecure MD5 hashing \\(P2 - Low severity, 16 instances\\)\n   - Files: class-wp-ai-cache.php \\(5\\), class-wp-ai-database.php \\(1\\),\n     class-wp-ai-search-module.php \\(1\\), class-wp-ai-chatbot-module.php \\(1\\),\n     performance-optimization.php \\(7\\), analytics-tracking.php \\(1\\)\n   - Replaced md5\\(\\) with wp_hash\\(\\) for all cache keys, session IDs, and identifiers\n   - Uses WordPress''s cryptographically secure hashing with secret salts\n\nVerified with Snyk: 0 security issues remaining\n\nCloses: wp-ai-assistant-qze, wp-ai-assistant-9lu, wp-ai-assistant-cu2\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push)",
+      "WebSearch",
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "Bash(git mv:*)",
+      "Bash(find:*)",
+      "Bash(if [ -f phpunit.xml.dist ])",
+      "Bash(then sed -i '' 's/wp-ai-assistant/semantic-knowledge/g' phpunit.xml.dist)",
+      "Bash(fi)",
+      "Bash(php -l:*)"
     ]
   }
 }

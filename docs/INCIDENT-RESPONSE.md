@@ -1,6 +1,6 @@
-# WP AI Assistant - Incident Response Guide
+# Semantic Knowledge - Incident Response Guide
 
-Comprehensive incident response procedures for the WP AI Assistant plugin.
+Comprehensive incident response procedures for the Semantic Knowledge plugin.
 
 ## Table of Contents
 
@@ -19,7 +19,7 @@ Comprehensive incident response procedures for the WP AI Assistant plugin.
 
 ## Overview
 
-This guide provides procedures for responding to incidents affecting the WP AI Assistant plugin. All on-call engineers should familiarize themselves with these procedures.
+This guide provides procedures for responding to incidents affecting the Semantic Knowledge plugin. All on-call engineers should familiarize themselves with these procedures.
 
 ### Incident Definition
 
@@ -170,10 +170,10 @@ terminus site:info kanopi-2019
 curl -I https://yoursite.com
 
 # Check plugin status
-terminus wp kanopi-2019.live -- plugin list --status=active --name=wp-ai-assistant
+terminus wp kanopi-2019.live -- plugin list --status=active --name=semantic-knowledge
 
 # Check recent errors
-terminus logs kanopi-2019.live --type=php-error --since="15 minutes ago" | grep "WP_AI_ASSISTANT"
+terminus logs kanopi-2019.live --type=php-error --since="15 minutes ago" | grep "Semantic_Knowledge_ASSISTANT"
 ```
 
 ### Phase 2: Investigation (5-30 minutes)
@@ -183,7 +183,7 @@ terminus logs kanopi-2019.live --type=php-error --since="15 minutes ago" | grep 
 1. **Error Rate**
 ```bash
 # Check error count
-terminus logs kanopi-2019.live --type=php-error --since="1 hour ago" | grep "WP_AI_ASSISTANT" | wc -l
+terminus logs kanopi-2019.live --type=php-error --since="1 hour ago" | grep "Semantic_Knowledge_ASSISTANT" | wc -l
 ```
 
 2. **Response Times**
@@ -194,7 +194,7 @@ SELECT
   AVG(response_time) as avg_ms,
   MAX(response_time) as max_ms,
   COUNT(*) as total
-FROM wp_ai_chat_logs
+FROM wp_sk_chat_logs
 WHERE created_at >= DATE_SUB(NOW(), INTERVAL 1 HOUR)"
 ```
 
@@ -237,7 +237,7 @@ Common issues by symptom:
 
 ```bash
 # Deactivate plugin to restore site
-terminus wp kanopi-2019.live -- plugin deactivate wp-ai-assistant
+terminus wp kanopi-2019.live -- plugin deactivate semantic-knowledge
 
 # Verify site is accessible
 curl -I https://yoursite.com
@@ -253,7 +253,7 @@ echo "Plugin deactivated - site restored. Investigating root cause."
 terminus wp kanopi-2019.live -- maintenance-mode activate
 
 # Fix issue in dev/staging
-terminus wp kanopi-2019.dev -- plugin activate wp-ai-assistant
+terminus wp kanopi-2019.dev -- plugin activate semantic-knowledge
 # Test fix...
 
 # Deploy fix to production
@@ -323,16 +323,16 @@ git push origin main
 3. **Verify Resolution**
 ```bash
 # Check error rate (should be < 1%)
-terminus logs kanopi-2019.live --type=php-error --since="30 minutes ago" | grep "WP_AI_ASSISTANT" | wc -l
+terminus logs kanopi-2019.live --type=php-error --since="30 minutes ago" | grep "Semantic_Knowledge_ASSISTANT" | wc -l
 
 # Check response times
 terminus wp kanopi-2019.live -- db query "
 SELECT AVG(response_time) as avg_ms
-FROM wp_ai_chat_logs
+FROM wp_sk_chat_logs
 WHERE created_at >= DATE_SUB(NOW(), INTERVAL 15 MINUTE)"
 
 # Test functionality
-curl -X POST "https://yoursite.com/wp-json/wp-ai-assistant/v1/chat" \
+curl -X POST "https://yoursite.com/wp-json/semantic-knowledge/v1/chat" \
   -H "Content-Type: application/json" \
   -d '{"message":"test"}'
 ```
@@ -390,7 +390,7 @@ done
 **Option 2: Fallback to Basic Search** (if extended outage)
 ```bash
 # Disable AI search module
-terminus wp kanopi-2019.live -- option update wp_ai_assistant_settings '{
+terminus wp kanopi-2019.live -- option update semantic_knowledge_settings '{
   "search_enabled": false,
   "search_replace_default": false
 }' --format=json
@@ -407,7 +407,7 @@ terminus wp kanopi-2019.live -- option update wp_ai_assistant_settings '{
 **Resolution**:
 ```bash
 # Once OpenAI recovers, re-enable
-terminus wp kanopi-2019.live -- option update wp_ai_assistant_settings '{
+terminus wp kanopi-2019.live -- option update semantic_knowledge_settings '{
   "search_enabled": true
 }' --format=json
 
@@ -440,7 +440,7 @@ terminus logs kanopi-2019.live --type=php-error | grep "pinecone"
 **Option 1: Disable AI Search**
 ```bash
 # Temporarily disable AI-powered search
-terminus wp kanopi-2019.live -- option update wp_ai_assistant_settings '{
+terminus wp kanopi-2019.live -- option update semantic_knowledge_settings '{
   "search_enabled": false,
   "search_replace_default": false
 }' --format=json
@@ -449,7 +449,7 @@ terminus wp kanopi-2019.live -- option update wp_ai_assistant_settings '{
 **Option 2: Use Cached Results** (if caching enabled)
 ```bash
 # Extend cache TTL temporarily
-terminus wp kanopi-2019.live -- option update wp_ai_assistant_settings '{
+terminus wp kanopi-2019.live -- option update semantic_knowledge_settings '{
   "cache_ttl": 3600
 }' --format=json
 ```
@@ -461,7 +461,7 @@ curl "https://YOUR_INDEX-NAME.svc.YOUR_ENVIRONMENT.pinecone.io/describe_index_st
   -H "Api-Key: $PINECONE_API_KEY"
 
 # Re-enable AI search
-terminus wp kanopi-2019.live -- option update wp_ai_assistant_settings '{
+terminus wp kanopi-2019.live -- option update semantic_knowledge_settings '{
   "search_enabled": true
 }' --format=json
 ```
@@ -480,7 +480,7 @@ terminus wp kanopi-2019.live -- db query "
 SELECT
   COUNT(*) as total_requests,
   COUNT(*) / 3600 as requests_per_second
-FROM wp_ai_chat_logs
+FROM wp_sk_chat_logs
 WHERE created_at >= DATE_SUB(NOW(), INTERVAL 1 HOUR)"
 
 # Check OpenAI usage
@@ -495,7 +495,7 @@ WHERE created_at >= DATE_SUB(NOW(), INTERVAL 1 HOUR)"
 **Option 1: Implement Rate Limiting**
 ```php
 // Add to theme's functions.php or custom plugin
-add_filter('wp_ai_chatbot_rate_limit', function($limit) {
+add_filter('semantic_knowledge_chatbot_rate_limit', function($limit) {
     return 10; // Max 10 requests per minute per user
 });
 ```
@@ -503,7 +503,7 @@ add_filter('wp_ai_chatbot_rate_limit', function($limit) {
 **Option 2: Enable Caching**
 ```bash
 # Enable response caching
-terminus wp kanopi-2019.live -- option update wp_ai_assistant_settings '{
+terminus wp kanopi-2019.live -- option update semantic_knowledge_settings '{
   "cache_responses": true,
   "cache_ttl": 300
 }' --format=json
@@ -526,7 +526,7 @@ SELECT
   DATE(created_at) as date,
   COUNT(*) as requests,
   AVG(response_time) as avg_ms
-FROM wp_ai_chat_logs
+FROM wp_sk_chat_logs
 WHERE created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
 GROUP BY DATE(created_at)"
 ```
@@ -549,7 +549,7 @@ SELECT
   AVG(response_time) as avg_ms,
   MAX(response_time) as max_ms,
   COUNT(*) as total
-FROM wp_ai_chat_logs
+FROM wp_sk_chat_logs
 WHERE created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
 GROUP BY hour
 ORDER BY hour DESC"
@@ -584,14 +584,14 @@ terminus wp kanopi-2019.live -- db optimize
 
 # Clean old logs
 terminus wp kanopi-2019.live -- db query "
-DELETE FROM wp_ai_chat_logs
+DELETE FROM wp_sk_chat_logs
 WHERE created_at < DATE_SUB(NOW(), INTERVAL 30 DAY)"
 ```
 
 **Option 3: Reduce Top-K Results**
 ```bash
 # Temporarily reduce number of results fetched
-terminus wp kanopi-2019.live -- option update wp_ai_assistant_settings '{
+terminus wp kanopi-2019.live -- option update semantic_knowledge_settings '{
   "chatbot_top_k": 3,
   "search_top_k": 5
 }' --format=json
@@ -602,7 +602,7 @@ terminus wp kanopi-2019.live -- option update wp_ai_assistant_settings '{
 # Verify performance improvement
 terminus wp kanopi-2019.live -- db query "
 SELECT AVG(response_time) as avg_ms
-FROM wp_ai_chat_logs
+FROM wp_sk_chat_logs
 WHERE created_at >= DATE_SUB(NOW(), INTERVAL 15 MINUTE)"
 
 # Expected: < 2000ms
@@ -647,7 +647,7 @@ terminus env:deploy kanopi-2019.live --sync-content=false
 **Option 3: Disable Resource-Intensive Features**
 ```bash
 # Disable indexer temporarily
-terminus wp kanopi-2019.live -- option update wp_ai_assistant_settings '{
+terminus wp kanopi-2019.live -- option update semantic_knowledge_settings '{
   "auto_index_on_save": false
 }' --format=json
 ```
@@ -690,7 +690,7 @@ terminus wp kanopi-2019.live -- wordfence block-ip 1.2.3.4
 **Option 2: Implement Rate Limiting**
 ```php
 // Add to theme's functions.php
-add_filter('wp_ai_assistant_rate_limit', function($limit, $ip) {
+add_filter('semantic_knowledge_rate_limit', function($limit, $ip) {
     // More aggressive rate limiting
     return 5; // Max 5 requests per minute
 }, 10, 2);
@@ -702,7 +702,7 @@ add_filter('wp_ai_assistant_rate_limit', function($limit, $ip) {
 # Update .htaccess or wp-config.php
 
 # Force authentication for REST API
-terminus wp kanopi-2019.live -- option update wp_ai_assistant_settings '{
+terminus wp kanopi-2019.live -- option update semantic_knowledge_settings '{
   "require_authentication": true
 }' --format=json
 ```
@@ -757,7 +757,7 @@ terminus secret:set kanopi-2019.live PINECONE_API_KEY "new-key"
 ```bash
 # Remove sensitive data from logs
 terminus wp kanopi-2019.live -- db query "
-UPDATE wp_ai_chat_logs
+UPDATE wp_sk_chat_logs
 SET question = '[REDACTED]', answer = '[REDACTED]'
 WHERE question LIKE '%password%' OR answer LIKE '%api%key%'"
 ```
@@ -842,14 +842,14 @@ curl "https://yoursite.com/?s=test"
 terminus wp kanopi-2019.live -- db check
 
 # Check table integrity
-terminus wp kanopi-2019.live -- db query "CHECK TABLE wp_ai_chat_logs, wp_ai_search_logs"
+terminus wp kanopi-2019.live -- db query "CHECK TABLE wp_sk_chat_logs, wp_sk_search_logs"
 
 # Check for corruption
 terminus wp kanopi-2019.live -- db query "
 SELECT table_name, engine
 FROM information_schema.tables
 WHERE table_schema = 'pantheon'
-AND table_name LIKE 'wp_ai_%'"
+AND table_name LIKE 'semantic_knowledge_%'"
 ```
 
 **Mitigation**:
@@ -872,7 +872,7 @@ terminus backup:list kanopi-2019.live --element=database
 terminus backup:restore kanopi-2019.live --element=database --yes
 
 # Verify restoration
-terminus wp kanopi-2019.live -- db query "SELECT COUNT(*) FROM wp_ai_chat_logs"
+terminus wp kanopi-2019.live -- db query "SELECT COUNT(*) FROM wp_sk_chat_logs"
 ```
 
 **Resolution**:
@@ -880,11 +880,11 @@ terminus wp kanopi-2019.live -- db query "SELECT COUNT(*) FROM wp_ai_chat_logs"
 # Verify tables are healthy
 terminus wp kanopi-2019.live -- db query "
 SHOW TABLE STATUS
-WHERE Name LIKE 'wp_ai_%'"
+WHERE Name LIKE 'semantic_knowledge_%'"
 
 # Test functionality
 terminus wp kanopi-2019.live -- db query "
-INSERT INTO wp_ai_chat_logs (question, answer, created_at)
+INSERT INTO wp_sk_chat_logs (question, answer, created_at)
 VALUES ('test', 'test', NOW())"
 ```
 
@@ -905,7 +905,7 @@ Escalate to senior engineer when:
 
 1. **Notify Senior Engineer**
 ```
-Subject: [P1] WP AI Assistant - [Brief Description]
+Subject: [P1] Semantic Knowledge - [Brief Description]
 
 Incident: [Description]
 Severity: P1
@@ -1052,7 +1052,7 @@ Incident Log: [Link to incident document]
 ### Incident Notification (Initial)
 
 ```
-🚨 Incident Alert - WP AI Assistant
+🚨 Incident Alert - Semantic Knowledge
 
 Severity: [P1/P2/P3/P4]
 Status: Investigating
@@ -1076,7 +1076,7 @@ Slack: #incidents
 ### Status Update
 
 ```
-📊 Incident Update - WP AI Assistant
+📊 Incident Update - Semantic Knowledge
 
 Status: [Investigating/Mitigating/Resolved]
 Duration: [Time since start]
@@ -1096,7 +1096,7 @@ Next Update: [Time]
 ### Resolution Notification
 
 ```
-✅ Incident Resolved - WP AI Assistant
+✅ Incident Resolved - Semantic Knowledge
 
 Status: Resolved
 Duration: [Total time]
@@ -1123,7 +1123,7 @@ Subject: [Status] AI Assistant Service Incident - [Date]
 Dear [Stakeholder],
 
 This email is to inform you about a service incident affecting the
-WP AI Assistant plugin.
+Semantic Knowledge plugin.
 
 SUMMARY
 -------

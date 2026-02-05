@@ -3,7 +3,7 @@
  * Helper class for mocking Node.js execution in tests
  */
 
-namespace WP_AI_Tests\Helpers;
+namespace Semantic_Knowledge_Tests\Helpers;
 
 class MockNodeExecutor {
     /**

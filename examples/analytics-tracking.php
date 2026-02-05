@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 /**
  * Track search query start
  */
-add_action('wp_ai_search_query_start', 'my_track_search_start', 10, 2);
+add_action('semantic_knowledge_search_query_start', 'my_track_search_start', 10, 2);
 
 function my_track_search_start($query, $request) {
     // Track to Google Analytics (GA4)
@@ -57,7 +57,7 @@ function my_track_search_start($query, $request) {
 /**
  * Track search results
  */
-add_action('wp_ai_search_query_end', 'my_track_search_results', 10, 2);
+add_action('semantic_knowledge_search_query_end', 'my_track_search_results', 10, 2);
 
 function my_track_search_results($response, $query) {
     $result_count = $response['total'] ?? 0;
@@ -117,7 +117,7 @@ function my_track_search_results($response, $query) {
 /**
  * Track search performance metrics
  */
-add_action('wp_ai_search_after_pinecone_query', 'my_track_search_performance', 10, 2);
+add_action('semantic_knowledge_search_after_pinecone_query', 'my_track_search_performance', 10, 2);
 
 function my_track_search_performance($matches, $query) {
     $match_count = count($matches);
@@ -249,7 +249,7 @@ function my_ai_search_analytics_cli($args, $assoc_args) {
 /**
  * Track chatbot interactions
  */
-add_action('wp_ai_chatbot_query_end', 'my_track_chatbot', 10, 2);
+add_action('semantic_knowledge_chatbot_query_end', 'my_track_chatbot', 10, 2);
 
 function my_track_chatbot($response, $question) {
     // Track chatbot usage

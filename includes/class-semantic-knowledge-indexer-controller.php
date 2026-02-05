@@ -1,14 +1,14 @@
 <?php
 /**
- * Indexer Settings REST API Controller for WP AI Assistant
+ * Indexer Settings REST API Controller for Semantic Knowledge
  *
  * Provides endpoint for indexer configuration:
- * GET /wp-json/ai-assistant/v1/indexer-settings
+ * GET /wp-json/semantic-knowledge/v1/indexer-settings
  *
- * This controller is specifically designed for the unified WP AI Assistant plugin
+ * This controller is specifically designed for the unified Semantic Knowledge plugin
  * and includes domain filtering support.
  *
- * @package WP_AI_Assistant
+ * @package Semantic_Knowledge
  * @version 1.0.0
  */
 
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class WP_AI_Indexer_Settings_Controller extends WP_REST_Controller {
+class Semantic_Knowledge_Indexer_Settings_Controller extends WP_REST_Controller {
 
 	/**
 	 * Schema version - increment when breaking changes are made
@@ -28,12 +28,12 @@ class WP_AI_Indexer_Settings_Controller extends WP_REST_Controller {
 	/**
 	 * Shared option key for unified plugin settings
 	 */
-	const OPTION_KEY = 'wp_ai_assistant_settings';
+	const OPTION_KEY = 'semantic_knowledge_settings';
 
 	/**
 	 * Cache key for REST API response
 	 */
-	const CACHE_KEY = 'wp_ai_indexer_settings_response';
+	const CACHE_KEY = 'semantic_knowledge_indexer_settings_response';
 
 	/**
 	 * Cache duration in seconds (1 hour)
@@ -43,7 +43,7 @@ class WP_AI_Indexer_Settings_Controller extends WP_REST_Controller {
 	/**
 	 * REST API namespace
 	 */
-	const NAMESPACE = 'ai-assistant/v1';
+	const NAMESPACE = 'semantic-knowledge/v1';
 
 	/**
 	 * Register REST API routes
@@ -80,7 +80,7 @@ class WP_AI_Indexer_Settings_Controller extends WP_REST_Controller {
 
 			if ( empty( $valid_key ) ) {
 				return new WP_Error(
-					'wp_ai_indexer_key_not_configured',
+					'semantic_knowledge_indexer_key_not_configured',
 					'Indexer API key is not configured. Please set WP_AI_INDEXER_KEY environment variable.',
 					array( 'status' => 500 )
 				);
@@ -92,7 +92,7 @@ class WP_AI_Indexer_Settings_Controller extends WP_REST_Controller {
 			}
 
 			return new WP_Error(
-				'wp_ai_indexer_invalid_key',
+				'semantic_knowledge_indexer_invalid_key',
 				'Invalid indexer API key.',
 				array( 'status' => 403 )
 			);
@@ -104,7 +104,7 @@ class WP_AI_Indexer_Settings_Controller extends WP_REST_Controller {
 		}
 
 		return new WP_Error(
-			'wp_ai_indexer_unauthorized',
+			'semantic_knowledge_indexer_unauthorized',
 			'Authentication required. Provide X-WP-Indexer-Key header or log in as administrator.',
 			array( 'status' => 401 )
 		);
@@ -262,7 +262,7 @@ class WP_AI_Indexer_Settings_Controller extends WP_REST_Controller {
 		// Validate required Pinecone configuration
 		if ( empty( $pinecone_index_host ) || empty( $pinecone_index_name ) ) {
 			return new WP_Error(
-				'wp_ai_assistant_missing_config',
+				'semantic_knowledge_missing_config',
 				'Pinecone configuration is incomplete. Please configure Pinecone index host and name.',
 				array( 'status' => 500 )
 			);
@@ -313,7 +313,7 @@ class WP_AI_Indexer_Settings_Controller extends WP_REST_Controller {
 		}
 
 		// Fall back to unified plugin settings
-		$plugin_settings = get_option( 'wp_ai_assistant_settings', array() );
+		$plugin_settings = get_option( 'semantic_knowledge_settings', array() );
 		if ( ! empty( $plugin_settings[ $setting_key ] ) ) {
 			return trim( $plugin_settings[ $setting_key ] );
 		}

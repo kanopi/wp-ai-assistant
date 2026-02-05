@@ -1,10 +1,10 @@
 <?php
 /**
- * Admin Notices for WP AI Assistant
+ * Admin Notices for Semantic Knowledge
  *
  * Handles admin notices for indexer installation status.
  *
- * @package WP_AI_Assistant
+ * @package Semantic_Knowledge
  */
 
 if (!defined('ABSPATH')) {
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 /**
  * Admin notices handler
  */
-class WP_AI_Admin_Notices {
+class Semantic_Knowledge_Admin_Notices {
 
     /**
      * Constructor
@@ -23,7 +23,7 @@ class WP_AI_Admin_Notices {
         add_action('admin_init', [$this, 'check_indexer_installed']);
         add_action('admin_init', [$this, 'handle_dismiss']);
         add_action('admin_notices', [$this, 'show_notices']);
-        add_action('admin_post_wp_ai_install_indexer', [$this, 'handle_install_indexer']);
+        add_action('admin_post_semantic_knowledge_install_indexer', [$this, 'handle_install_indexer']);
     }
 
     /**
@@ -35,13 +35,13 @@ class WP_AI_Admin_Notices {
 
         if (!file_exists($indexer_path)) {
             // Only show if not dismissed
-            $dismissed = get_option('wp_ai_indexer_notice_dismissed', false);
+            $dismissed = get_option('semantic_knowledge_indexer_notice_dismissed', false);
             if (!$dismissed) {
-                set_transient('wp_ai_indexer_missing', true, HOUR_IN_SECONDS);
+                set_transient('semantic_knowledge_indexer_missing', true, HOUR_IN_SECONDS);
             }
         } else {
             // Clear any existing notices
-            delete_transient('wp_ai_indexer_missing');
+            delete_transient('semantic_knowledge_indexer_missing');
         }
     }
 
@@ -49,13 +49,13 @@ class WP_AI_Admin_Notices {
      * Handle notice dismissal
      */
     public function handle_dismiss() {
-        if (isset($_GET['wp_ai_dismiss_indexer']) && current_user_can('manage_options')) {
-            check_admin_referer('wp_ai_dismiss_indexer');
-            update_option('wp_ai_indexer_notice_dismissed', true);
-            delete_transient('wp_ai_indexer_missing');
+        if (isset($_GET['semantic_knowledge_dismiss_indexer']) && current_user_can('manage_options')) {
+            check_admin_referer('semantic_knowledge_dismiss_indexer');
+            update_option('semantic_knowledge_indexer_notice_dismissed', true);
+            delete_transient('semantic_knowledge_indexer_missing');
 
             // Redirect back without query params
-            wp_safe_redirect(remove_query_arg(['wp_ai_dismiss_indexer', '_wpnonce']));
+            wp_safe_redirect(remove_query_arg(['semantic_knowledge_dismiss_indexer', '_wpnonce']));
             exit;
         }
     }
@@ -65,18 +65,18 @@ class WP_AI_Admin_Notices {
      */
     public function show_notices() {
         // Indexer missing notice
-        if (get_transient('wp_ai_indexer_missing')) {
+        if (get_transient('semantic_knowledge_indexer_missing')) {
             $this->indexer_missing_notice();
         }
 
         // Installation success
-        if (isset($_GET['wp_ai_indexer_installed']) && $_GET['wp_ai_indexer_installed'] === 'success') {
+        if (isset($_GET['semantic_knowledge_indexer_installed']) && $_GET['semantic_knowledge_indexer_installed'] === 'success') {
             $this->indexer_success_notice();
         }
 
         // Installation error
-        if (isset($_GET['wp_ai_indexer_error'])) {
-            $this->indexer_error_notice($_GET['wp_ai_indexer_error']);
+        if (isset($_GET['semantic_knowledge_indexer_error'])) {
+            $this->indexer_error_notice($_GET['semantic_knowledge_indexer_error']);
         }
     }
 
@@ -89,13 +89,13 @@ class WP_AI_Admin_Notices {
         }
 
         $install_url = admin_url('admin-post.php?action=wp_ai_install_indexer');
-        $install_url = wp_nonce_url($install_url, 'wp_ai_install_indexer');
-        $dismiss_url = add_query_arg('wp_ai_dismiss_indexer', '1');
-        $dismiss_url = wp_nonce_url($dismiss_url, 'wp_ai_dismiss_indexer');
+        $install_url = wp_nonce_url($install_url, 'semantic_knowledge_install_indexer');
+        $dismiss_url = add_query_arg('semantic_knowledge_dismiss_indexer', '1');
+        $dismiss_url = wp_nonce_url($dismiss_url, 'semantic_knowledge_dismiss_indexer');
 
         ?>
         <div class="notice notice-warning is-dismissible">
-            <h3>WP AI Assistant: Indexer Not Installed</h3>
+            <h3>Semantic Knowledge: Indexer Not Installed</h3>
             <p>
                 The Node.js indexer package is required for AI-powered search and chatbot functionality.
             </p>
@@ -122,7 +122,7 @@ class WP_AI_Admin_Notices {
      * Handle indexer installation via admin
      */
     public function handle_install_indexer() {
-        check_admin_referer('wp_ai_install_indexer');
+        check_admin_referer('semantic_knowledge_install_indexer');
 
         if (!current_user_can('manage_options')) {
             wp_die('Unauthorized');
@@ -134,7 +134,7 @@ class WP_AI_Admin_Notices {
         // Check Node.js
         exec('which node 2>&1', $output, $return_code);
         if ($return_code !== 0) {
-            wp_redirect(admin_url('plugins.php?wp_ai_indexer_error=node_not_found'));
+            wp_redirect(admin_url('plugins.php?sk_indexer_error=node_not_found'));
             exit;
         }
 
@@ -143,13 +143,13 @@ class WP_AI_Admin_Notices {
         exec($cmd, $install_output, $return_code);
 
         if ($return_code === 0) {
-            delete_transient('wp_ai_indexer_missing');
-            delete_option('wp_ai_indexer_notice_dismissed');
-            wp_redirect(admin_url('plugins.php?wp_ai_indexer_installed=success'));
+            delete_transient('semantic_knowledge_indexer_missing');
+            delete_option('semantic_knowledge_indexer_notice_dismissed');
+            wp_redirect(admin_url('plugins.php?sk_indexer_installed=success'));
         } else {
             $error_log = implode("\n", $install_output);
-            error_log('WP AI Assistant indexer installation failed: ' . $error_log);
-            wp_redirect(admin_url('plugins.php?wp_ai_indexer_error=install_failed'));
+            error_log('Semantic Knowledge indexer installation failed: ' . $error_log);
+            wp_redirect(admin_url('plugins.php?sk_indexer_error=install_failed'));
         }
         exit;
     }
@@ -165,7 +165,7 @@ class WP_AI_Admin_Notices {
         ?>
         <div class="notice notice-success is-dismissible">
             <p>
-                <strong>WP AI Assistant:</strong> Indexer installed successfully!
+                <strong>Semantic Knowledge:</strong> Indexer installed successfully!
                 You can now run <code>wp ai-indexer index</code> to index your content.
             </p>
         </div>
@@ -190,7 +190,7 @@ class WP_AI_Admin_Notices {
 
         ?>
         <div class="notice notice-error is-dismissible">
-            <p><strong>WP AI Assistant:</strong> <?php echo wp_kses_post($message); ?></p>
+            <p><strong>Semantic Knowledge:</strong> <?php echo wp_kses_post($message); ?></p>
         </div>
         <?php
     }

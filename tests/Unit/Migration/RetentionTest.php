@@ -1,15 +1,15 @@
 <?php
 /**
- * Tests for WP_AI_Migration data retention features
+ * Tests for Semantic_Knowledge_Migration data retention features
  *
- * @package WP_AI_Assistant
+ * @package Semantic_Knowledge_Assistant
  */
 
-namespace WP_AI_Tests\Unit\Migration;
+namespace Semantic_Knowledge_Tests\Unit\Migration;
 
-use WP_AI_Tests\Helpers\TestCase;
-use WP_AI_Migration;
-use WP_AI_Logger;
+use Semantic_Knowledge_Tests\Helpers\TestCase;
+use Semantic_Knowledge_Migration;
+use Semantic_Knowledge_Logger;
 
 class RetentionTest extends TestCase {
 
@@ -41,7 +41,7 @@ class RetentionTest extends TestCase {
 			->times( 3 )
 			->andReturn( true );
 
-		$deleted = WP_AI_Migration::cleanup_old_conversation_logs( 90 );
+		$deleted = Semantic_Knowledge_Migration::cleanup_old_conversation_logs( 90 );
 
 		$this->assertEquals( 3, $deleted );
 	}
@@ -56,7 +56,7 @@ class RetentionTest extends TestCase {
 		\WP_Mock::userFunction( 'get_posts' )
 			->andReturn( array() );
 
-		$deleted = WP_AI_Migration::cleanup_old_conversation_logs( 30 );
+		$deleted = Semantic_Knowledge_Migration::cleanup_old_conversation_logs( 30 );
 
 		// Even with no posts, should complete without error
 		$this->assertEquals( 0, $deleted );
@@ -84,7 +84,7 @@ class RetentionTest extends TestCase {
 			->times( 4 ) // 2 backups + 2 timestamps
 			->andReturn( true );
 
-		$result = WP_AI_Migration::cleanup_old_settings_backups( 30 );
+		$result = Semantic_Knowledge_Migration::cleanup_old_settings_backups( 30 );
 
 		$this->assertTrue( $result );
 	}
@@ -111,7 +111,7 @@ class RetentionTest extends TestCase {
 		\WP_Mock::userFunction( 'delete_option' )
 			->never();
 
-		$result = WP_AI_Migration::cleanup_old_settings_backups( 30 );
+		$result = Semantic_Knowledge_Migration::cleanup_old_settings_backups( 30 );
 
 		$this->assertTrue( $result );
 	}
@@ -166,7 +166,7 @@ class RetentionTest extends TestCase {
 			->with( 'wp_ai_backup_retention_days', 30 )
 			->andReturn( 30 );
 
-		$stats = WP_AI_Migration::get_retention_stats();
+		$stats = Semantic_Knowledge_Migration::get_retention_stats();
 
 		$this->assertIsArray( $stats );
 		$this->assertArrayHasKey( 'conversations', $stats );
@@ -205,7 +205,7 @@ class RetentionTest extends TestCase {
 		$wpdb->shouldReceive( 'prepare' )->andReturn( 'query' );
 		$wpdb->options = 'wp_options';
 
-		$results = WP_AI_Migration::manual_cleanup();
+		$results = Semantic_Knowledge_Migration::manual_cleanup();
 
 		$this->assertIsArray( $results );
 		$this->assertArrayHasKey( 'conversations_deleted', $results );
@@ -225,9 +225,9 @@ class RetentionTest extends TestCase {
 			->once()
 			->andReturn( true );
 
-		\WP_Mock::expectActionAdded( 'wp_ai_daily_cleanup', array( 'WP_AI_Migration', 'run_daily_cleanup' ) );
+		\WP_Mock::expectActionAdded( 'wp_ai_daily_cleanup', array( 'Semantic_Knowledge_Migration', 'run_daily_cleanup' ) );
 
-		WP_AI_Migration::init_retention_policies();
+		Semantic_Knowledge_Migration::init_retention_policies();
 	}
 
 	/**
@@ -245,7 +245,7 @@ class RetentionTest extends TestCase {
 			->once()
 			->andReturn( true );
 
-		WP_AI_Migration::unschedule_cleanup();
+		Semantic_Knowledge_Migration::unschedule_cleanup();
 	}
 
 	/**
@@ -271,7 +271,7 @@ class RetentionTest extends TestCase {
 		$wpdb->options = 'wp_options';
 
 		// Should complete without throwing exception
-		WP_AI_Migration::run_daily_cleanup();
+		Semantic_Knowledge_Migration::run_daily_cleanup();
 
 		$this->assertTrue( true );
 	}
@@ -291,7 +291,7 @@ class RetentionTest extends TestCase {
 			->andReturn( array() );
 
 		// Should use the filtered value (180 days)
-		$deleted = WP_AI_Migration::cleanup_old_conversation_logs();
+		$deleted = Semantic_Knowledge_Migration::cleanup_old_conversation_logs();
 
 		$this->assertEquals( 0, $deleted );
 	}

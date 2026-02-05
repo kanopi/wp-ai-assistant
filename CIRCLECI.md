@@ -1,6 +1,6 @@
-# WP AI Assistant - CircleCI Integration
+# Semantic Knowledge - CircleCI Integration
 
-This document covers WP AI Assistant plugin-specific CircleCI setup. For comprehensive script documentation and integration examples, see [`.circleci/INTEGRATION.md`](../../../../.circleci/INTEGRATION.md).
+This document covers Semantic Knowledge plugin-specific CircleCI setup. For comprehensive script documentation and integration examples, see [`.circleci/INTEGRATION.md`](../../../../.circleci/INTEGRATION.md).
 
 ## Quick Links
 
@@ -10,7 +10,7 @@ This document covers WP AI Assistant plugin-specific CircleCI setup. For compreh
 
 ## Overview
 
-The WP AI Assistant plugin integrates with CircleCI to automatically index WordPress content after deployment to Pantheon environments. The indexer runs externally via Node.js and communicates with WordPress through the REST API.
+The Semantic Knowledge plugin integrates with CircleCI to automatically index WordPress content after deployment to Pantheon environments. The indexer runs externally via Node.js and communicates with WordPress through the REST API.
 
 ### Script Organization
 
@@ -122,7 +122,7 @@ jobs:
       - run:
           name: Run AI Assistant Indexer
           command: |
-            web/wp-content/plugins/wp-ai-assistant/.circleci/run-indexer.sh \
+            web/wp-content/plugins/semantic-knowledge/.circleci/run-indexer.sh \
               --site-id "${TERMINUS_SITE}" \
               --indexer-path "packages/wp-ai-indexer"
           no_output_timeout: 30m
@@ -148,14 +148,14 @@ jobs:
       - checkout
       - run:
           name: Run Indexer
-          command: web/wp-content/plugins/wp-ai-assistant/.circleci/run-indexer.sh
+          command: web/wp-content/plugins/semantic-knowledge/.circleci/run-indexer.sh
           no_output_timeout: 30m
       - run:
           name: Notify Success
           when: on_success
           command: |
             if [[ "${INDEXER_SUCCESS}" != "skipped" ]]; then
-              web/wp-content/plugins/wp-ai-assistant/.circleci/notify-slack.sh \
+              web/wp-content/plugins/semantic-knowledge/.circleci/notify-slack.sh \
                 --type indexer-success \
                 --channel "${SLACK_CHANNEL}" \
                 --url "${ENV_URL}" \
@@ -167,7 +167,7 @@ jobs:
           name: Notify Failure
           when: on_fail
           command: |
-            web/wp-content/plugins/wp-ai-assistant/.circleci/notify-slack.sh \
+            web/wp-content/plugins/semantic-knowledge/.circleci/notify-slack.sh \
               --type indexer-error \
               --channel "${SLACK_CHANNEL}" \
               --url "${ENV_URL}"
@@ -177,7 +177,7 @@ For complete CircleCI job examples, see [INTEGRATION.md - CircleCI Job Examples]
 
 ## Shared Indexer Package
 
-WP AI Assistant uses the shared `@kanopi/wp-ai-indexer` Node.js package:
+Semantic Knowledge uses the shared `@kanopi/wp-ai-indexer` Node.js package:
 
 - **Package Location**: `packages/wp-ai-indexer/`
 - **Settings Endpoint**: `/wp-json/ai-assistant/v1/indexer-settings`
@@ -231,7 +231,7 @@ ddev exec "cd packages/wp-ai-indexer && npx wp-ai-indexer index"
 The indexer automatically detects when indexing is needed based on:
 
 1. **File Changes**: Changes to theme or plugin PHP files
-2. **Plugin Changes**: Updates to WP AI Assistant plugin itself
+2. **Plugin Changes**: Updates to Semantic Knowledge plugin itself
 3. **Main Branch**: Always runs on main branch deployments
 4. **Weekly Schedule**: Full reindex every Monday on main branch
 5. **Force Flag**: `FORCE_FULL_REINDEX=true` environment variable
@@ -239,7 +239,7 @@ The indexer automatically detects when indexing is needed based on:
 To force indexing regardless of changes:
 
 ```bash
-web/wp-content/plugins/wp-ai-assistant/.circleci/run-indexer.sh --force
+web/wp-content/plugins/semantic-knowledge/.circleci/run-indexer.sh --force
 ```
 
 Or set environment variable:
@@ -272,7 +272,7 @@ If you have inline bash in `.circleci/config.yml`, migrate to scripts:
 ```yaml
 - run:
     name: Run Indexer
-    command: web/wp-content/plugins/wp-ai-assistant/.circleci/run-indexer.sh
+    command: web/wp-content/plugins/semantic-knowledge/.circleci/run-indexer.sh
     no_output_timeout: 30m
 ```
 
@@ -289,7 +289,7 @@ Track which script version you're using:
 
 ```yaml
 # In .circleci/config.yml, add comment
-# WP AI Assistant Scripts: v1.0.0
+# Semantic Knowledge Scripts: v1.0.0
 # Last updated: 2024-01-29
 ```
 
@@ -319,10 +319,10 @@ See [INTEGRATION.md - Version History](../../../../.circleci/INTEGRATION.md#vers
 **Solution**:
 ```bash
 # Force run
-web/wp-content/plugins/wp-ai-assistant/.circleci/run-indexer.sh --force
+web/wp-content/plugins/semantic-knowledge/.circleci/run-indexer.sh --force
 
 # Or skip detection
-web/wp-content/plugins/wp-ai-assistant/.circleci/run-indexer.sh --skip-change-detection
+web/wp-content/plugins/semantic-knowledge/.circleci/run-indexer.sh --skip-change-detection
 ```
 
 #### Plugin Not Activated
@@ -332,10 +332,10 @@ web/wp-content/plugins/wp-ai-assistant/.circleci/run-indexer.sh --skip-change-de
 **Solution**:
 ```bash
 # Activate via Terminus
-terminus wp site.env -- plugin activate wp-ai-assistant
+terminus wp site.env -- plugin activate semantic-knowledge
 
 # Or via WP-CLI
-wp plugin activate wp-ai-assistant
+wp plugin activate semantic-knowledge
 ```
 
 #### Missing Environment Variables
@@ -416,8 +416,8 @@ If configured, you'll receive:
 
 For issues or questions:
 
-1. Check script help: `web/wp-content/plugins/wp-ai-assistant/.circleci/run-indexer.sh --help`
-2. Use dry-run mode: `web/wp-content/plugins/wp-ai-assistant/.circleci/run-indexer.sh --dry-run`
+1. Check script help: `web/wp-content/plugins/semantic-knowledge/.circleci/run-indexer.sh --help`
+2. Use dry-run mode: `web/wp-content/plugins/semantic-knowledge/.circleci/run-indexer.sh --dry-run`
 3. Review [INTEGRATION.md troubleshooting](../../../../.circleci/INTEGRATION.md#troubleshooting)
 4. Check CircleCI job logs for specific errors
 5. Verify environment variables are accessible

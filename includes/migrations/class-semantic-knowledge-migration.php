@@ -1,11 +1,11 @@
 <?php
 /**
- * Migration class for WP AI Assistant
+ * Migration class for Semantic Knowledge
  *
  * Handles automatic migration from old wp-ai-chatbot and wp-ai-search plugins
  * to the unified wp-ai-assistant plugin.
  *
- * @package WP_AI_Assistant
+ * @package Semantic_Knowledge
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Migrates settings from old plugins to the new unified plugin.
  */
-class WP_AI_Migration {
+class Semantic_Knowledge_Migration {
 
 	/**
 	 * Check if migration is needed and run it
@@ -26,7 +26,7 @@ class WP_AI_Migration {
 	 */
 	public function maybe_migrate_from_old_plugins() {
 		// Check if already migrated
-		if ( get_option( 'wp_ai_assistant_migrated' ) ) {
+		if ( get_option( 'semantic_knowledge_migrated' ) ) {
 			return;
 		}
 
@@ -35,7 +35,7 @@ class WP_AI_Migration {
 
 		// If neither old plugin exists, mark as clean install
 		if ( ! $has_old_chatbot && ! $has_old_search ) {
-			update_option( 'wp_ai_assistant_migrated', 'clean_install' );
+			update_option( 'semantic_knowledge_migrated', 'clean_install' );
 			return;
 		}
 
@@ -59,8 +59,8 @@ class WP_AI_Migration {
 		}
 
 		// Add meta fields
-		$new_settings['version']        = WP_AI_ASSISTANT_VERSION;
-		$new_settings['schema_version'] = WP_AI_ASSISTANT_SCHEMA_VERSION;
+		$new_settings['version']        = SEMANTIC_KNOWLEDGE_VERSION;
+		$new_settings['schema_version'] = SEMANTIC_KNOWLEDGE_SCHEMA_VERSION;
 
 		// Save merged settings
 		update_option( WP_AI_Assistant::OPTION_KEY, $new_settings );
@@ -69,7 +69,7 @@ class WP_AI_Migration {
 		$this->deactivate_old_plugins( $has_old_chatbot, $has_old_search );
 
 		// Mark migration complete
-		update_option( 'wp_ai_assistant_migrated', current_time( 'mysql' ) );
+		update_option( 'semantic_knowledge_migrated', current_time( 'mysql' ) );
 
 		// Show admin notice
 		add_action( 'admin_notices', array( $this, 'migration_success_notice' ) );
@@ -99,7 +99,7 @@ class WP_AI_Migration {
 	 * @return array Migrated settings
 	 */
 	private function migrate_chatbot_settings() {
-		$chatbot_settings = get_option( 'wp_ai_chatbot_settings', array() );
+		$chatbot_settings = get_option( 'semantic_knowledge_chatbot_settings', array() );
 
 		if ( empty( $chatbot_settings ) ) {
 			return array( 'chatbot_enabled' => false );
@@ -142,7 +142,7 @@ class WP_AI_Migration {
 	 * @return array Migrated settings
 	 */
 	private function migrate_search_settings() {
-		$search_settings = get_option( 'wp_ai_search_settings', array() );
+		$search_settings = get_option( 'semantic_knowledge_search_settings', array() );
 
 		if ( empty( $search_settings ) ) {
 			return array( 'search_enabled' => false );
@@ -208,10 +208,10 @@ class WP_AI_Migration {
 	public function migration_success_notice() {
 		$migrated_plugins = array();
 
-		if ( get_option( 'wp_ai_chatbot_settings' ) ) {
+		if ( get_option( 'semantic_knowledge_chatbot_settings' ) ) {
 			$migrated_plugins[] = 'WP AI Chatbot';
 		}
-		if ( get_option( 'wp_ai_search_settings' ) ) {
+		if ( get_option( 'semantic_knowledge_search_settings' ) ) {
 			$migrated_plugins[] = 'WP AI Search';
 		}
 
@@ -223,7 +223,7 @@ class WP_AI_Migration {
 		?>
 		<div class="notice notice-success is-dismissible">
 			<p>
-				<strong>WP AI Assistant:</strong>
+				<strong>Semantic Knowledge:</strong>
 				Successfully migrated settings from <?php echo esc_html( $plugins_list ); ?>.
 				Old plugins have been deactivated.
 				<a href="<?php echo esc_url( admin_url( 'options-general.php?page=wp-ai-assistant' ) ); ?>">
@@ -240,7 +240,7 @@ class WP_AI_Migration {
 	 * @return bool
 	 */
 	public function was_migrated() {
-		$migrated = get_option( 'wp_ai_assistant_migrated', false );
+		$migrated = get_option( 'semantic_knowledge_migrated', false );
 		return $migrated && $migrated !== 'clean_install';
 	}
 
@@ -250,7 +250,7 @@ class WP_AI_Migration {
 	 * @return string|false
 	 */
 	public function get_migration_time() {
-		$migrated = get_option( 'wp_ai_assistant_migrated', false );
+		$migrated = get_option( 'semantic_knowledge_migrated', false );
 		if ( $migrated && $migrated !== 'clean_install' ) {
 			return $migrated;
 		}
@@ -267,16 +267,16 @@ class WP_AI_Migration {
 	public function archive_old_settings() {
 		$current_time = current_time( 'mysql' );
 
-		$chatbot_settings = get_option( 'wp_ai_chatbot_settings' );
+		$chatbot_settings = get_option( 'semantic_knowledge_chatbot_settings' );
 		if ( $chatbot_settings ) {
-			update_option( 'wp_ai_chatbot_settings_backup', $chatbot_settings );
-			update_option( 'wp_ai_chatbot_settings_backup_time', $current_time );
+			update_option( 'semantic_knowledge_chatbot_settings_backup', $chatbot_settings );
+			update_option( 'semantic_knowledge_chatbot_settings_backup_time', $current_time );
 		}
 
-		$search_settings = get_option( 'wp_ai_search_settings' );
+		$search_settings = get_option( 'semantic_knowledge_search_settings' );
 		if ( $search_settings ) {
-			update_option( 'wp_ai_search_settings_backup', $search_settings );
-			update_option( 'wp_ai_search_settings_backup_time', $current_time );
+			update_option( 'semantic_knowledge_search_settings_backup', $search_settings );
+			update_option( 'semantic_knowledge_search_settings_backup_time', $current_time );
 		}
 	}
 
@@ -289,19 +289,19 @@ class WP_AI_Migration {
 		$success = true;
 
 		// Restore chatbot settings
-		$chatbot_backup = get_option( 'wp_ai_chatbot_settings_backup' );
+		$chatbot_backup = get_option( 'semantic_knowledge_chatbot_settings_backup' );
 		if ( $chatbot_backup ) {
-			update_option( 'wp_ai_chatbot_settings', $chatbot_backup );
+			update_option( 'semantic_knowledge_chatbot_settings', $chatbot_backup );
 		}
 
 		// Restore search settings
-		$search_backup = get_option( 'wp_ai_search_settings_backup' );
+		$search_backup = get_option( 'semantic_knowledge_search_settings_backup' );
 		if ( $search_backup ) {
-			update_option( 'wp_ai_search_settings', $search_backup );
+			update_option( 'semantic_knowledge_search_settings', $search_backup );
 		}
 
 		// Remove migration flag
-		delete_option( 'wp_ai_assistant_migrated' );
+		delete_option( 'semantic_knowledge_migrated' );
 
 		// Remove new settings
 		delete_option( WP_AI_Assistant::OPTION_KEY );
@@ -318,12 +318,12 @@ class WP_AI_Migration {
 	 */
 	public static function init_retention_policies() {
 		// Schedule daily cleanup if not already scheduled
-		if ( ! wp_next_scheduled( 'wp_ai_daily_cleanup' ) ) {
-			wp_schedule_event( time(), 'daily', 'wp_ai_daily_cleanup' );
+		if ( ! wp_next_scheduled( 'semantic_knowledge_daily_cleanup' ) ) {
+			wp_schedule_event( time(), 'daily', 'semantic_knowledge_daily_cleanup' );
 		}
 
 		// Register cleanup hooks
-		add_action( 'wp_ai_daily_cleanup', array( __CLASS__, 'run_daily_cleanup' ) );
+		add_action( 'semantic_knowledge_daily_cleanup', array( __CLASS__, 'run_daily_cleanup' ) );
 	}
 
 	/**
@@ -364,7 +364,7 @@ class WP_AI_Migration {
 
 		// Get retention period from settings or use default
 		if ( null === $days ) {
-			$days = apply_filters( 'wp_ai_conversation_retention_days', 90 );
+			$days = apply_filters( 'semantic_knowledge_conversation_retention_days', 90 );
 		}
 
 		$logger = WP_AI_Logger::instance();
@@ -374,7 +374,7 @@ class WP_AI_Migration {
 
 		// Delete old conversation posts
 		$deleted = 0;
-		$post_type = 'wp_ai_conversation';
+		$post_type = 'semantic_knowledge_conversation';
 
 		// Get old conversation posts
 		$old_posts = get_posts(
@@ -424,29 +424,29 @@ class WP_AI_Migration {
 	public static function cleanup_old_settings_backups( $days = null ) {
 		// Get retention period from settings or use default
 		if ( null === $days ) {
-			$days = apply_filters( 'wp_ai_backup_retention_days', 30 );
+			$days = apply_filters( 'semantic_knowledge_backup_retention_days', 30 );
 		}
 
 		$logger = WP_AI_Logger::instance();
 
 		// Check if backups exist
-		$chatbot_backup_time = get_option( 'wp_ai_chatbot_settings_backup_time' );
-		$search_backup_time = get_option( 'wp_ai_search_settings_backup_time' );
+		$chatbot_backup_time = get_option( 'semantic_knowledge_chatbot_settings_backup_time' );
+		$search_backup_time = get_option( 'semantic_knowledge_search_settings_backup_time' );
 
 		$cutoff_timestamp = strtotime( "-{$days} days" );
 		$deleted = 0;
 
 		// Clean up chatbot backup if old
 		if ( $chatbot_backup_time && strtotime( $chatbot_backup_time ) < $cutoff_timestamp ) {
-			delete_option( 'wp_ai_chatbot_settings_backup' );
-			delete_option( 'wp_ai_chatbot_settings_backup_time' );
+			delete_option( 'semantic_knowledge_chatbot_settings_backup' );
+			delete_option( 'semantic_knowledge_chatbot_settings_backup_time' );
 			$deleted++;
 		}
 
 		// Clean up search backup if old
 		if ( $search_backup_time && strtotime( $search_backup_time ) < $cutoff_timestamp ) {
-			delete_option( 'wp_ai_search_settings_backup' );
-			delete_option( 'wp_ai_search_settings_backup_time' );
+			delete_option( 'semantic_knowledge_search_settings_backup' );
+			delete_option( 'semantic_knowledge_search_settings_backup_time' );
 			$deleted++;
 		}
 
@@ -466,7 +466,7 @@ class WP_AI_Migration {
 	/**
 	 * Clean up expired transients
 	 *
-	 * Removes expired transients related to WP AI Assistant.
+	 * Removes expired transients related to Semantic Knowledge.
 	 *
 	 * @return int Number of deleted transients
 	 */
@@ -515,13 +515,13 @@ class WP_AI_Migration {
 		global $wpdb;
 
 		// Count conversation logs
-		$conversation_count = wp_count_posts( 'wp_ai_conversation' );
+		$conversation_count = wp_count_posts( 'semantic_knowledge_conversation' );
 		$total_conversations = $conversation_count ? $conversation_count->publish : 0;
 
 		// Get oldest conversation
 		$oldest_conversation = get_posts(
 			array(
-				'post_type'      => 'wp_ai_conversation',
+				'post_type'      => 'semantic_knowledge_conversation',
 				'posts_per_page' => 1,
 				'orderby'        => 'date',
 				'order'          => 'ASC',
@@ -537,8 +537,8 @@ class WP_AI_Migration {
 
 		// Count settings backups
 		$backups_exist = array(
-			'chatbot' => (bool) get_option( 'wp_ai_chatbot_settings_backup' ),
-			'search'  => (bool) get_option( 'wp_ai_search_settings_backup' ),
+			'chatbot' => (bool) get_option( 'semantic_knowledge_chatbot_settings_backup' ),
+			'search'  => (bool) get_option( 'semantic_knowledge_search_settings_backup' ),
 		);
 
 		// Count transients
@@ -558,8 +558,8 @@ class WP_AI_Migration {
 			'backups'       => $backups_exist,
 			'transients'    => (int) $transient_count,
 			'policies'      => array(
-				'conversation_retention_days' => apply_filters( 'wp_ai_conversation_retention_days', 90 ),
-				'backup_retention_days'       => apply_filters( 'wp_ai_backup_retention_days', 30 ),
+				'conversation_retention_days' => apply_filters( 'semantic_knowledge_conversation_retention_days', 90 ),
+				'backup_retention_days'       => apply_filters( 'semantic_knowledge_backup_retention_days', 30 ),
 			),
 		);
 	}
@@ -588,9 +588,9 @@ class WP_AI_Migration {
 	 * @return void
 	 */
 	public static function unschedule_cleanup() {
-		$timestamp = wp_next_scheduled( 'wp_ai_daily_cleanup' );
+		$timestamp = wp_next_scheduled( 'semantic_knowledge_daily_cleanup' );
 		if ( $timestamp ) {
-			wp_unschedule_event( $timestamp, 'wp_ai_daily_cleanup' );
+			wp_unschedule_event( $timestamp, 'semantic_knowledge_daily_cleanup' );
 		}
 	}
 }

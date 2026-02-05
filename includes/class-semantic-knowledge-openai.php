@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenAI API integration for WP AI Assistant
+ * OpenAI API integration for Semantic Knowledge
  * Handles embeddings and chat completions
  */
 
@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class WP_AI_OpenAI {
+class Semantic_Knowledge_OpenAI {
 	private $core;
 	private $secrets;
 	private $api_key;
@@ -28,7 +28,7 @@ class WP_AI_OpenAI {
 	public function create_embedding( $text ) {
 		if ( empty( $this->api_key ) ) {
 			return new WP_Error(
-				'wp_ai_assistant_missing_key',
+				'semantic_knowledge_missing_key',
 				'OpenAI API key is not configured.',
 				array( 'status' => 500 )
 			);
@@ -68,7 +68,7 @@ class WP_AI_OpenAI {
 		if ( 200 !== $code ) {
 			$error_message = $this->extract_error_message( $request );
 			return new WP_Error(
-				'wp_ai_assistant_openai_error',
+				'semantic_knowledge_openai_error',
 				'Unable to create embedding: ' . $error_message,
 				array( 'status' => $code )
 			);
@@ -78,7 +78,7 @@ class WP_AI_OpenAI {
 
 		if ( empty( $body['data'][0]['embedding'] ) ) {
 			return new WP_Error(
-				'wp_ai_assistant_openai_error',
+				'semantic_knowledge_openai_error',
 				'Embedding missing from response.',
 				array( 'status' => 500 )
 			);
@@ -98,7 +98,7 @@ class WP_AI_OpenAI {
 	public function chat_completion( $question, $context, $options = array() ) {
 		if ( empty( $this->api_key ) ) {
 			return new WP_Error(
-				'wp_ai_assistant_missing_key',
+				'semantic_knowledge_missing_key',
 				'OpenAI API key is not configured.',
 				array( 'status' => 500 )
 			);
@@ -154,7 +154,7 @@ class WP_AI_OpenAI {
 		if ( 200 !== $code ) {
 			$error_message = $this->extract_error_message( $request );
 			return new WP_Error(
-				'wp_ai_assistant_openai_error',
+				'semantic_knowledge_openai_error',
 				'Chat completion failed: ' . $error_message,
 				array( 'status' => $code )
 			);
@@ -164,7 +164,7 @@ class WP_AI_OpenAI {
 
 		if ( empty( $body['choices'][0]['message']['content'] ) ) {
 			return new WP_Error(
-				'wp_ai_assistant_openai_error',
+				'semantic_knowledge_openai_error',
 				'No answer returned.',
 				array( 'status' => 500 )
 			);

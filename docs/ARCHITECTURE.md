@@ -1,6 +1,6 @@
-# WP AI Assistant Architecture
+# Semantic Knowledge Architecture
 
-Complete system architecture and design documentation for the WP AI Assistant plugin.
+Complete system architecture and design documentation for the Semantic Knowledge plugin.
 
 ## Table of Contents
 
@@ -17,7 +17,7 @@ Complete system architecture and design documentation for the WP AI Assistant pl
 
 ## Overview
 
-WP AI Assistant is a WordPress plugin that provides AI-powered chatbot and semantic search capabilities using Retrieval-Augmented Generation (RAG) architecture. The system combines OpenAI's language models with Pinecone vector database to deliver context-aware responses grounded in your WordPress content.
+Semantic Knowledge is a WordPress plugin that provides AI-powered chatbot and semantic search capabilities using Retrieval-Augmented Generation (RAG) architecture. The system combines OpenAI's language models with Pinecone vector database to deliver context-aware responses grounded in your WordPress content.
 
 ### Key Features
 
@@ -59,9 +59,9 @@ WP AI Assistant is a WordPress plugin that provides AI-powered chatbot and seman
                           │
                           ↓
 ┌─────────────────────────────────────────────────────────────┐
-│                   WP AI Assistant Core                       │
+│                   Semantic Knowledge Core                       │
 │  ┌─────────────┐  ┌──────────────┐  ┌──────────────┐       │
-│  │  WP_AI_Core │  │ WP_AI_Secrets│  │ WP_AI_Cache  │       │
+│  │  Semantic_Knowledge_Core │  │ Semantic_Knowledge_Secrets│  │ Semantic_Knowledge_Cache  │       │
 │  │  (Settings) │  │  (API Keys)  │  │  (Redis/DB)  │       │
 │  └─────────────┘  └──────────────┘  └──────────────┘       │
 │                                                              │
@@ -75,7 +75,7 @@ WP AI Assistant is a WordPress plugin that provides AI-powered chatbot and seman
 │  ┌─────────────────────────────────────────────────────┐    │
 │  │            Integration Layer                         │    │
 │  │  ┌───────────────┐         ┌───────────────┐       │    │
-│  │  │  WP_AI_OpenAI │         │ WP_AI_Pinecone│       │    │
+│  │  │  Semantic_Knowledge_OpenAI │         │ Semantic_Knowledge_Pinecone│       │    │
 │  │  │  (Embeddings  │         │  (Vector      │       │    │
 │  │  │   & Chat)     │         │   Queries)    │       │    │
 │  │  └───────┬───────┘         └───────┬───────┘       │    │
@@ -127,50 +127,50 @@ WP AI Assistant is a WordPress plugin that provides AI-powered chatbot and seman
 
 #### Core Components
 
-**WP_AI_Core** (`includes/class-wp-ai-core.php`)
+**Semantic_Knowledge_Core** (`includes/class-wp-ai-core.php`)
 - Settings management with validation
 - Configuration caching (1-hour TTL)
 - Domain detection for multi-site filtering
 - Default settings schema
 
-**WP_AI_Secrets** (`includes/class-wp-ai-secrets.php`)
+**Semantic_Knowledge_Secrets** (`includes/class-wp-ai-secrets.php`)
 - Secure API key retrieval
 - Multi-source resolution: Environment vars → PHP constants → Pantheon Secrets
 - Never stores secrets in database
 
-**WP_AI_Cache** (`includes/class-wp-ai-cache.php`)
+**Semantic_Knowledge_Cache** (`includes/class-wp-ai-cache.php`)
 - Unified caching API
 - Automatic Redis/Memcached detection
 - Embedding cache (1-hour TTL)
 - Query results cache (15-minute TTL)
 - Cache versioning for invalidation
 
-**WP_AI_Database** (`includes/class-wp-ai-database.php`)
+**Semantic_Knowledge_Database** (`includes/class-wp-ai-database.php`)
 - Custom tables for chat/search logs
 - Optimized indexes for performance
 - Retention policy enforcement
 - Migration system
 
-**WP_AI_Logger** (`includes/class-wp-ai-logger.php`)
+**Semantic_Knowledge_Logger** (`includes/class-wp-ai-logger.php`)
 - Structured logging
 - Log rotation
 - Retention policies (default: 90 days)
 - WP_DEBUG integration
 
-**WP_AI_Assets** (`includes/class-wp-ai-assets.php`)
+**Semantic_Knowledge_Assets** (`includes/class-wp-ai-assets.php`)
 - Asset optimization (minification)
 - Lazy loading support
 - CSP nonce injection
 
 #### API Integration
 
-**WP_AI_OpenAI** (`includes/class-wp-ai-openai.php`)
+**Semantic_Knowledge_OpenAI** (`includes/class-wp-ai-openai.php`)
 - Embedding creation (text-embedding-3-small/large)
 - Chat completions (gpt-4o-mini)
 - Error handling and retry logic
 - Request/response logging
 
-**WP_AI_Pinecone** (`includes/class-wp-ai-pinecone.php`)
+**Semantic_Knowledge_Pinecone** (`includes/class-wp-ai-pinecone.php`)
 - Vector similarity queries
 - Domain-based filtering (multi-site safe)
 - Metadata enrichment
@@ -178,16 +178,16 @@ WP AI Assistant is a WordPress plugin that provides AI-powered chatbot and seman
 
 #### Feature Modules
 
-**WP_AI_Chatbot_Module** (`includes/modules/class-wp-ai-chatbot-module.php`)
-- REST API endpoint: `/ai-assistant/v1/chat`
+**Semantic_Knowledge_Chatbot_Module** (`includes/modules/class-wp-ai-chatbot-module.php`)
+- REST API endpoint: `/semantic-knowledge/v1/chat`
 - Deep Chat integration
 - Conversation logging
 - Rate limiting (10 req/min per IP)
 - CSRF protection (nonce validation)
 - Source citation
 
-**WP_AI_Search_Module** (`includes/modules/class-wp-ai-search-module.php`)
-- REST API endpoint: `/ai-assistant/v1/search`
+**Semantic_Knowledge_Search_Module** (`includes/modules/class-wp-ai-search-module.php`)
+- REST API endpoint: `/semantic-knowledge/v1/search`
 - Semantic search
 - Relevance boosting (URL, title, post type)
 - AI-generated summaries
@@ -196,29 +196,29 @@ WP AI Assistant is a WordPress plugin that provides AI-powered chatbot and seman
 
 #### Supporting Classes
 
-**WP_AI_Settings** (`includes/class-wp-ai-settings.php`)
+**Semantic_Knowledge_Settings** (`includes/class-wp-ai-settings.php`)
 - Admin settings page
 - Settings validation
 - Default value management
 
-**WP_AI_Indexer_Controller** (`includes/class-wp-ai-indexer-controller.php`)
-- REST API for indexer: `/ai-assistant/v1/indexer/settings`
-- Authenticated with WP_AI_INDEXER_KEY
+**Semantic_Knowledge_Indexer_Controller** (`includes/class-wp-ai-indexer-controller.php`)
+- REST API for indexer: `/semantic-knowledge/v1/indexer/settings`
+- Authenticated with Semantic_Knowledge_INDEXER_KEY
 - Settings export for Node.js indexer
 - Response caching (5-minute TTL)
 
-**WP_AI_System_Check** (`includes/class-wp-ai-system-check.php`)
+**Semantic_Knowledge_System_Check** (`includes/class-wp-ai-system-check.php`)
 - Environment validation
 - Node.js detection
 - Indexer package verification
 - Admin notices
 
-**WP_AI_Migration** (`includes/migrations/class-wp-ai-migration.php`)
+**Semantic_Knowledge_Migration** (`includes/migrations/class-wp-ai-migration.php`)
 - Database schema updates
 - Data retention policies
 - Cleanup cron jobs
 
-**WP_AI_CLI** (`includes/class-wp-ai-cli.php`)
+**Semantic_Knowledge_CLI** (`includes/class-wp-ai-cli.php`)
 - WP-CLI commands wrapper
 - Executes Node.js indexer
 - Streams output to console
@@ -256,21 +256,21 @@ WP AI Assistant is a WordPress plugin that provides AI-powered chatbot and seman
 ```
 1. User submits question
    ↓
-2. JavaScript sends POST to /ai-assistant/v1/chat
+2. JavaScript sends POST to /semantic-knowledge/v1/chat
    ↓
-3. WP_AI_Chatbot_Module::handle_chat_query()
+3. Semantic_Knowledge_Chatbot_Module::handle_chat_query()
    - Validates nonce (CSRF protection)
    - Checks rate limits
    - Sanitizes input
    ↓
 4. Create embedding (with cache check)
-   - Check WP_AI_Cache::get_embedding($question)
-   - If miss: WP_AI_OpenAI::create_embedding($question)
+   - Check Semantic_Knowledge_Cache::get_embedding($question)
+   - If miss: Semantic_Knowledge_OpenAI::create_embedding($question)
    - Cache result (1 hour)
    ↓
 5. Query Pinecone (with cache check)
-   - Check WP_AI_Cache::get_query_results($embedding, $top_k)
-   - If miss: WP_AI_Pinecone::query_with_domain_filter($embedding, $top_k)
+   - Check Semantic_Knowledge_Cache::get_query_results($embedding, $top_k)
+   - If miss: Semantic_Knowledge_Pinecone::query_with_domain_filter($embedding, $top_k)
    - Cache result (15 minutes)
    ↓
 6. Build context from top matches
@@ -278,12 +278,12 @@ WP AI Assistant is a WordPress plugin that provides AI-powered chatbot and seman
    - Format as context string
    ↓
 7. Generate answer
-   - WP_AI_OpenAI::chat_completion($question, $context)
+   - Semantic_Knowledge_OpenAI::chat_completion($question, $context)
    - Apply system prompt
    - Temperature: 0.2 (focused responses)
    ↓
 8. Log interaction
-   - WP_AI_Database::log_chat($question, $answer, $sources)
+   - Semantic_Knowledge_Database::log_chat($question, $answer, $sources)
    ↓
 9. Return JSON response
    {
@@ -297,9 +297,9 @@ WP AI Assistant is a WordPress plugin that provides AI-powered chatbot and seman
 ```
 1. User submits search query
    ↓
-2. JavaScript sends POST to /ai-assistant/v1/search
+2. JavaScript sends POST to /semantic-knowledge/v1/search
    ↓
-3. WP_AI_Search_Module::handle_search_query()
+3. Semantic_Knowledge_Search_Module::handle_search_query()
    - Validates nonce
    - Checks rate limits
    - Sanitizes input
@@ -323,11 +323,11 @@ WP AI Assistant is a WordPress plugin that provides AI-powered chatbot and seman
    ↓
 9. Generate AI summary (if enabled)
    - Build context from top 5 results
-   - WP_AI_OpenAI::chat_completion() with search prompt
+   - Semantic_Knowledge_OpenAI::chat_completion() with search prompt
    - Temperature: 0.3
    ↓
 10. Log search
-    - WP_AI_Database::log_search($query, $results)
+    - Semantic_Knowledge_Database::log_search($query, $results)
     ↓
 11. Return JSON response
     {
@@ -341,9 +341,9 @@ WP AI Assistant is a WordPress plugin that provides AI-powered chatbot and seman
 ### Indexing Flow
 
 ```
-1. Trigger: wp ai-indexer index (WP-CLI)
+1. Trigger: wp sk-indexer index (WP-CLI)
    ↓
-2. WP_AI_CLI::run_command('index')
+2. Semantic_Knowledge_CLI::run_command('index')
    - Detects indexer location (monorepo → local → global)
    - Passes environment variables
    - Executes: npx wp-ai-indexer index
@@ -351,8 +351,8 @@ WP AI Assistant is a WordPress plugin that provides AI-powered chatbot and seman
 3. Node.js Indexer starts
    ↓
 4. Fetch settings from WordPress
-   - GET /ai-assistant/v1/indexer/settings
-   - Authenticate with WP_AI_INDEXER_KEY
+   - GET /semantic-knowledge/v1/indexer/settings
+   - Authenticate with Semantic_Knowledge_INDEXER_KEY
    - Retrieve: post types, chunk size, API keys, etc.
    ↓
 5. Fetch WordPress posts
@@ -467,13 +467,13 @@ WP AI Assistant is a WordPress plugin that provides AI-powered chatbot and seman
 
 #### REST API Endpoints
 
-**Chatbot & Search** (`/ai-assistant/v1/chat`, `/ai-assistant/v1/search`):
+**Chatbot & Search** (`/semantic-knowledge/v1/chat`, `/semantic-knowledge/v1/search`):
 - **Method**: Nonce validation (`wp_rest` nonce)
 - **Transport**: X-WP-Nonce header or nonce parameter
 - **Permission**: Public access (with rate limiting)
 - **CSRF Protection**: WordPress nonces
 
-**Indexer Settings** (`/ai-assistant/v1/indexer/settings`):
+**Indexer Settings** (`/semantic-knowledge/v1/indexer/settings`):
 - **Method**: Shared secret key
 - **Transport**: X-Indexer-Key header or indexer_key parameter
 - **Permission**: Restricted (indexer only)
@@ -486,12 +486,12 @@ WP AI Assistant is a WordPress plugin that provides AI-powered chatbot and seman
 2. PHP constants in wp-config.php
 3. Pantheon Secrets (hosting integration)
 
-**Retrieval**: `WP_AI_Secrets::get_secret_or_setting()`
+**Retrieval**: `Semantic_Knowledge_Secrets::get_secret_or_setting()`
 
 **Keys Required**:
 - `OPENAI_API_KEY` - OpenAI API access
 - `PINECONE_API_KEY` - Pinecone API access
-- `WP_AI_INDEXER_KEY` - Indexer authentication (32+ chars)
+- `Semantic_Knowledge_INDEXER_KEY` - Indexer authentication (32+ chars)
 
 ### Input Validation & Sanitization
 
@@ -506,7 +506,7 @@ WP AI Assistant is a WordPress plugin that provides AI-powered chatbot and seman
 - Custom validation callbacks
 
 **Settings**:
-- Comprehensive validation in `WP_AI_Core::validate_settings()`
+- Comprehensive validation in `Semantic_Knowledge_Core::validate_settings()`
 - Range checks (temperatures, scores, etc.)
 - URL validation
 - Path existence checks
@@ -518,14 +518,14 @@ WP AI Assistant is a WordPress plugin that provides AI-powered chatbot and seman
 **Default Limits**:
 - 10 requests per 60 seconds per IP
 - Configurable via filters:
-  - `wp_ai_chatbot_rate_limit`
-  - `wp_ai_chatbot_rate_window`
-  - `wp_ai_search_rate_limit`
-  - `wp_ai_search_rate_window`
+  - `semantic_knowledge_chatbot_rate_limit`
+  - `semantic_knowledge_chatbot_rate_window`
+  - `semantic_knowledge_search_rate_limit`
+  - `semantic_knowledge_search_rate_window`
 
 **IP Detection**:
 - Secure proxy header handling
-- Trusted proxy validation (`WP_AI_TRUSTED_PROXIES`)
+- Trusted proxy validation (`Semantic_Knowledge_TRUSTED_PROXIES`)
 - Prevents header spoofing
 - Fallback to REMOTE_ADDR
 
@@ -535,7 +535,7 @@ WP AI Assistant is a WordPress plugin that provides AI-powered chatbot and seman
 
 **Status**: Optional (disabled by default for compatibility)
 
-**Enable**: Define `WP_AI_ENABLE_CSP` constant or use `wp_ai_assistant_enable_csp` filter
+**Enable**: Define `Semantic_Knowledge_ENABLE_CSP` constant or use `semantic_knowledge_enable_csp` filter
 
 **Directives**:
 ```
@@ -548,7 +548,7 @@ font-src 'self' data: https://fonts.gstatic.com;
 frame-ancestors 'self';
 ```
 
-**Customization**: `wp_ai_assistant_csp_directives` filter
+**Customization**: `semantic_knowledge_csp_directives` filter
 
 **Nonces**: Generated per-request for inline scripts
 
@@ -615,14 +615,14 @@ frame-ancestors 'self';
 
 ### Cache Keys
 
-**Structure**: `wp_ai_cache_{hash}`
+**Structure**: `semantic_knowledge_cache_{hash}`
 
 **Hashing**: MD5 for consistent key generation
 
 **Examples**:
-- Settings: `wp_ai_assistant_settings_cache`
-- Embedding: `wp_ai_cache_embedding_{md5($text)}`
-- Query: `wp_ai_cache_query_{md5($embedding)}_k{$top_k}`
+- Settings: `semantic_knowledge_settings_cache`
+- Embedding: `semantic_knowledge_cache_embedding_{md5($text)}`
+- Query: `semantic_knowledge_cache_query_{md5($embedding)}_k{$top_k}`
 
 ### Cache Invalidation
 
@@ -631,8 +631,8 @@ frame-ancestors 'self';
 - Plugin update → Clear system check cache
 
 **Manual Invalidation**:
-- `WP_AI_Cache::flush_all()` - Clear all plugin caches
-- `WP_AI_Cache::delete($key)` - Clear specific key
+- `Semantic_Knowledge_Cache::flush_all()` - Clear all plugin caches
+- `Semantic_Knowledge_Cache::delete($key)` - Clear specific key
 
 **Version-Based Invalidation**:
 - Cache version incremented on settings change
@@ -693,7 +693,7 @@ wp redis enable
 
 **Headers**:
 ```php
-add_filter('wp_ai_assistant_enable_compression', '__return_true');
+add_filter('semantic_knowledge_enable_compression', '__return_true');
 ```
 
 #### 3. Asset Optimization
@@ -771,7 +771,7 @@ define('WP_DEBUG_LOG', true);
 #### `{prefix}_ai_chat_logs`
 
 ```sql
-CREATE TABLE wp_ai_chat_logs (
+CREATE TABLE wp_sk_chat_logs (
   id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   question text NOT NULL,
   answer longtext NOT NULL,
@@ -791,7 +791,7 @@ CREATE TABLE wp_ai_chat_logs (
 #### `{prefix}_ai_search_logs`
 
 ```sql
-CREATE TABLE wp_ai_search_logs (
+CREATE TABLE wp_sk_search_logs (
   id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   query text NOT NULL,
   results longtext DEFAULT NULL,
@@ -810,13 +810,13 @@ CREATE TABLE wp_ai_search_logs (
 
 ### WordPress Options
 
-**`wp_ai_assistant_settings`** - Main plugin settings (cached)
+**`semantic_knowledge_settings`** - Main plugin settings (cached)
 
-**`wp_ai_cache_version`** - Cache invalidation version
+**`semantic_knowledge_cache_version`** - Cache invalidation version
 
-**`wp_ai_assistant_system_check`** - Transient for system check results
+**`semantic_knowledge_system_check`** - Transient for system check results
 
-**`wp_ai_assistant_schema_version`** - Database schema version
+**`semantic_knowledge_schema_version`** - Database schema version
 
 ### Transients (Caching)
 
@@ -833,20 +833,20 @@ CREATE TABLE wp_ai_search_logs (
 **30+ filters and actions** - See [HOOKS.md](HOOKS.md) for complete reference
 
 **Key Filters**:
-- `wp_ai_chatbot_answer` - Modify chatbot responses
-- `wp_ai_search_results` - Modify search results
-- `wp_ai_search_relevance_config` - Customize relevance boosting
+- `semantic_knowledge_chatbot_answer` - Modify chatbot responses
+- `semantic_knowledge_search_results` - Modify search results
+- `semantic_knowledge_search_relevance_config` - Customize relevance boosting
 
 **Key Actions**:
-- `wp_ai_chatbot_query_start` - Track chatbot usage
-- `wp_ai_search_query_end` - Analytics integration
+- `semantic_knowledge_chatbot_query_start` - Track chatbot usage
+- `semantic_knowledge_search_query_end` - Analytics integration
 
 ### REST API
 
 **Endpoints**:
-- `POST /ai-assistant/v1/chat` - Chatbot queries
-- `POST /ai-assistant/v1/search` - Search queries
-- `GET /ai-assistant/v1/indexer/settings` - Indexer configuration
+- `POST /semantic-knowledge/v1/chat` - Chatbot queries
+- `POST /semantic-knowledge/v1/search` - Search queries
+- `GET /semantic-knowledge/v1/indexer/settings` - Indexer configuration
 
 ### Shortcodes
 
@@ -856,23 +856,23 @@ CREATE TABLE wp_ai_search_logs (
 
 ### Template Functions
 
-**`wp_ai_get_search_summary()`** - Retrieve AI summary in search.php
+**`semantic_knowledge_get_search_summary()`** - Retrieve AI summary in search.php
 
-**`wp_ai_is_search()`** - Check if query is AI search
+**`semantic_knowledge_is_search()`** - Check if query is AI search
 
-**`wp_ai_the_search_summary()`** - Display formatted summary
+**`semantic_knowledge_the_search_summary()`** - Display formatted summary
 
 ### WP-CLI
 
-**`wp ai-indexer index`** - Index content
+**`wp sk-indexer index`** - Index content
 
-**`wp ai-indexer clean`** - Clean deleted posts
+**`wp sk-indexer clean`** - Clean deleted posts
 
-**`wp ai-indexer delete-all`** - Delete all vectors
+**`wp sk-indexer delete-all`** - Delete all vectors
 
-**`wp ai-indexer check`** - Verify system requirements
+**`wp sk-indexer check`** - Verify system requirements
 
-**`wp ai-indexer config`** - Show configuration
+**`wp sk-indexer config`** - Show configuration
 
 ### JavaScript Events
 

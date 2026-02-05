@@ -8,8 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class WP_AI_Chatbot_Module {
-	const ROUTE_NAMESPACE = 'ai-assistant/v1';
+class Semantic_Knowledge_Chatbot_Module {
+	const ROUTE_NAMESPACE = 'semantic-knowledge/v1';
 	const ROUTE_CHAT = '/chat';
 	const POST_TYPE = 'ai_chat_log';
 
@@ -94,7 +94,7 @@ class WP_AI_Chatbot_Module {
 
 		if ( empty( $nonce ) || ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
 			return new WP_Error(
-				'wp_ai_assistant_invalid_nonce',
+				'semantic_knowledge_invalid_nonce',
 				'Invalid security token. Please refresh the page and try again.',
 				array( 'status' => 403 )
 			);
@@ -115,7 +115,7 @@ class WP_AI_Chatbot_Module {
 		// Check maximum length (1000 characters)
 		if ( strlen( $value ) > 1000 ) {
 			return new WP_Error(
-				'wp_ai_assistant_question_too_long',
+				'semantic_knowledge_question_too_long',
 				'Question must be 1000 characters or less.',
 				array( 'status' => 400 )
 			);
@@ -124,7 +124,7 @@ class WP_AI_Chatbot_Module {
 		// Check minimum length
 		if ( strlen( trim( $value ) ) === 0 ) {
 			return new WP_Error(
-				'wp_ai_assistant_question_empty',
+				'semantic_knowledge_question_empty',
 				'Question cannot be empty.',
 				array( 'status' => 400 )
 			);
@@ -145,11 +145,11 @@ class WP_AI_Chatbot_Module {
 		$ip_address = $this->get_client_ip();
 
 		// Allow filtering of rate limit settings
-		$rate_limit = apply_filters( 'wp_ai_chatbot_rate_limit', 10 );
-		$rate_window = apply_filters( 'wp_ai_chatbot_rate_window', 60 ); // seconds
+		$rate_limit = apply_filters( 'semantic_knowledge_chatbot_rate_limit', 10 );
+		$rate_window = apply_filters( 'semantic_knowledge_chatbot_rate_window', 60 ); // seconds
 
 		// Create transient key
-		$transient_key = 'wp_ai_chatbot_rl_' . wp_hash( $ip_address );
+		$transient_key = 'semantic_knowledge_chatbot_rl_' . wp_hash( $ip_address );
 
 		// Get current request count
 		$requests = get_transient( $transient_key );
@@ -163,7 +163,7 @@ class WP_AI_Chatbot_Module {
 		// Check if limit exceeded
 		if ( $requests >= $rate_limit ) {
 			return new WP_Error(
-				'wp_ai_assistant_rate_limit_exceeded',
+				'semantic_knowledge_rate_limit_exceeded',
 				sprintf(
 					'Rate limit exceeded. Please wait before making another request. Limit: %d requests per %d seconds.',
 					$rate_limit,
@@ -251,7 +251,7 @@ class WP_AI_Chatbot_Module {
 	 * Configure via:
 	 * 1. WP_AI_TRUSTED_PROXIES constant (comma-separated list)
 	 * 2. WP_AI_TRUSTED_PROXIES environment variable
-	 * 3. wp_ai_chatbot_trusted_proxies filter
+	 * 3. semantic_knowledge_chatbot_trusted_proxies filter
 	 *
 	 * @return array List of trusted proxy IP addresses
 	 */
@@ -272,7 +272,7 @@ class WP_AI_Chatbot_Module {
 		}
 
 		// Allow filtering (for dynamic configuration)
-		$trusted_proxies = apply_filters( 'wp_ai_chatbot_trusted_proxies', $trusted_proxies );
+		$trusted_proxies = apply_filters( 'semantic_knowledge_chatbot_trusted_proxies', $trusted_proxies );
 
 		// Common trusted proxy ranges (can be overridden by filter)
 		// Cloudflare IPs are automatically trusted if HTTP_CF_CONNECTING_IP is present
@@ -318,7 +318,7 @@ class WP_AI_Chatbot_Module {
 	 * Register and enqueue frontend assets with lazy loading
 	 */
 	public function register_assets() {
-		$handle = 'wp-ai-assistant-chatbot';
+		$handle = 'semantic-knowledge-chatbot';
 
 		// Register Deep Chat CDN library (but don't enqueue it yet - lazy load)
 		wp_register_script(
@@ -335,17 +335,17 @@ class WP_AI_Chatbot_Module {
 		// Register chatbot styles
 		wp_register_style(
 			$handle,
-			WP_AI_ASSISTANT_URL . 'assets/css/chatbot.css',
+			SEMANTIC_KNOWLEDGE_URL . 'assets/css/chatbot.css',
 			array(),
-			WP_AI_ASSISTANT_VERSION
+			SEMANTIC_KNOWLEDGE_VERSION
 		);
 
 		// Register chatbot script WITHOUT deep-chat dependency for lazy loading
 		wp_register_script(
 			$handle,
-			WP_AI_ASSISTANT_URL . 'assets/js/chatbot.js',
+			SEMANTIC_KNOWLEDGE_URL . 'assets/js/chatbot.js',
 			array(), // No dependencies - will load Deep Chat dynamically
-			WP_AI_ASSISTANT_VERSION,
+			SEMANTIC_KNOWLEDGE_VERSION,
 			array(
 				'strategy'  => 'defer',
 				'in_footer' => true,
@@ -390,7 +390,7 @@ class WP_AI_Chatbot_Module {
 		}
 
 		// Add CSP nonce to our plugin scripts for security
-		if ( in_array( $handle, array( 'wp-ai-assistant-chatbot', 'deep-chat' ), true ) ) {
+		if ( in_array( $handle, array( 'semantic-knowledge-chatbot', 'deep-chat' ), true ) ) {
 			$nonce = $this->core->get_csp_nonce();
 			if ( ! empty( $nonce ) && strpos( $tag, 'nonce=' ) === false ) {
 				$tag = str_replace( '<script ', '<script nonce="' . esc_attr( $nonce ) . '" ', $tag );
@@ -418,7 +418,7 @@ class WP_AI_Chatbot_Module {
 
 		if ( ! $this->is_configured() ) {
 			return new WP_Error(
-				'wp_ai_assistant_not_configured',
+				'semantic_knowledge_not_configured',
 				'Chatbot API keys are missing.',
 				array( 'status' => 500 )
 			);
@@ -429,7 +429,7 @@ class WP_AI_Chatbot_Module {
 
 		if ( empty( $question ) ) {
 			return new WP_Error(
-				'wp_ai_assistant_empty_question',
+				'semantic_knowledge_empty_question',
 				'Please provide a question.',
 				array( 'status' => 400 )
 			);
@@ -441,7 +441,7 @@ class WP_AI_Chatbot_Module {
 		 * @param string $question User's question
 		 * @param WP_REST_Request $request REST request object
 		 */
-		do_action( 'wp_ai_chatbot_query_start', $question, $request );
+		do_action( 'semantic_knowledge_chatbot_query_start', $question, $request );
 
 		/**
 		 * Filter the chatbot question text before processing.
@@ -450,7 +450,7 @@ class WP_AI_Chatbot_Module {
 		 * @param WP_REST_Request $request REST request object
 		 * @return string Modified question text
 		 */
-		$question = apply_filters( 'wp_ai_chatbot_question', $question, $request );
+		$question = apply_filters( 'semantic_knowledge_chatbot_question', $question, $request );
 
 		if ( $top_k <= 0 ) {
 			$top_k = (int) $this->core->get_setting( 'chatbot_top_k', 5 );
@@ -463,7 +463,7 @@ class WP_AI_Chatbot_Module {
 		 * @param string $question User's question
 		 * @return int Modified top_k value
 		 */
-		$top_k = apply_filters( 'wp_ai_chatbot_top_k', $top_k, $question );
+		$top_k = apply_filters( 'semantic_knowledge_chatbot_top_k', $top_k, $question );
 
 		// Step 1: Create embedding (with caching)
 		$cached_embedding = WP_AI_Cache::get_embedding( $question );
@@ -502,7 +502,7 @@ class WP_AI_Chatbot_Module {
 		 * @param string $question User's question
 		 * @return array Modified matches
 		 */
-		$matches = apply_filters( 'wp_ai_chatbot_matches', $matches, $question );
+		$matches = apply_filters( 'semantic_knowledge_chatbot_matches', $matches, $question );
 
 		// Step 3: Build context from matches
 		$context = $this->build_context( $matches );
@@ -515,7 +515,7 @@ class WP_AI_Chatbot_Module {
 		 * @param string $question User's question
 		 * @return string Modified context
 		 */
-		$context = apply_filters( 'wp_ai_chatbot_context', $context, $matches, $question );
+		$context = apply_filters( 'semantic_knowledge_chatbot_context', $context, $matches, $question );
 
 		$model = $this->core->get_setting( 'chatbot_model', 'gpt-4o-mini' );
 		$temperature = (float) $this->core->get_setting( 'chatbot_temperature', 0.2 );
@@ -528,7 +528,7 @@ class WP_AI_Chatbot_Module {
 		 * @param string $question User's question
 		 * @return string Modified model identifier
 		 */
-		$model = apply_filters( 'wp_ai_chatbot_model', $model, $question );
+		$model = apply_filters( 'semantic_knowledge_chatbot_model', $model, $question );
 
 		/**
 		 * Filter the temperature parameter for chatbot responses.
@@ -537,7 +537,7 @@ class WP_AI_Chatbot_Module {
 		 * @param string $question User's question
 		 * @return float Modified temperature
 		 */
-		$temperature = apply_filters( 'wp_ai_chatbot_temperature', $temperature, $question );
+		$temperature = apply_filters( 'semantic_knowledge_chatbot_temperature', $temperature, $question );
 
 		/**
 		 * Filter the system prompt for chatbot responses.
@@ -547,7 +547,7 @@ class WP_AI_Chatbot_Module {
 		 * @param string $context Context string
 		 * @return string Modified system prompt
 		 */
-		$system_prompt = apply_filters( 'wp_ai_chatbot_system_prompt', $system_prompt, $question, $context );
+		$system_prompt = apply_filters( 'semantic_knowledge_chatbot_system_prompt', $system_prompt, $question, $context );
 
 		// Step 4: Generate chat completion
 		$answer = $this->openai->chat_completion( $question, $context, array(
@@ -568,7 +568,7 @@ class WP_AI_Chatbot_Module {
 		 * @param string $context Context used
 		 * @return string Modified answer
 		 */
-		$answer = apply_filters( 'wp_ai_chatbot_answer', $answer, $question, $context );
+		$answer = apply_filters( 'semantic_knowledge_chatbot_answer', $answer, $question, $context );
 
 		// Step 5: Format sources
 		$sources = $this->format_sources( $matches );
@@ -581,7 +581,7 @@ class WP_AI_Chatbot_Module {
 		 * @param string $question User's question
 		 * @return array Modified sources
 		 */
-		$sources = apply_filters( 'wp_ai_chatbot_sources', $sources, $matches, $question );
+		$sources = apply_filters( 'semantic_knowledge_chatbot_sources', $sources, $matches, $question );
 
 		/**
 		 * Fires before logging the chatbot interaction.
@@ -590,7 +590,7 @@ class WP_AI_Chatbot_Module {
 		 * @param string $answer Generated answer
 		 * @param array $sources Source references
 		 */
-		do_action( 'wp_ai_chatbot_before_log', $question, $answer, $sources );
+		do_action( 'semantic_knowledge_chatbot_before_log', $question, $answer, $sources );
 
 		// Step 6: Log interaction with response time
 		$response_time = (int) ( ( microtime( true ) - $start_time ) * 1000 ); // Convert to milliseconds
@@ -608,7 +608,7 @@ class WP_AI_Chatbot_Module {
 		 * @param array $response Complete response array
 		 * @param string $question User's question
 		 */
-		do_action( 'wp_ai_chatbot_query_end', $response, $question );
+		do_action( 'semantic_knowledge_chatbot_query_end', $response, $question );
 
 		return rest_ensure_response( $response );
 	}
@@ -633,7 +633,7 @@ class WP_AI_Chatbot_Module {
 			'ai_chatbot'
 		);
 
-		$handle = 'wp-ai-assistant-chatbot';
+		$handle = 'semantic-knowledge-chatbot';
 		wp_enqueue_style( $handle );
 		wp_enqueue_script( $handle );
 
@@ -829,7 +829,7 @@ PROMPT;
 	 */
 	public function add_chat_log_meta_boxes() {
 		add_meta_box(
-			'wp_ai_chat_log_details',
+			'semantic_knowledge_chat_log_details',
 			'Chat Interaction Details',
 			array( $this, 'render_chat_log_meta_box' ),
 			self::POST_TYPE,

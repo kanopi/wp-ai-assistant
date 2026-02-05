@@ -1,6 +1,6 @@
-# WP AI Assistant - Operations Runbook
+# Semantic Knowledge - Operations Runbook
 
-Operational procedures, checklists, and maintenance tasks for the WP AI Assistant plugin.
+Operational procedures, checklists, and maintenance tasks for the Semantic Knowledge plugin.
 
 ## Table of Contents
 
@@ -19,7 +19,7 @@ Operational procedures, checklists, and maintenance tasks for the WP AI Assistan
 
 ## Overview
 
-This runbook provides standard operating procedures for maintaining the WP AI Assistant plugin in production. It covers routine tasks, monitoring, and preventive maintenance.
+This runbook provides standard operating procedures for maintaining the Semantic Knowledge plugin in production. It covers routine tasks, monitoring, and preventive maintenance.
 
 ### Service Level Objectives (SLOs)
 
@@ -47,10 +47,10 @@ This runbook provides standard operating procedures for maintaining the WP AI As
 terminus site:info kanopi-2019
 
 # Check for errors in last 24 hours
-terminus logs kanopi-2019.live --type=php-error --since="24 hours ago" | grep "WP_AI_ASSISTANT"
+terminus logs kanopi-2019.live --type=php-error --since="24 hours ago" | grep "Semantic_Knowledge_ASSISTANT"
 
 # Verify plugin is active
-terminus wp kanopi-2019.live -- plugin list --status=active --name=wp-ai-assistant
+terminus wp kanopi-2019.live -- plugin list --status=active --name=semantic-knowledge
 ```
 
 **Expected Results**:
@@ -112,7 +112,7 @@ SELECT
   DATE(created_at) as date,
   COUNT(*) as total,
   AVG(response_time) as avg_response_ms
-FROM wp_ai_chat_logs
+FROM wp_sk_chat_logs
 WHERE created_at >= DATE_SUB(NOW(), INTERVAL 1 DAY)
 GROUP BY DATE(created_at)"
 
@@ -122,7 +122,7 @@ SELECT
   DATE(created_at) as date,
   COUNT(*) as total,
   AVG(response_time) as avg_response_ms
-FROM wp_ai_search_logs
+FROM wp_sk_search_logs
 WHERE created_at >= DATE_SUB(NOW(), INTERVAL 1 DAY)
 GROUP BY DATE(created_at)"
 ```
@@ -140,7 +140,7 @@ GROUP BY DATE(created_at)"
 
 ```bash
 # Check for new errors
-terminus logs kanopi-2019.live --type=php-error --since="8 hours ago" | grep "WP_AI_ASSISTANT" | tail -20
+terminus logs kanopi-2019.live --type=php-error --since="8 hours ago" | grep "Semantic_Knowledge_ASSISTANT" | tail -20
 
 # Check New Relic (if available)
 # Navigate to: https://one.newrelic.com
@@ -223,7 +223,7 @@ SELECT
   AVG(response_time) as avg_chat_ms,
   MIN(response_time) as min_ms,
   MAX(response_time) as max_ms
-FROM wp_ai_chat_logs
+FROM wp_sk_chat_logs
 WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
 GROUP BY DATE(created_at)
 ORDER BY date DESC"
@@ -268,7 +268,7 @@ LIMIT 20"
 
 ```bash
 # Run composer security audit
-cd web/wp-content/plugins/wp-ai-assistant
+cd web/wp-content/plugins/semantic-knowledge
 composer audit
 
 # Run npm security audit
@@ -316,7 +316,7 @@ SELECT
   COUNT(*) as total_chats,
   COUNT(DISTINCT session_id) as unique_sessions,
   AVG(response_time) as avg_response_ms
-FROM wp_ai_chat_logs
+FROM wp_sk_chat_logs
 WHERE created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)"
 
 # Search query analysis
@@ -325,7 +325,7 @@ SELECT
   query,
   COUNT(*) as frequency,
   AVG(response_time) as avg_response_ms
-FROM wp_ai_search_logs
+FROM wp_sk_search_logs
 WHERE created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
 GROUP BY query
 ORDER BY frequency DESC
@@ -369,16 +369,16 @@ SELECT
   table_rows
 FROM information_schema.TABLES
 WHERE table_schema = 'pantheon'
-AND table_name LIKE 'wp_ai_%'
+AND table_name LIKE 'semantic_knowledge_%'
 ORDER BY (data_length + index_length) DESC"
 
 # Clean old logs (90 days default)
 terminus wp kanopi-2019.live -- db query "
-DELETE FROM wp_ai_chat_logs
+DELETE FROM wp_sk_chat_logs
 WHERE created_at < DATE_SUB(NOW(), INTERVAL 90 DAY)"
 
 terminus wp kanopi-2019.live -- db query "
-DELETE FROM wp_ai_search_logs
+DELETE FROM wp_sk_search_logs
 WHERE created_at < DATE_SUB(NOW(), INTERVAL 90 DAY)"
 ```
 
@@ -386,7 +386,7 @@ WHERE created_at < DATE_SUB(NOW(), INTERVAL 90 DAY)"
 
 ```bash
 # Update plugin (if new version available)
-terminus wp kanopi-2019.dev -- plugin update wp-ai-assistant
+terminus wp kanopi-2019.dev -- plugin update semantic-knowledge
 
 # Test in dev environment
 # Run smoke tests
@@ -449,17 +449,17 @@ terminus env:deploy kanopi-2019.live
 ```yaml
 # Example alert configuration
 alerts:
-  - name: "WP AI Assistant - High Error Rate"
+  - name: "Semantic Knowledge - High Error Rate"
     condition: "error_rate > 5%"
     duration: 5 minutes
     severity: critical
 
-  - name: "WP AI Assistant - Slow Response Time"
+  - name: "Semantic Knowledge - Slow Response Time"
     condition: "response_time_p95 > 5s"
     duration: 5 minutes
     severity: warning
 
-  - name: "WP AI Assistant - API Failures"
+  - name: "Semantic Knowledge - API Failures"
     condition: "external_api_error_rate > 5%"
     duration: 5 minutes
     severity: critical
@@ -484,15 +484,15 @@ Create custom monitoring script to run via cron:
 ```php
 <?php
 /**
- * WP AI Assistant Health Check
+ * Semantic Knowledge Health Check
  *
  * Run via: wp eval-file health-check.php
  */
 
-$logger = WP_AI_Logger::instance();
+$logger = Semantic_Knowledge_Logger::instance();
 
 // Check database tables
-$tables = ['wp_ai_chat_logs', 'wp_ai_search_logs'];
+$tables = ['semantic_knowledge_chat_logs', 'semantic_knowledge_search_logs'];
 foreach ($tables as $table) {
     $exists = $wpdb->get_var("SHOW TABLES LIKE '{$table}'");
     if (!$exists) {
@@ -501,8 +501,8 @@ foreach ($tables as $table) {
 }
 
 // Check API connectivity
-$core = new WP_AI_Core();
-$openai = new WP_AI_OpenAI($core, new WP_AI_Secrets());
+$core = new Semantic_Knowledge_Core();
+$openai = new Semantic_Knowledge_OpenAI($core, new Semantic_Knowledge_Secrets());
 
 try {
     // Test OpenAI connection
@@ -513,7 +513,7 @@ try {
 }
 
 // Check Pinecone
-$pinecone = new WP_AI_Pinecone($core, new WP_AI_Secrets());
+$pinecone = new Semantic_Knowledge_Pinecone($core, new Semantic_Knowledge_Secrets());
 try {
     $stats = $pinecone->describe_index_stats();
     $logger->info('Pinecone API: OK');
@@ -522,7 +522,7 @@ try {
 }
 
 // Check recent errors
-$stats = WP_AI_Database::get_stats();
+$stats = Semantic_Knowledge_Database::get_stats();
 if ($stats['chat_logs_today'] == 0 && date('H') > 12) {
     $logger->warning('No chat logs today - possible issue');
 }
@@ -547,13 +547,13 @@ Schedule via cron:
 
 **View Recent Logs**:
 ```bash
-# Last 100 WP AI Assistant log entries
-terminus logs kanopi-2019.live --type=php-error | grep "WP_AI_ASSISTANT" | tail -100
+# Last 100 Semantic Knowledge log entries
+terminus logs kanopi-2019.live --type=php-error | grep "Semantic_Knowledge_ASSISTANT" | tail -100
 ```
 
 #### 2. Chat Logs (Database)
 
-**Table**: `wp_ai_chat_logs`
+**Table**: `semantic_knowledge_chat_logs`
 
 **Query Logs**:
 ```bash
@@ -564,14 +564,14 @@ SELECT
   LEFT(question, 50) as question,
   response_time,
   created_at
-FROM wp_ai_chat_logs
+FROM wp_sk_chat_logs
 ORDER BY created_at DESC
 LIMIT 20"
 ```
 
 #### 3. Search Logs (Database)
 
-**Table**: `wp_ai_search_logs`
+**Table**: `semantic_knowledge_search_logs`
 
 **Query Logs**:
 ```bash
@@ -583,7 +583,7 @@ SELECT
   results_count,
   response_time,
   created_at
-FROM wp_ai_search_logs
+FROM wp_sk_search_logs
 ORDER BY created_at DESC
 LIMIT 20"
 ```
@@ -616,7 +616,7 @@ LIMIT 20"
 ```bash
 # Most common errors (last 24 hours)
 terminus logs kanopi-2019.live --type=php-error --since="24 hours ago" | \
-  grep "WP_AI_ASSISTANT" | \
+  grep "Semantic_Knowledge_ASSISTANT" | \
   awk '{print $NF}' | \
   sort | uniq -c | sort -nr | head -10
 ```
@@ -630,7 +630,7 @@ SELECT
   LEFT(question, 80) as question,
   response_time,
   created_at
-FROM wp_ai_chat_logs
+FROM wp_sk_chat_logs
 WHERE response_time > 3000
 ORDER BY response_time DESC
 LIMIT 20"
@@ -645,7 +645,7 @@ SELECT
   session_id,
   COUNT(*) as interactions,
   AVG(response_time) as avg_response
-FROM wp_ai_chat_logs
+FROM wp_sk_chat_logs
 WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
 GROUP BY session_id
 ORDER BY interactions DESC
@@ -659,11 +659,11 @@ LIMIT 10"
 ```bash
 # Clean logs older than 90 days
 terminus wp kanopi-2019.live -- db query "
-DELETE FROM wp_ai_chat_logs
+DELETE FROM wp_sk_chat_logs
 WHERE created_at < DATE_SUB(NOW(), INTERVAL 90 DAY)"
 
 terminus wp kanopi-2019.live -- db query "
-DELETE FROM wp_ai_search_logs
+DELETE FROM wp_sk_search_logs
 WHERE created_at < DATE_SUB(NOW(), INTERVAL 90 DAY)"
 
 # Verify cleanup
@@ -671,12 +671,12 @@ terminus wp kanopi-2019.live -- db query "
 SELECT
   'chat_logs' as table_name,
   COUNT(*) as remaining
-FROM wp_ai_chat_logs
+FROM wp_sk_chat_logs
 UNION ALL
 SELECT
   'search_logs' as table_name,
   COUNT(*) as remaining
-FROM wp_ai_search_logs"
+FROM wp_sk_search_logs"
 ```
 
 #### Automated Cleanup
@@ -684,7 +684,7 @@ FROM wp_ai_search_logs"
 The plugin runs automatic cleanup daily via WP-Cron:
 
 ```php
-// Hook: wp_ai_assistant_cleanup_logs
+// Hook: semantic_knowledge_cleanup_logs
 // Frequency: Daily
 // Retention: 90 days (configurable via settings)
 ```
@@ -693,10 +693,10 @@ Verify cron is running:
 
 ```bash
 # Check scheduled events
-terminus wp kanopi-2019.live -- cron event list | grep "wp_ai_assistant_cleanup_logs"
+terminus wp kanopi-2019.live -- cron event list | grep "semantic_knowledge_cleanup_logs"
 
 # Manually trigger cleanup
-terminus wp kanopi-2019.live -- cron event run wp_ai_assistant_cleanup_logs
+terminus wp kanopi-2019.live -- cron event run semantic_knowledge_cleanup_logs
 ```
 
 ## Cache Management
@@ -723,7 +723,7 @@ terminus redis kanopi-2019.live -- clear
 terminus redis kanopi-2019.live -- info stats
 
 # Check specific cache keys
-terminus wp kanopi-2019.live -- cache get wp_ai_assistant_settings_cache wp_ai_assistant
+terminus wp kanopi-2019.live -- cache get semantic_knowledge_settings_cache semantic_knowledge
 ```
 
 #### 2. Page Cache (Varnish)
@@ -757,7 +757,7 @@ curl -X PURGE https://yoursite.com/path/to/page
 terminus wp kanopi-2019.live -- transient list | grep "wp_ai"
 
 # Delete specific transient
-terminus wp kanopi-2019.live -- transient delete wp_ai_assistant_system_check
+terminus wp kanopi-2019.live -- transient delete semantic_knowledge_system_check
 
 # Delete all expired transients
 terminus wp kanopi-2019.live -- transient delete --expired
@@ -800,8 +800,8 @@ The plugin creates and maintains these tables:
 
 | Table | Purpose | Approximate Size |
 |-------|---------|-----------------|
-| `wp_ai_chat_logs` | Chat interaction logs | 10-50 MB |
-| `wp_ai_search_logs` | Search query logs | 5-25 MB |
+| `semantic_knowledge_chat_logs` | Chat interaction logs | 10-50 MB |
+| `semantic_knowledge_search_logs` | Search query logs | 5-25 MB |
 
 ### Optimization Tasks
 
@@ -809,7 +809,7 @@ The plugin creates and maintains these tables:
 
 ```bash
 # Optimize tables
-terminus wp kanopi-2019.live -- db optimize --tables="wp_ai_chat_logs,wp_ai_search_logs"
+terminus wp kanopi-2019.live -- db optimize --tables="wp_sk_chat_logs,wp_sk_search_logs"
 
 # Check table statistics
 terminus wp kanopi-2019.live -- db query "
@@ -820,18 +820,18 @@ SELECT
   ROUND((data_free) / 1024 / 1024, 2) AS free_mb
 FROM information_schema.TABLES
 WHERE table_schema = 'pantheon'
-AND table_name LIKE 'wp_ai_%'"
+AND table_name LIKE 'semantic_knowledge_%'"
 ```
 
 #### Monthly Maintenance
 
 ```bash
 # Analyze tables
-terminus wp kanopi-2019.live -- db query "ANALYZE TABLE wp_ai_chat_logs, wp_ai_search_logs"
+terminus wp kanopi-2019.live -- db query "ANALYZE TABLE wp_sk_chat_logs, wp_sk_search_logs"
 
 # Rebuild indexes
-terminus wp kanopi-2019.live -- db query "ALTER TABLE wp_ai_chat_logs ENGINE=InnoDB"
-terminus wp kanopi-2019.live -- db query "ALTER TABLE wp_ai_search_logs ENGINE=InnoDB"
+terminus wp kanopi-2019.live -- db query "ALTER TABLE wp_sk_chat_logs ENGINE=InnoDB"
+terminus wp kanopi-2019.live -- db query "ALTER TABLE wp_sk_search_logs ENGINE=InnoDB"
 ```
 
 ### Database Backups
@@ -860,7 +860,7 @@ SELECT
   ROUND((data_length + index_length) / 1024 / 1024, 2) AS size_mb
 FROM information_schema.TABLES
 WHERE table_schema = 'pantheon'
-AND table_name LIKE 'wp_ai_%'" > db-size-$(date +%Y-%m-%d).log
+AND table_name LIKE 'semantic_knowledge_%'" > db-size-$(date +%Y-%m-%d).log
 ```
 
 Alert if tables grow unexpectedly:
@@ -884,7 +884,7 @@ SELECT
   MIN(response_time) as min_ms,
   MAX(response_time) as max_ms,
   PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY response_time) as p95_ms
-FROM wp_ai_chat_logs
+FROM wp_sk_chat_logs
 WHERE created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
 UNION ALL
 SELECT
@@ -894,7 +894,7 @@ SELECT
   MIN(response_time) as min_ms,
   MAX(response_time) as max_ms,
   PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY response_time) as p95_ms
-FROM wp_ai_search_logs
+FROM wp_sk_search_logs
 WHERE created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)"
 ```
 
@@ -905,7 +905,7 @@ WHERE created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)"
 time curl -X GET "https://yoursite.com/?s=test&ai_search=1"
 
 # Test chatbot API performance
-time curl -X POST "https://yoursite.com/wp-json/wp-ai-assistant/v1/chat" \
+time curl -X POST "https://yoursite.com/wp-json/semantic-knowledge/v1/chat" \
   -H "Content-Type: application/json" \
   -d '{"message":"test question"}'
 ```
@@ -1108,8 +1108,8 @@ Create shell aliases for common commands:
 ```bash
 # Add to ~/.bashrc or ~/.zshrc
 alias ai-health="terminus wp kanopi-2019.live -- ai-indexer check"
-alias ai-logs="terminus logs kanopi-2019.live --type=php-error | grep WP_AI_ASSISTANT"
-alias ai-stats="terminus wp kanopi-2019.live -- db query 'SELECT COUNT(*) FROM wp_ai_chat_logs WHERE created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)'"
+alias ai-logs="terminus logs kanopi-2019.live --type=php-error | grep Semantic_Knowledge_ASSISTANT"
+alias ai-stats="terminus wp kanopi-2019.live -- db query 'SELECT COUNT(*) FROM wp_sk_chat_logs WHERE created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)'"
 alias ai-reindex="terminus wp kanopi-2019.live -- ai-indexer index"
 alias ai-cache-clear="terminus env:clear-cache kanopi-2019.live && terminus wp kanopi-2019.live -- cache flush"
 ```
@@ -1120,7 +1120,7 @@ alias ai-cache-clear="terminus env:clear-cache kanopi-2019.live && terminus wp k
 
 ```bash
 # Activate plugin
-terminus wp kanopi-2019.live -- plugin activate wp-ai-assistant
+terminus wp kanopi-2019.live -- plugin activate semantic-knowledge
 
 # If activation fails, check error log
 terminus logs kanopi-2019.live --type=php-error | tail -50
@@ -1143,7 +1143,7 @@ terminus wp kanopi-2019.live -- ai-indexer check
 
 ```bash
 # Check recent errors
-terminus logs kanopi-2019.live --type=php-error --since="1 hour ago" | grep "WP_AI_ASSISTANT"
+terminus logs kanopi-2019.live --type=php-error --since="1 hour ago" | grep "Semantic_Knowledge_ASSISTANT"
 
 # Common causes:
 # - API keys expired/invalid

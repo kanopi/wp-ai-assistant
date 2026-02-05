@@ -1,7 +1,7 @@
 {
-  "name": "wp-ai-assistant",
+  "name": "semantic-knowledge",
   "version": "1.0.0",
-  "description": "AI-powered chatbot and semantic search for WordPress",
+  "description": "Semantic search and knowledge management for WordPress",
   "private": true,
   "scripts": {
     "lint:js": "eslint assets/js --ext .js",

@@ -1,6 +1,6 @@
 <?php
 /**
- * Core functionality for WP AI Assistant
+ * Core functionality for Semantic Knowledge
  * Handles settings management, configuration validation, and domain detection
  */
 
@@ -8,10 +8,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class WP_AI_Core {
-	const OPTION_KEY = 'wp_ai_assistant_settings';
-	const CACHE_KEY = 'wp_ai_assistant_settings_cache';
-	const CACHE_GROUP = 'wp_ai_assistant';
+class Semantic_Knowledge_Core {
+	const OPTION_KEY = 'semantic_knowledge_settings';
+	const CACHE_KEY = 'semantic_knowledge_settings_cache';
+	const CACHE_GROUP = 'semantic_knowledge_assistant';
 	const CACHE_TTL = 3600; // 1 hour
 
 	private $settings;
@@ -147,8 +147,8 @@ class WP_AI_Core {
 			'indexer_node_path'    => '',
 
 			// Meta
-			'schema_version'       => WP_AI_ASSISTANT_SCHEMA_VERSION,
-			'version'              => WP_AI_ASSISTANT_VERSION,
+			'schema_version'       => SEMANTIC_KNOWLEDGE_SCHEMA_VERSION,
+			'version'              => SEMANTIC_KNOWLEDGE_VERSION,
 		);
 	}
 
@@ -200,8 +200,8 @@ class WP_AI_Core {
 		$validated = array_merge( $this->settings, $validated );
 
 		// Update version and schema
-		$validated['version'] = WP_AI_ASSISTANT_VERSION;
-		$validated['schema_version'] = WP_AI_ASSISTANT_SCHEMA_VERSION;
+		$validated['version'] = SEMANTIC_KNOWLEDGE_VERSION;
+		$validated['schema_version'] = SEMANTIC_KNOWLEDGE_SCHEMA_VERSION;
 
 		return $validated;
 	}
@@ -428,7 +428,7 @@ class WP_AI_Core {
 	 * @return string
 	 */
 	public function get_version() {
-		return WP_AI_ASSISTANT_VERSION;
+		return SEMANTIC_KNOWLEDGE_VERSION;
 	}
 
 	/**
@@ -437,7 +437,7 @@ class WP_AI_Core {
 	 * @return int
 	 */
 	public function get_schema_version() {
-		return WP_AI_ASSISTANT_SCHEMA_VERSION;
+		return SEMANTIC_KNOWLEDGE_SCHEMA_VERSION;
 	}
 
 	/**
@@ -446,8 +446,8 @@ class WP_AI_Core {
 	 * @return string CSP nonce
 	 */
 	public function get_csp_nonce() {
-		if ( defined( 'WP_AI_CSP_NONCE' ) ) {
-			return WP_AI_CSP_NONCE;
+		if ( defined( 'SEMANTIC_KNOWLEDGE_CSP_NONCE' ) ) {
+			return SEMANTIC_KNOWLEDGE_CSP_NONCE;
 		}
 		return '';
 	}

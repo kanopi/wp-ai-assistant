@@ -1,10 +1,10 @@
 #!/bin/bash
 
 ###############################################################################
-# Health Check Script for WP AI Assistant Plugin
+# Health Check Script for Semantic Knowledge Plugin
 #
 # This script performs comprehensive health checks after deployment to verify
-# that the WP AI Assistant plugin is functioning correctly.
+# that the Semantic Knowledge plugin is functioning correctly.
 #
 # Exit codes:
 #   0 - All health checks passed
@@ -110,13 +110,13 @@ check_plugin_active() {
     echo "Checking plugin status on ${TERMINUS_SITE}.${PANTHEON_ENV}..."
 
     local plugin_check
-    plugin_check=$(terminus wp ${TERMINUS_SITE}.${PANTHEON_ENV} -- plugin list --name=wp-ai-assistant --field=status 2>&1 || echo "error")
+    plugin_check=$(terminus wp ${TERMINUS_SITE}.${PANTHEON_ENV} -- plugin list --name=semantic-knowledge --field=status 2>&1 || echo "error")
 
     if [[ "$plugin_check" == "active" ]]; then
-        log_info "WP AI Assistant plugin is active"
+        log_info "Semantic Knowledge plugin is active"
         ((PASSED++))
     else
-        log_error "WP AI Assistant plugin is not active: $plugin_check"
+        log_error "Semantic Knowledge plugin is not active: $plugin_check"
         return 1
     fi
 }
@@ -149,7 +149,7 @@ check_assets_loaded() {
     log_section "4. Asset Loading Check"
 
     # Check if plugin CSS is accessible
-    local css_pattern="wp-ai-assistant.*\.css"
+    local css_pattern="semantic-knowledge.*\.css"
     if curl -s --max-time "$TIMEOUT" "$ENV_URL" | grep -q "$css_pattern"; then
         log_info "Plugin CSS assets are being loaded"
         ((PASSED++))
@@ -158,7 +158,7 @@ check_assets_loaded() {
     fi
 
     # Check if plugin JS is accessible
-    local js_pattern="wp-ai-assistant.*\.js"
+    local js_pattern="semantic-knowledge.*\.js"
     if curl -s --max-time "$TIMEOUT" "$ENV_URL" | grep -q "$js_pattern"; then
         log_info "Plugin JavaScript assets are being loaded"
         ((PASSED++))
@@ -263,7 +263,7 @@ check_performance() {
 
 main() {
     echo "=================================================="
-    echo "WP AI Assistant Plugin - Health Check"
+    echo "Semantic Knowledge Plugin - Health Check"
     echo "Environment: ${ENV_URL}"
     echo "Branch: ${CIRCLE_BRANCH}"
     echo "Commit: ${CIRCLE_SHA1:0:7}"

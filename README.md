@@ -1,4 +1,4 @@
-# WP AI Assistant
+# Semantic Knowledge
 
 AI-powered chatbot and semantic search for WordPress using RAG (Retrieval-Augmented Generation).
 
@@ -26,10 +26,10 @@ AI-powered chatbot and semantic search for WordPress using RAG (Retrieval-Augmen
 
 ```bash
 # Install plugin
-composer require kanopi/wp-ai-assistant
+composer require kanopi/semantic-knowledge
 
 # Activate plugin
-wp plugin activate wp-ai-assistant
+wp plugin activate semantic-knowledge
 
 # Indexer installs automatically during composer install! ✅
 ```
@@ -46,7 +46,7 @@ wp plugin activate wp-ai-assistant
 3. Activate the plugin
 4. Install indexer:
    ```bash
-   wp ai-assistant install-indexer
+   wp semantic-knowledge install-indexer
    ```
    Or click **"Install Indexer"** button in WordPress admin
 
@@ -55,8 +55,8 @@ wp plugin activate wp-ai-assistant
 ```bash
 # Clone repository
 cd wp-content/plugins
-git clone https://github.com/kanopi/wp-ai-assistant.git
-cd wp-ai-assistant
+git clone https://github.com/kanopi/semantic-knowledge.git
+cd semantic-knowledge
 
 # Install PHP dependencies
 composer install
@@ -96,13 +96,13 @@ wp config set PINECONE_API_KEY "pcsk_..." --type=constant
 
 ```bash
 # Index all content
-wp ai-indexer index
+wp sk-indexer index
 
 # Check system requirements
-wp ai-indexer check
+wp sk-indexer check
 
 # View configuration
-wp ai-indexer config
+wp sk-indexer config
 ```
 
 ## Usage
@@ -161,10 +161,10 @@ npm run lint
 node --version  # Should be 18+
 
 # Install indexer
-wp ai-assistant install-indexer
+wp semantic-knowledge install-indexer
 
 # Or manually
-cd wp-content/plugins/wp-ai-assistant/indexer
+cd wp-content/plugins/semantic-knowledge/indexer
 npm install
 ```
 
@@ -184,11 +184,11 @@ npm install
 **Solution:**
 ```bash
 # Re-index content
-wp ai-indexer delete-all
-wp ai-indexer index
+wp sk-indexer delete-all
+wp sk-indexer index
 
 # Check index status
-wp ai-indexer config
+wp sk-indexer config
 ```
 
 ## Architecture
@@ -204,10 +204,10 @@ Built on a modular architecture:
 
 ## Documentation
 
-- [Installation Guide](https://github.com/kanopi/wp-ai-assistant/wiki/Installation)
-- [Configuration](https://github.com/kanopi/wp-ai-assistant/wiki/Configuration)
-- [API Documentation](https://github.com/kanopi/wp-ai-assistant/wiki/API)
-- [Troubleshooting](https://github.com/kanopi/wp-ai-assistant/wiki/Troubleshooting)
+- [Installation Guide](https://github.com/kanopi/semantic-knowledge/wiki/Installation)
+- [Configuration](https://github.com/kanopi/semantic-knowledge/wiki/Configuration)
+- [API Documentation](https://github.com/kanopi/semantic-knowledge/wiki/API)
+- [Troubleshooting](https://github.com/kanopi/semantic-knowledge/wiki/Troubleshooting)
 - [Indexer Package](https://github.com/kanopi/wp-ai-indexer)
 
 ## Contributing
@@ -220,5 +220,5 @@ MIT License - see [LICENSE](LICENSE)
 
 ## Support
 
-- [GitHub Issues](https://github.com/kanopi/wp-ai-assistant/issues)
-- [Documentation](https://github.com/kanopi/wp-ai-assistant/wiki)
+- [GitHub Issues](https://github.com/kanopi/semantic-knowledge/issues)
+- [Documentation](https://github.com/kanopi/semantic-knowledge/wiki)

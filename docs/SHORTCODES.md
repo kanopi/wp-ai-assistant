@@ -1,6 +1,6 @@
 # Shortcode Reference Guide
 
-Complete reference for WP AI Assistant shortcodes with examples and styling tips.
+Complete reference for Semantic Knowledge shortcodes with examples and styling tips.
 
 ## Table of Contents
 
@@ -393,30 +393,30 @@ Customize the appearance of chatbot and search shortcodes with CSS.
 
 ```css
 /* Chatbot container */
-.wp-ai-chatbot {
+.sk-chatbot {
     /* Container styles */
 }
 
 /* Popup mode button */
-.wp-ai-chatbot-button {
+.sk-chatbot-button {
     /* Button styles */
 }
 
 /* Chat popup overlay */
-.wp-ai-chatbot-popup {
+.sk-chatbot-popup {
     /* Popup styles */
 }
 
 /* Chat messages */
-.wp-ai-chatbot__message {
+.sk-chatbot__message {
     /* Message styles */
 }
 
-.wp-ai-chatbot__message--user {
+.sk-chatbot__message--user {
     /* User message styles */
 }
 
-.wp-ai-chatbot__message--assistant {
+.sk-chatbot__message--assistant {
     /* AI response styles */
 }
 ```
@@ -427,7 +427,7 @@ Customize the appearance of chatbot and search shortcodes with CSS.
 
 ```css
 /* Match brand colors */
-.wp-ai-chatbot-button {
+.sk-chatbot-button {
     background: #0066cc;
     color: white;
     border: none;
@@ -437,7 +437,7 @@ Customize the appearance of chatbot and search shortcodes with CSS.
     box-shadow: 0 2px 8px rgba(0, 102, 204, 0.3);
 }
 
-.wp-ai-chatbot-button:hover {
+.sk-chatbot-button:hover {
     background: #0052a3;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 102, 204, 0.4);
@@ -447,7 +447,7 @@ Customize the appearance of chatbot and search shortcodes with CSS.
 **Example 2: Custom Popup Size**
 
 ```css
-.wp-ai-chatbot-popup {
+.sk-chatbot-popup {
     max-width: 450px;
     max-height: 600px;
     border-radius: 12px;
@@ -458,7 +458,7 @@ Customize the appearance of chatbot and search shortcodes with CSS.
 **Example 3: Message Bubbles**
 
 ```css
-.wp-ai-chatbot__message--user {
+.sk-chatbot__message--user {
     background: #0066cc;
     color: white;
     border-radius: 18px 18px 4px 18px;
@@ -467,7 +467,7 @@ Customize the appearance of chatbot and search shortcodes with CSS.
     max-width: 70%;
 }
 
-.wp-ai-chatbot__message--assistant {
+.sk-chatbot__message--assistant {
     background: #f0f0f0;
     color: #333;
     border-radius: 18px 18px 18px 4px;
@@ -480,7 +480,7 @@ Customize the appearance of chatbot and search shortcodes with CSS.
 **Example 4: Full-Width Inline Chat**
 
 ```css
-.wp-ai-chatbot[data-popup="false"] {
+.sk-chatbot[data-popup="false"] {
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
@@ -496,37 +496,37 @@ Customize the appearance of chatbot and search shortcodes with CSS.
 
 ```css
 /* Search container */
-.wp-ai-search {
+.sk-search {
     /* Container styles */
 }
 
 /* Search form */
-.wp-ai-search__form {
+.sk-search__form {
     /* Form styles */
 }
 
 /* Search input */
-.wp-ai-search__input {
+.sk-search__input {
     /* Input field styles */
 }
 
 /* Search button */
-.wp-ai-search__button {
+.sk-search__button {
     /* Button styles */
 }
 
 /* Results container */
-.wp-ai-search__results {
+.sk-search__results {
     /* Results section styles */
 }
 
 /* AI summary */
-.wp-ai-search__summary {
+.sk-search__summary {
     /* Summary box styles */
 }
 
 /* Individual result */
-.wp-ai-search__result {
+.sk-search__result {
     /* Result item styles */
 }
 ```
@@ -536,21 +536,21 @@ Customize the appearance of chatbot and search shortcodes with CSS.
 **Example 1: Hero Search Box**
 
 ```css
-.wp-ai-search {
+.sk-search {
     text-align: center;
     padding: 60px 20px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border-radius: 12px;
 }
 
-.wp-ai-search__form {
+.sk-search__form {
     max-width: 600px;
     margin: 0 auto;
     display: flex;
     gap: 10px;
 }
 
-.wp-ai-search__input {
+.sk-search__input {
     flex: 1;
     padding: 16px 24px;
     font-size: 18px;
@@ -559,7 +559,7 @@ Customize the appearance of chatbot and search shortcodes with CSS.
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.wp-ai-search__button {
+.sk-search__button {
     padding: 16px 32px;
     background: white;
     color: #667eea;
@@ -573,21 +573,21 @@ Customize the appearance of chatbot and search shortcodes with CSS.
 **Example 2: Minimal Search**
 
 ```css
-.wp-ai-search__form {
+.sk-search__form {
     display: flex;
     border: 2px solid #e0e0e0;
     border-radius: 4px;
     overflow: hidden;
 }
 
-.wp-ai-search__input {
+.sk-search__input {
     flex: 1;
     padding: 12px;
     border: none;
     font-size: 16px;
 }
 
-.wp-ai-search__button {
+.sk-search__button {
     padding: 12px 24px;
     background: #0066cc;
     color: white;
@@ -599,11 +599,11 @@ Customize the appearance of chatbot and search shortcodes with CSS.
 **Example 3: Card-Style Results**
 
 ```css
-.wp-ai-search__results {
+.sk-search__results {
     margin-top: 30px;
 }
 
-.wp-ai-search__result {
+.sk-search__result {
     background: white;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
@@ -613,18 +613,18 @@ Customize the appearance of chatbot and search shortcodes with CSS.
     transition: box-shadow 0.2s;
 }
 
-.wp-ai-search__result:hover {
+.sk-search__result:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.wp-ai-search__result-title {
+.sk-search__result-title {
     font-size: 20px;
     font-weight: bold;
     color: #0066cc;
     margin-bottom: 8px;
 }
 
-.wp-ai-search__result-excerpt {
+.sk-search__result-excerpt {
     color: #666;
     line-height: 1.6;
 }
@@ -633,7 +633,7 @@ Customize the appearance of chatbot and search shortcodes with CSS.
 **Example 4: Highlighted AI Summary**
 
 ```css
-.wp-ai-search__summary {
+.sk-search__summary {
     background: #f8f9fa;
     border-left: 4px solid #0066cc;
     padding: 20px;
@@ -641,12 +641,12 @@ Customize the appearance of chatbot and search shortcodes with CSS.
     border-radius: 4px;
 }
 
-.wp-ai-search__summary h3 {
+.sk-search__summary h3 {
     color: #0066cc;
     margin-top: 0;
 }
 
-.wp-ai-search__summary a {
+.sk-search__summary a {
     color: #0066cc;
     text-decoration: none;
     border-bottom: 1px solid #0066cc;
@@ -660,14 +660,14 @@ Make shortcodes mobile-friendly:
 ```css
 /* Chatbot - Mobile */
 @media (max-width: 768px) {
-    .wp-ai-chatbot-popup {
+    .sk-chatbot-popup {
         width: 100%;
         max-width: none;
         height: 100vh;
         border-radius: 0;
     }
 
-    .wp-ai-chatbot-button {
+    .sk-chatbot-button {
         width: 100%;
         text-align: center;
     }
@@ -675,16 +675,16 @@ Make shortcodes mobile-friendly:
 
 /* Search - Mobile */
 @media (max-width: 768px) {
-    .wp-ai-search__form {
+    .sk-search__form {
         flex-direction: column;
     }
 
-    .wp-ai-search__input,
-    .wp-ai-search__button {
+    .sk-search__input,
+    .sk-search__button {
         width: 100%;
     }
 
-    .wp-ai-search__button {
+    .sk-search__button {
         margin-top: 10px;
     }
 }
@@ -697,12 +697,12 @@ Support for dark mode:
 ```css
 /* Dark mode chatbot */
 @media (prefers-color-scheme: dark) {
-    .wp-ai-chatbot {
+    .sk-chatbot {
         background: #1a1a1a;
         color: #ffffff;
     }
 
-    .wp-ai-chatbot__message--assistant {
+    .sk-chatbot__message--assistant {
         background: #2a2a2a;
         color: #ffffff;
     }
@@ -710,13 +710,13 @@ Support for dark mode:
 
 /* Dark mode search */
 @media (prefers-color-scheme: dark) {
-    .wp-ai-search__input {
+    .sk-search__input {
         background: #2a2a2a;
         color: #ffffff;
         border-color: #444;
     }
 
-    .wp-ai-search__result {
+    .sk-search__result {
         background: #1a1a1a;
         border-color: #444;
         color: #ffffff;
@@ -780,7 +780,7 @@ add_action('wp_footer', function() {
     ?>
     <script>
     // Listen for search results
-    document.addEventListener('wp_ai_search_results', function(e) {
+    document.addEventListener('semantic_knowledge_search_results', function(e) {
         const results = e.detail.results;
         const summary = e.detail.summary;
 
@@ -950,7 +950,7 @@ Common issues when using shortcodes.
 
 **Checklist:**
 1. Search enabled: Settings > AI Assistant > Search > Enable
-2. JavaScript loaded (check page source for `wp-ai-assistant-search.js`)
+2. JavaScript loaded (check page source for `semantic-knowledge-search.js`)
 3. REST API accessible (check /wp-json/ endpoint)
 4. Browser console errors (F12 > Console)
 
@@ -1044,16 +1044,16 @@ add_filter('widget_text', 'do_shortcode');
 ### CSS Classes
 
 **Chatbot:**
-- `.wp-ai-chatbot`
-- `.wp-ai-chatbot-button`
-- `.wp-ai-chatbot-popup`
+- `.sk-chatbot`
+- `.sk-chatbot-button`
+- `.sk-chatbot-popup`
 
 **Search:**
-- `.wp-ai-search`
-- `.wp-ai-search__form`
-- `.wp-ai-search__input`
-- `.wp-ai-search__button`
-- `.wp-ai-search__results`
+- `.sk-search`
+- `.sk-search__form`
+- `.sk-search__input`
+- `.sk-search__button`
+- `.sk-search__results`
 
 ---
 

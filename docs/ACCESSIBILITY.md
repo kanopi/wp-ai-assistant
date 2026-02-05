@@ -1,10 +1,10 @@
 # Accessibility Guide
 
-This guide covers accessibility features and WCAG 2.1 Level AA compliance for WP AI Assistant.
+This guide covers accessibility features and WCAG 2.1 Level AA compliance for Semantic Knowledge.
 
 ## WCAG 2.1 Level AA Compliance
 
-The WP AI Assistant plugin is designed to meet WCAG 2.1 Level AA standards.
+The Semantic Knowledge plugin is designed to meet WCAG 2.1 Level AA standards.
 
 ### ✅ Implemented Features
 
@@ -220,7 +220,7 @@ All focusable elements have visible focus indicators:
 
 **Example:**
 ```css
-.wp-ai-chatbot-fab:focus {
+.sk-chatbot-fab:focus {
   outline: 3px solid #ff7d55;
   outline-offset: 2px;
 }
@@ -324,7 +324,7 @@ Use this checklist to verify accessibility compliance:
 ## Support
 
 If you encounter accessibility issues, please report them at:
-https://github.com/kanopi/wp-ai-assistant/issues
+https://github.com/kanopi/semantic-knowledge/issues
 
 Include:
 - Browser and version

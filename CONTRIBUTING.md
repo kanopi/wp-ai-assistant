@@ -1,6 +1,6 @@
-# Contributing to WP AI Assistant
+# Contributing to Semantic Knowledge
 
-Thank you for your interest in contributing to WP AI Assistant! This document provides guidelines and instructions for contributing to the project.
+Thank you for your interest in contributing to Semantic Knowledge! This document provides guidelines and instructions for contributing to the project.
 
 ## Table of Contents
 
@@ -143,10 +143,10 @@ Documentation improvements are always welcome:
 cd path/to/kanopi-2019
 
 # Ensure plugin is activated
-ddev wp plugin activate wp-ai-assistant
+ddev wp plugin activate semantic-knowledge
 
 # Install PHP dependencies
-ddev composer install --working-dir=web/wp-content/plugins/wp-ai-assistant
+ddev composer install --working-dir=web/wp-content/plugins/semantic-knowledge
 
 # Install indexer package (monorepo setup)
 ddev exec "cd packages/wp-ai-indexer && npm install && npm run build"
@@ -169,7 +169,7 @@ ddev wp ai-indexer check
 
 ```bash
 # Navigate to plugin directory
-cd wp-content/plugins/wp-ai-assistant
+cd wp-content/plugins/semantic-knowledge
 
 # Install PHP dependencies
 composer install
@@ -185,7 +185,7 @@ npm install
 # define('WP_AI_INDEXER_KEY', 'your-secure-key');
 
 # Activate plugin
-wp plugin activate wp-ai-assistant
+wp plugin activate semantic-knowledge
 
 # Verify installation
 wp ai-indexer check
@@ -864,4 +864,4 @@ Contributors will be recognized in:
 - GitHub contributors page
 - Plugin credits (for major features)
 
-Thank you for contributing to WP AI Assistant! 🎉
+Thank you for contributing to Semantic Knowledge! 🎉

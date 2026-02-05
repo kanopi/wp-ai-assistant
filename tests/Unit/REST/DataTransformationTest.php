@@ -1,11 +1,11 @@
 <?php
 /**
- * Tests for WP_AI_Indexer_Settings_Controller data transformation logic
+ * Tests for Semantic_Knowledge_Indexer_Settings_Controller data transformation logic
  */
 
-namespace WP_AI_Tests\Unit\REST;
+namespace Semantic_Knowledge_Tests\Unit\REST;
 
-use WP_AI_Tests\Helpers\TestCase;
+use Semantic_Knowledge_Tests\Helpers\TestCase;
 use WP_Mock;
 use Mockery;
 
@@ -13,7 +13,7 @@ class DataTransformationTest extends TestCase {
     /**
      * Controller instance
      *
-     * @var \WP_AI_Indexer_Settings_Controller
+     * @var \Semantic_Knowledge_Indexer_Settings_Controller
      */
     private $controller;
 
@@ -22,7 +22,7 @@ class DataTransformationTest extends TestCase {
      */
     protected function setUp(): void {
         parent::setUp();
-        $this->controller = new \WP_AI_Indexer_Settings_Controller();
+        $this->controller = new \Semantic_Knowledge_Indexer_Settings_Controller();
     }
 
     /**
@@ -31,7 +31,7 @@ class DataTransformationTest extends TestCase {
     public function testPostTypesParsingFromString() {
         $request = Mockery::mock('WP_REST_Request');
 
-        $this->mockGetOption('wp_ai_assistant_settings', [
+        $this->mockGetOption('semantic_knowledge_settings', [
             'post_types' => 'post, page, custom-type',
             'post_types_exclude' => 'attachment, revision',
             'auto_discover' => true,
@@ -73,7 +73,7 @@ class DataTransformationTest extends TestCase {
     public function testPostTypesParsingFromArray() {
         $request = Mockery::mock('WP_REST_Request');
 
-        $this->mockGetOption('wp_ai_assistant_settings', [
+        $this->mockGetOption('semantic_knowledge_settings', [
             'post_types' => ['post', 'page'],
             'post_types_exclude' => ['attachment'],
             'auto_discover' => true,
@@ -114,7 +114,7 @@ class DataTransformationTest extends TestCase {
     public function testBooleanCoercion() {
         $request = Mockery::mock('WP_REST_Request');
 
-        $this->mockGetOption('wp_ai_assistant_settings', [
+        $this->mockGetOption('semantic_knowledge_settings', [
             'post_types' => 'post',
             'auto_discover' => 1, // Truthy value
             'clean_deleted' => 0, // Falsy value
@@ -156,7 +156,7 @@ class DataTransformationTest extends TestCase {
     public function testIntegerCoercion() {
         $request = Mockery::mock('WP_REST_Request');
 
-        $this->mockGetOption('wp_ai_assistant_settings', [
+        $this->mockGetOption('semantic_knowledge_settings', [
             'post_types' => 'post',
             'auto_discover' => true,
             'clean_deleted' => true,
@@ -200,7 +200,7 @@ class DataTransformationTest extends TestCase {
     public function testDomainExtraction() {
         $request = Mockery::mock('WP_REST_Request');
 
-        $this->mockGetOption('wp_ai_assistant_settings', [
+        $this->mockGetOption('semantic_knowledge_settings', [
             'post_types' => 'post',
             'auto_discover' => true,
             'clean_deleted' => true,
@@ -240,7 +240,7 @@ class DataTransformationTest extends TestCase {
     public function testEmptyPostTypesAfterFiltering() {
         $request = Mockery::mock('WP_REST_Request');
 
-        $this->mockGetOption('wp_ai_assistant_settings', [
+        $this->mockGetOption('semantic_knowledge_settings', [
             'post_types' => '  ,  , ',  // Only whitespace and commas
             'post_types_exclude' => '',
             'auto_discover' => true,
@@ -281,7 +281,7 @@ class DataTransformationTest extends TestCase {
     public function testSchemaVersionConsistency() {
         $request = Mockery::mock('WP_REST_Request');
 
-        $this->mockGetOption('wp_ai_assistant_settings', [
+        $this->mockGetOption('semantic_knowledge_settings', [
             'post_types' => 'post',
             'auto_discover' => true,
             'clean_deleted' => true,
@@ -321,7 +321,7 @@ class DataTransformationTest extends TestCase {
     public function testAllRequiredFieldsPresent() {
         $request = Mockery::mock('WP_REST_Request');
 
-        $this->mockGetOption('wp_ai_assistant_settings', [
+        $this->mockGetOption('semantic_knowledge_settings', [
             'post_types' => 'post',
             'post_types_exclude' => 'attachment',
             'auto_discover' => true,
@@ -379,7 +379,7 @@ class DataTransformationTest extends TestCase {
         $request = Mockery::mock('WP_REST_Request');
 
         // Empty settings, should use defaults
-        $this->mockGetOption('wp_ai_assistant_settings', [
+        $this->mockGetOption('semantic_knowledge_settings', [
             'pinecone_index_host' => 'https://test.pinecone.io',
             'pinecone_index_name' => 'test',
         ]);

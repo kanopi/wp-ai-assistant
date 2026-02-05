@@ -3,7 +3,7 @@
  * Base test case class for all tests
  */
 
-namespace WP_AI_Tests\Helpers;
+namespace Semantic_Knowledge_Tests\Helpers;
 
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 use WP_Mock;

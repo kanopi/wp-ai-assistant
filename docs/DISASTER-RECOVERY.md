@@ -1,6 +1,6 @@
-# WP AI Assistant - Disaster Recovery Plan
+# Semantic Knowledge - Disaster Recovery Plan
 
-Comprehensive disaster recovery procedures for the WP AI Assistant plugin.
+Comprehensive disaster recovery procedures for the Semantic Knowledge plugin.
 
 ## Table of Contents
 
@@ -19,7 +19,7 @@ Comprehensive disaster recovery procedures for the WP AI Assistant plugin.
 
 ## Overview
 
-This document outlines the disaster recovery plan for the WP AI Assistant plugin. It provides procedures for recovering from catastrophic failures, data loss, or complete service outages.
+This document outlines the disaster recovery plan for the Semantic Knowledge plugin. It provides procedures for recovering from catastrophic failures, data loss, or complete service outages.
 
 ### Scope
 
@@ -88,7 +88,7 @@ terminus backup:list kanopi-2019.live
 ```
 
 **Components Backed Up**:
-- WordPress database (all tables including `wp_ai_*`)
+- WordPress database (all tables including `semantic_knowledge_*`)
 - Files (uploads, themes, plugins)
 - Code (git-tracked)
 
@@ -121,23 +121,23 @@ For additional protection, export critical data weekly:
 # backup-ai-data.sh - Run weekly via cron
 
 DATE=$(date +%Y-%m-%d)
-BACKUP_DIR="/backups/wp-ai-assistant"
+BACKUP_DIR="/backups/semantic-knowledge"
 
 # Export chat logs
 terminus wp kanopi-2019.live -- db export - \
-  --tables=wp_ai_chat_logs \
+  --tables=wp_sk_chat_logs \
   > ${BACKUP_DIR}/chat_logs_${DATE}.sql
 
 # Export search logs
 terminus wp kanopi-2019.live -- db export - \
-  --tables=wp_ai_search_logs \
+  --tables=wp_sk_search_logs \
   > ${BACKUP_DIR}/search_logs_${DATE}.sql
 
 # Compress backups
 gzip ${BACKUP_DIR}/*.sql
 
 # Upload to S3 or secure storage
-aws s3 cp ${BACKUP_DIR}/ s3://backups/wp-ai-assistant/ --recursive
+aws s3 cp ${BACKUP_DIR}/ s3://backups/semantic-knowledge/ --recursive
 
 # Cleanup old backups (keep 30 days)
 find ${BACKUP_DIR} -type f -mtime +30 -delete
@@ -159,7 +159,7 @@ Pinecone doesn't provide direct backups. Recovery strategy:
 # Document index configuration
 cat > pinecone-config.json <<EOF
 {
-  "index_name": "wp-ai-assistant",
+  "index_name": "semantic-knowledge",
   "dimension": 1536,
   "metric": "cosine",
   "environment": "us-east-1-aws"
@@ -179,7 +179,7 @@ Export plugin settings:
 
 ```bash
 # Export all settings
-terminus wp kanopi-2019.live -- option get wp_ai_assistant_settings \
+terminus wp kanopi-2019.live -- option get semantic_knowledge_settings \
   --format=json > wp-ai-settings-$(date +%Y-%m-%d).json
 
 # Verify export
@@ -191,7 +191,7 @@ Store in version control:
 ```bash
 # Add to git (exclude sensitive keys)
 git add config/wp-ai-settings.json
-git commit -m "Backup WP AI Assistant settings"
+git commit -m "Backup Semantic Knowledge settings"
 git push origin main
 ```
 
@@ -212,10 +212,10 @@ git push origin main
 
 ```bash
 # Check plugin status
-terminus wp kanopi-2019.live -- plugin list --name=wp-ai-assistant
+terminus wp kanopi-2019.live -- plugin list --name=semantic-knowledge
 
 # Check for fatal errors
-terminus logs kanopi-2019.live --type=php-error | grep "wp-ai-assistant"
+terminus logs kanopi-2019.live --type=php-error | grep "semantic-knowledge"
 ```
 
 ##### Step 2: Restore Plugin Files
@@ -241,17 +241,17 @@ terminus backup:restore kanopi-2019.live \
   --yes
 
 # Verify restoration
-terminus wp kanopi-2019.live -- plugin list --name=wp-ai-assistant
+terminus wp kanopi-2019.live -- plugin list --name=semantic-knowledge
 ```
 
 ##### Step 3: Reactivate Plugin
 
 ```bash
 # Activate plugin
-terminus wp kanopi-2019.live -- plugin activate wp-ai-assistant
+terminus wp kanopi-2019.live -- plugin activate semantic-knowledge
 
 # Verify activation
-terminus wp kanopi-2019.live -- plugin list --status=active --name=wp-ai-assistant
+terminus wp kanopi-2019.live -- plugin list --status=active --name=semantic-knowledge
 ```
 
 ##### Step 4: Verify Functionality
@@ -264,7 +264,7 @@ terminus wp kanopi-2019.live -- ai-indexer check
 curl "https://yoursite.com/?s=test"
 
 # Test chatbot
-curl -X POST "https://yoursite.com/wp-json/wp-ai-assistant/v1/chat" \
+curl -X POST "https://yoursite.com/wp-json/semantic-knowledge/v1/chat" \
   -H "Content-Type: application/json" \
   -d '{"message":"test"}'
 ```
@@ -290,11 +290,11 @@ terminus wp kanopi-2019.live -- db check
 
 # Check for AI tables
 terminus wp kanopi-2019.live -- db query "
-SHOW TABLES LIKE 'wp_ai_%'"
+SHOW TABLES LIKE 'semantic_knowledge_%'"
 
 # Check table integrity
 terminus wp kanopi-2019.live -- db query "
-CHECK TABLE wp_ai_chat_logs, wp_ai_search_logs"
+CHECK TABLE wp_sk_chat_logs, wp_sk_search_logs"
 ```
 
 ##### Step 2: Attempt Repair
@@ -305,7 +305,7 @@ terminus wp kanopi-2019.live -- db repair
 
 # Verify repair
 terminus wp kanopi-2019.live -- db query "
-SELECT COUNT(*) FROM wp_ai_chat_logs"
+SELECT COUNT(*) FROM wp_sk_chat_logs"
 ```
 
 ##### Step 3: Restore from Backup (if repair fails)
@@ -326,7 +326,7 @@ SELECT
   table_rows
 FROM information_schema.TABLES
 WHERE table_schema = 'pantheon'
-AND table_name LIKE 'wp_ai_%'"
+AND table_name LIKE 'semantic_knowledge_%'"
 ```
 
 ##### Step 4: Recreate Tables (if needed)
@@ -334,15 +334,15 @@ AND table_name LIKE 'wp_ai_%'"
 ```bash
 # Drop corrupted tables
 terminus wp kanopi-2019.live -- db query "
-DROP TABLE IF EXISTS wp_ai_chat_logs, wp_ai_search_logs"
+DROP TABLE IF EXISTS wp_sk_chat_logs, wp_sk_search_logs"
 
 # Deactivate and reactivate plugin to recreate tables
-terminus wp kanopi-2019.live -- plugin deactivate wp-ai-assistant
-terminus wp kanopi-2019.live -- plugin activate wp-ai-assistant
+terminus wp kanopi-2019.live -- plugin deactivate semantic-knowledge
+terminus wp kanopi-2019.live -- plugin activate semantic-knowledge
 
 # Verify tables created
 terminus wp kanopi-2019.live -- db query "
-SHOW TABLES LIKE 'wp_ai_%'"
+SHOW TABLES LIKE 'semantic_knowledge_%'"
 ```
 
 ##### Step 5: Import Backup Data (if available)
@@ -354,7 +354,7 @@ terminus wp kanopi-2019.live -- db import search_logs_backup.sql
 
 # Verify import
 terminus wp kanopi-2019.live -- db query "
-SELECT COUNT(*) FROM wp_ai_chat_logs"
+SELECT COUNT(*) FROM wp_sk_chat_logs"
 ```
 
 **Recovery Time**: 1-2 hours
@@ -398,7 +398,7 @@ curl -X DELETE "https://api.pinecone.io/indexes/YOUR_INDEX_NAME" \
 ```bash
 # Create new index via Pinecone console
 # Settings:
-# - Name: wp-ai-assistant
+# - Name: semantic-knowledge
 # - Dimension: 1536
 # - Metric: cosine
 # - Environment: us-east-1-aws
@@ -408,7 +408,7 @@ curl -X POST "https://api.pinecone.io/indexes" \
   -H "Api-Key: $PINECONE_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "wp-ai-assistant",
+    "name": "semantic-knowledge",
     "dimension": 1536,
     "metric": "cosine"
   }'
@@ -418,12 +418,12 @@ curl -X POST "https://api.pinecone.io/indexes" \
 
 ```bash
 # Update index host in settings
-terminus wp kanopi-2019.live -- option patch update wp_ai_assistant_settings \
+terminus wp kanopi-2019.live -- option patch update semantic_knowledge_settings \
   pinecone_index_host "https://NEW_INDEX_HOST"
 
 # Update index name
-terminus wp kanopi-2019.live -- option patch update wp_ai_assistant_settings \
-  pinecone_index_name "wp-ai-assistant"
+terminus wp kanopi-2019.live -- option patch update semantic_knowledge_settings \
+  pinecone_index_name "semantic-knowledge"
 
 # Verify settings
 terminus wp kanopi-2019.live -- ai-indexer config
@@ -473,10 +473,10 @@ curl "https://yoursite.com/?s=test"
 
 ```bash
 # View current settings
-terminus wp kanopi-2019.live -- option get wp_ai_assistant_settings --format=json
+terminus wp kanopi-2019.live -- option get semantic_knowledge_settings --format=json
 
 # Check for corruption
-terminus wp kanopi-2019.live -- option get wp_ai_assistant_settings | jq '.'
+terminus wp kanopi-2019.live -- option get semantic_knowledge_settings | jq '.'
 ```
 
 ##### Step 2: Restore from Backup
@@ -488,7 +488,7 @@ terminus wp kanopi-2019.live -- option get wp_ai_assistant_settings | jq '.'
 cat config/wp-ai-settings.json
 
 # Import settings
-terminus wp kanopi-2019.live -- option set wp_ai_assistant_settings \
+terminus wp kanopi-2019.live -- option set semantic_knowledge_settings \
   --format=json < config/wp-ai-settings.json
 
 # Note: Manually set API keys (not stored in git)
@@ -559,7 +559,7 @@ terminus wp kanopi-2019.live -- ai-indexer index --debug
 
 **Goal**: Restore AI-powered search
 
-1. Activate WP AI Assistant plugin
+1. Activate Semantic Knowledge plugin
 2. Restore plugin configuration
 3. Verify vector index exists
 4. Reindex content if needed
@@ -628,7 +628,7 @@ terminus env:clear-cache kanopi-2019.live
 curl -I https://yoursite.com
 
 # 6. Activate AI plugin
-terminus wp kanopi-2019.live -- plugin activate wp-ai-assistant
+terminus wp kanopi-2019.live -- plugin activate semantic-knowledge
 
 # 7. Reindex content
 terminus wp kanopi-2019.live -- ai-indexer index
@@ -663,18 +663,18 @@ terminus wp kanopi-2019.live -- db check
 
 # 3. Check AI tables exist
 terminus wp kanopi-2019.live -- db query "
-SHOW TABLES LIKE 'wp_ai_%'"
+SHOW TABLES LIKE 'semantic_knowledge_%'"
 
 # 4. If AI tables missing, recreate
-terminus wp kanopi-2019.live -- plugin deactivate wp-ai-assistant
-terminus wp kanopi-2019.live -- plugin activate wp-ai-assistant
+terminus wp kanopi-2019.live -- plugin deactivate semantic-knowledge
+terminus wp kanopi-2019.live -- plugin activate semantic-knowledge
 
 # 5. Restore off-site backup data (if available)
 terminus wp kanopi-2019.live -- db import chat_logs_backup.sql
 
 # 6. Verify data
 terminus wp kanopi-2019.live -- db query "
-SELECT COUNT(*) as total FROM wp_ai_chat_logs"
+SELECT COUNT(*) as total FROM wp_sk_chat_logs"
 
 # 7. Clear caches
 terminus env:clear-cache kanopi-2019.live
@@ -1002,7 +1002,7 @@ If AI services unavailable, automatically fall back to basic functionality:
 
 ```php
 // Implemented in plugin
-add_filter('wp_ai_search_fallback', function($enabled) {
+add_filter('semantic_knowledge_search_fallback', function($enabled) {
     // If OpenAI/Pinecone unavailable, use WordPress native search
     return true;
 });

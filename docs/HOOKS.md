@@ -1,6 +1,6 @@
-# WP AI Assistant - Hooks Reference
+# Semantic Knowledge - Hooks Reference
 
-This document provides a comprehensive reference for all filters and actions available in the WP AI Assistant plugin.
+This document provides a comprehensive reference for all filters and actions available in the Semantic Knowledge plugin.
 
 ## Table of Contents
 
@@ -19,7 +19,7 @@ This document provides a comprehensive reference for all filters and actions ava
 
 ### Query Processing
 
-#### `wp_ai_search_query_start`
+#### `semantic_knowledge_search_query_start`
 **Type:** Action
 **Description:** Fires at the start of a search query, before any processing begins.
 
@@ -29,14 +29,14 @@ This document provides a comprehensive reference for all filters and actions ava
 
 **Example:**
 ```php
-add_action('wp_ai_search_query_start', function($query, $request) {
+add_action('semantic_knowledge_search_query_start', function($query, $request) {
     error_log('AI search started: ' . $query);
 }, 10, 2);
 ```
 
 ---
 
-#### `wp_ai_search_query_text`
+#### `semantic_knowledge_search_query_text`
 **Type:** Filter
 **Description:** Filter the search query text before processing.
 
@@ -49,7 +49,7 @@ add_action('wp_ai_search_query_start', function($query, $request) {
 **Example:**
 ```php
 // Auto-correct common misspellings
-add_filter('wp_ai_search_query_text', function($query, $request) {
+add_filter('semantic_knowledge_search_query_text', function($query, $request) {
     $replacements = array(
         'wordpres' => 'wordpress',
         'drupel' => 'drupal',
@@ -60,7 +60,7 @@ add_filter('wp_ai_search_query_text', function($query, $request) {
 
 ---
 
-#### `wp_ai_search_top_k`
+#### `semantic_knowledge_search_top_k`
 **Type:** Filter
 **Description:** Filter the number of results to retrieve from Pinecone.
 
@@ -73,7 +73,7 @@ add_filter('wp_ai_search_query_text', function($query, $request) {
 **Example:**
 ```php
 // Retrieve more results for complex queries
-add_filter('wp_ai_search_top_k', function($top_k, $query) {
+add_filter('semantic_knowledge_search_top_k', function($top_k, $query) {
     if (str_word_count($query) > 5) {
         return 15; // More results for complex queries
     }
@@ -83,7 +83,7 @@ add_filter('wp_ai_search_top_k', function($top_k, $query) {
 
 ---
 
-#### `wp_ai_search_before_embedding`
+#### `semantic_knowledge_search_before_embedding`
 **Type:** Action
 **Description:** Fires before creating the search embedding.
 
@@ -92,7 +92,7 @@ add_filter('wp_ai_search_top_k', function($top_k, $query) {
 
 **Example:**
 ```php
-add_action('wp_ai_search_before_embedding', function($query) {
+add_action('semantic_knowledge_search_before_embedding', function($query) {
     // Log or track searches
     do_action('my_custom_analytics_track', 'ai_search', $query);
 });
@@ -100,7 +100,7 @@ add_action('wp_ai_search_before_embedding', function($query) {
 
 ---
 
-#### `wp_ai_search_after_pinecone_query`
+#### `semantic_knowledge_search_after_pinecone_query`
 **Type:** Action
 **Description:** Fires after querying Pinecone for results.
 
@@ -110,14 +110,14 @@ add_action('wp_ai_search_before_embedding', function($query) {
 
 **Example:**
 ```php
-add_action('wp_ai_search_after_pinecone_query', function($matches, $query) {
+add_action('semantic_knowledge_search_after_pinecone_query', function($matches, $query) {
     error_log(sprintf('Found %d matches for: %s', count($matches), $query));
 }, 10, 2);
 ```
 
 ---
 
-#### `wp_ai_search_min_score`
+#### `semantic_knowledge_search_min_score`
 **Type:** Filter
 **Description:** Filter the minimum score threshold for search results.
 
@@ -130,7 +130,7 @@ add_action('wp_ai_search_after_pinecone_query', function($matches, $query) {
 **Example:**
 ```php
 // Lower threshold for short queries
-add_filter('wp_ai_search_min_score', function($min_score, $query) {
+add_filter('semantic_knowledge_search_min_score', function($min_score, $query) {
     if (strlen($query) < 10) {
         return 0.4; // Lower threshold for short queries
     }
@@ -140,7 +140,7 @@ add_filter('wp_ai_search_min_score', function($min_score, $query) {
 
 ---
 
-#### `wp_ai_search_results`
+#### `semantic_knowledge_search_results`
 **Type:** Filter
 **Description:** Filter the complete results array before returning to the client.
 
@@ -154,7 +154,7 @@ add_filter('wp_ai_search_min_score', function($min_score, $query) {
 **Example:**
 ```php
 // Add custom metadata to each result
-add_filter('wp_ai_search_results', function($results, $query, $matches) {
+add_filter('semantic_knowledge_search_results', function($results, $query, $matches) {
     foreach ($results as &$result) {
         $post = get_post($result['post_id']);
         if ($post) {
@@ -168,7 +168,7 @@ add_filter('wp_ai_search_results', function($results, $query, $matches) {
 
 ---
 
-#### `wp_ai_search_before_log`
+#### `semantic_knowledge_search_before_log`
 **Type:** Action
 **Description:** Fires before logging the search query.
 
@@ -178,7 +178,7 @@ add_filter('wp_ai_search_results', function($results, $query, $matches) {
 
 **Example:**
 ```php
-add_action('wp_ai_search_before_log', function($query, $results) {
+add_action('semantic_knowledge_search_before_log', function($query, $results) {
     // Send to external analytics
     wp_remote_post('https://analytics.example.com/track', array(
         'body' => array(
@@ -192,7 +192,7 @@ add_action('wp_ai_search_before_log', function($query, $results) {
 
 ---
 
-#### `wp_ai_search_query_end`
+#### `semantic_knowledge_search_query_end`
 **Type:** Action
 **Description:** Fires at the end of a search query, after all processing is complete.
 
@@ -202,7 +202,7 @@ add_action('wp_ai_search_before_log', function($query, $results) {
 
 **Example:**
 ```php
-add_action('wp_ai_search_query_end', function($response, $query) {
+add_action('semantic_knowledge_search_query_end', function($response, $query) {
     // Cache results for repeat queries
     wp_cache_set('ai_search_' . md5($query), $response, 'ai_search', HOUR_IN_SECONDS);
 }, 10, 2);
@@ -212,7 +212,7 @@ add_action('wp_ai_search_query_end', function($response, $query) {
 
 ### Relevance Boosting
 
-#### `wp_ai_search_relevance_config`
+#### `semantic_knowledge_search_relevance_config`
 **Type:** Filter
 **Description:** Filter the complete relevance boosting configuration. This is the primary hook for customizing relevance scoring.
 
@@ -231,7 +231,7 @@ add_action('wp_ai_search_query_end', function($response, $query) {
 **Example:**
 ```php
 // Add custom post type boosts
-add_filter('wp_ai_search_relevance_config', function($config, $query) {
+add_filter('semantic_knowledge_search_relevance_config', function($config, $query) {
     // Add boost for 'services' custom post type
     $config['post_type_boosts']['services'] = 0.07;
     $config['post_type_boosts']['case_study'] = 0.06;
@@ -250,7 +250,7 @@ add_filter('wp_ai_search_relevance_config', function($config, $query) {
 
 ---
 
-#### `wp_ai_search_before_boost`
+#### `semantic_knowledge_search_before_boost`
 **Type:** Action
 **Description:** Fires before relevance boosting calculations begin.
 
@@ -261,14 +261,14 @@ add_filter('wp_ai_search_relevance_config', function($config, $query) {
 
 **Example:**
 ```php
-add_action('wp_ai_search_before_boost', function($matches, $query, $config) {
+add_action('semantic_knowledge_search_before_boost', function($matches, $query, $config) {
     error_log(sprintf('Boosting %d results for query: %s', count($matches), $query));
 }, 10, 3);
 ```
 
 ---
 
-#### `wp_ai_search_raw_matches`
+#### `semantic_knowledge_search_raw_matches`
 **Type:** Filter
 **Description:** Filter raw matches before boosting calculations.
 
@@ -281,7 +281,7 @@ add_action('wp_ai_search_before_boost', function($matches, $query, $config) {
 **Example:**
 ```php
 // Filter out draft posts from results
-add_filter('wp_ai_search_raw_matches', function($matches, $query) {
+add_filter('semantic_knowledge_search_raw_matches', function($matches, $query) {
     return array_filter($matches, function($match) {
         $post_id = $match['metadata']['post_id'] ?? 0;
         if ($post_id) {
@@ -294,7 +294,7 @@ add_filter('wp_ai_search_raw_matches', function($matches, $query) {
 
 ---
 
-#### `wp_ai_search_url_boost`
+#### `semantic_knowledge_search_url_boost`
 **Type:** Filter
 **Description:** Filter the URL slug match boost value for a specific result.
 
@@ -308,7 +308,7 @@ add_filter('wp_ai_search_raw_matches', function($matches, $query) {
 **Example:**
 ```php
 // Double the boost for exact slug matches
-add_filter('wp_ai_search_url_boost', function($url_boost, $match, $query) {
+add_filter('semantic_knowledge_search_url_boost', function($url_boost, $match, $query) {
     $url = strtolower($match['metadata']['url'] ?? '');
     $query_slug = sanitize_title($query);
 
@@ -322,7 +322,7 @@ add_filter('wp_ai_search_url_boost', function($url_boost, $match, $query) {
 
 ---
 
-#### `wp_ai_search_title_exact_boost`
+#### `semantic_knowledge_search_title_exact_boost`
 **Type:** Filter
 **Description:** Filter the exact title match boost value.
 
@@ -335,7 +335,7 @@ add_filter('wp_ai_search_url_boost', function($url_boost, $match, $query) {
 
 ---
 
-#### `wp_ai_search_title_words_boost`
+#### `semantic_knowledge_search_title_words_boost`
 **Type:** Filter
 **Description:** Filter the all-words title match boost value.
 
@@ -348,7 +348,7 @@ add_filter('wp_ai_search_url_boost', function($url_boost, $match, $query) {
 
 ---
 
-#### `wp_ai_search_post_type_boost`
+#### `semantic_knowledge_search_post_type_boost`
 **Type:** Filter
 **Description:** Filter the post type boost value for a specific result.
 
@@ -363,7 +363,7 @@ add_filter('wp_ai_search_url_boost', function($url_boost, $match, $query) {
 **Example:**
 ```php
 // Boost recent posts more than old posts
-add_filter('wp_ai_search_post_type_boost', function($boost, $post_type, $match, $query) {
+add_filter('semantic_knowledge_search_post_type_boost', function($boost, $post_type, $match, $query) {
     if ($post_type === 'post') {
         $post_id = $match['metadata']['post_id'] ?? 0;
         if ($post_id) {
@@ -382,7 +382,7 @@ add_filter('wp_ai_search_post_type_boost', function($boost, $post_type, $match, 
 
 ---
 
-#### `wp_ai_search_custom_boost_{$rule_name}`
+#### `semantic_knowledge_search_custom_boost_{$rule_name}`
 **Type:** Filter (Dynamic)
 **Description:** Filter a custom rule boost value. The hook name includes the rule name.
 
@@ -397,7 +397,7 @@ add_filter('wp_ai_search_post_type_boost', function($boost, $post_type, $match, 
 **Example:**
 ```php
 // Modify the 'services_url' custom rule boost
-add_filter('wp_ai_search_custom_boost_services_url', function($boost, $rule, $match, $query) {
+add_filter('semantic_knowledge_search_custom_boost_services_url', function($boost, $rule, $match, $query) {
     // Increase boost if query contains "what" (indicating a question)
     if (stripos($query, 'what') === 0) {
         return $boost + 0.05;
@@ -408,7 +408,7 @@ add_filter('wp_ai_search_custom_boost_services_url', function($boost, $rule, $ma
 
 ---
 
-#### `wp_ai_search_match_score`
+#### `semantic_knowledge_search_match_score`
 **Type:** Filter
 **Description:** Filter the final score for an individual match after all boosts are applied.
 
@@ -424,14 +424,14 @@ add_filter('wp_ai_search_custom_boost_services_url', function($boost, $rule, $ma
 **Example:**
 ```php
 // Cap maximum score at 0.95
-add_filter('wp_ai_search_match_score', function($final_score, $base_score, $boost, $match, $query) {
+add_filter('semantic_knowledge_search_match_score', function($final_score, $base_score, $boost, $match, $query) {
     return min($final_score, 0.95);
 }, 10, 5);
 ```
 
 ---
 
-#### `wp_ai_search_boosted_matches`
+#### `semantic_knowledge_search_boosted_matches`
 **Type:** Filter
 **Description:** Filter all matches after boosting and sorting is complete.
 
@@ -445,14 +445,14 @@ add_filter('wp_ai_search_match_score', function($final_score, $base_score, $boos
 **Example:**
 ```php
 // Limit to top 10 matches regardless of settings
-add_filter('wp_ai_search_boosted_matches', function($matches, $query, $config) {
+add_filter('semantic_knowledge_search_boosted_matches', function($matches, $query, $config) {
     return array_slice($matches, 0, 10);
 }, 10, 3);
 ```
 
 ---
 
-#### `wp_ai_search_after_boost`
+#### `semantic_knowledge_search_after_boost`
 **Type:** Action
 **Description:** Fires after relevance boosting is complete.
 
@@ -463,7 +463,7 @@ add_filter('wp_ai_search_boosted_matches', function($matches, $query, $config) {
 
 **Example:**
 ```php
-add_action('wp_ai_search_after_boost', function($matches, $query, $config) {
+add_action('semantic_knowledge_search_after_boost', function($matches, $query, $config) {
     // Log top result after boosting
     if (!empty($matches[0])) {
         $top_result = $matches[0];
@@ -481,7 +481,7 @@ add_action('wp_ai_search_after_boost', function($matches, $query, $config) {
 
 ### Result Formatting
 
-#### `wp_ai_search_result_format`
+#### `semantic_knowledge_search_result_format`
 **Type:** Filter
 **Description:** Filter individual search result formatting.
 
@@ -499,7 +499,7 @@ add_action('wp_ai_search_after_boost', function($matches, $query, $config) {
 **Example:**
 ```php
 // Add thumbnail to results
-add_filter('wp_ai_search_result_format', function($result, $match) {
+add_filter('semantic_knowledge_search_result_format', function($result, $match) {
     if ($result['post_id']) {
         $thumbnail_id = get_post_thumbnail_id($result['post_id']);
         if ($thumbnail_id) {
@@ -514,7 +514,7 @@ add_filter('wp_ai_search_result_format', function($result, $match) {
 
 ### Summary Generation
 
-#### `wp_ai_search_summary_enabled`
+#### `semantic_knowledge_search_summary_enabled`
 **Type:** Filter
 **Description:** Filter whether AI summary generation is enabled for a specific query.
 
@@ -528,7 +528,7 @@ add_filter('wp_ai_search_result_format', function($result, $match) {
 **Example:**
 ```php
 // Disable summaries for very short queries
-add_filter('wp_ai_search_summary_enabled', function($enabled, $query, $results) {
+add_filter('semantic_knowledge_search_summary_enabled', function($enabled, $query, $results) {
     if (strlen($query) < 5) {
         return false;
     }
@@ -538,7 +538,7 @@ add_filter('wp_ai_search_summary_enabled', function($enabled, $query, $results) 
 
 ---
 
-#### `wp_ai_search_summary_context`
+#### `semantic_knowledge_search_summary_context`
 **Type:** Filter
 **Description:** Filter the context string passed to the AI for summary generation.
 
@@ -553,7 +553,7 @@ add_filter('wp_ai_search_summary_enabled', function($enabled, $query, $results) 
 **Example:**
 ```php
 // Add site-specific context
-add_filter('wp_ai_search_summary_context', function($context, $query, $results, $matches) {
+add_filter('semantic_knowledge_search_summary_context', function($context, $query, $results, $matches) {
     $context .= "\n\nSITE CONTEXT:\n";
     $context .= "This is a technology consulting company specializing in WordPress and Drupal.\n";
     return $context;
@@ -562,7 +562,7 @@ add_filter('wp_ai_search_summary_context', function($context, $query, $results, 
 
 ---
 
-#### `wp_ai_search_summary_system_prompt`
+#### `semantic_knowledge_search_summary_system_prompt`
 **Type:** Filter
 **Description:** Filter the system prompt for search summary generation.
 
@@ -576,7 +576,7 @@ add_filter('wp_ai_search_summary_context', function($context, $query, $results, 
 **Example:**
 ```php
 // Adjust tone for question-based queries
-add_filter('wp_ai_search_summary_system_prompt', function($prompt, $query, $results) {
+add_filter('semantic_knowledge_search_summary_system_prompt', function($prompt, $query, $results) {
     if (preg_match('/^(what|how|why|when|where|who)/i', $query)) {
         $prompt .= "\n\nThis is a question. Provide a direct, concise answer.";
     }
@@ -586,7 +586,7 @@ add_filter('wp_ai_search_summary_system_prompt', function($prompt, $query, $resu
 
 ---
 
-#### `wp_ai_search_summary`
+#### `semantic_knowledge_search_summary`
 **Type:** Filter
 **Description:** Filter the final AI-generated summary before returning to the client.
 
@@ -599,7 +599,7 @@ add_filter('wp_ai_search_summary_system_prompt', function($prompt, $query, $resu
 **Example:**
 ```php
 // Add a disclaimer to AI summaries
-add_filter('wp_ai_search_summary', function($summary, $query) {
+add_filter('semantic_knowledge_search_summary', function($summary, $query) {
     if (!empty($summary)) {
         $summary .= '<p class="ai-disclaimer"><small>This summary was generated by AI. Please verify important information.</small></p>';
     }
@@ -611,7 +611,7 @@ add_filter('wp_ai_search_summary', function($summary, $query) {
 
 ## Chatbot Module Hooks
 
-### `wp_ai_chatbot_query_start`
+### `semantic_knowledge_chatbot_query_start`
 **Type:** Action
 **Description:** Fires at the start of a chatbot query.
 
@@ -621,14 +621,14 @@ add_filter('wp_ai_search_summary', function($summary, $query) {
 
 **Example:**
 ```php
-add_action('wp_ai_chatbot_query_start', function($question, $request) {
+add_action('semantic_knowledge_chatbot_query_start', function($question, $request) {
     error_log('Chatbot question: ' . $question);
 }, 10, 2);
 ```
 
 ---
 
-### `wp_ai_chatbot_question`
+### `semantic_knowledge_chatbot_question`
 **Type:** Filter
 **Description:** Filter the chatbot question before processing.
 
@@ -640,7 +640,7 @@ add_action('wp_ai_chatbot_query_start', function($question, $request) {
 
 ---
 
-### `wp_ai_chatbot_top_k`
+### `semantic_knowledge_chatbot_top_k`
 **Type:** Filter
 **Description:** Filter the number of context results to retrieve.
 
@@ -652,7 +652,7 @@ add_action('wp_ai_chatbot_query_start', function($question, $request) {
 
 ---
 
-### `wp_ai_chatbot_matches`
+### `semantic_knowledge_chatbot_matches`
 **Type:** Filter
 **Description:** Filter Pinecone matches for chatbot context.
 
@@ -664,7 +664,7 @@ add_action('wp_ai_chatbot_query_start', function($question, $request) {
 
 ---
 
-### `wp_ai_chatbot_context`
+### `semantic_knowledge_chatbot_context`
 **Type:** Filter
 **Description:** Filter the context string passed to the chatbot.
 
@@ -678,7 +678,7 @@ add_action('wp_ai_chatbot_query_start', function($question, $request) {
 **Example:**
 ```php
 // Add company information to context
-add_filter('wp_ai_chatbot_context', function($context, $matches, $question) {
+add_filter('semantic_knowledge_chatbot_context', function($context, $matches, $question) {
     $context .= "\n\nCOMPANY INFO: We're open Mon-Fri 9am-5pm EST. Call 555-0100 for urgent support.";
     return $context;
 }, 10, 3);
@@ -686,7 +686,7 @@ add_filter('wp_ai_chatbot_context', function($context, $matches, $question) {
 
 ---
 
-### `wp_ai_chatbot_model`
+### `semantic_knowledge_chatbot_model`
 **Type:** Filter
 **Description:** Filter the OpenAI model for chatbot responses.
 
@@ -698,7 +698,7 @@ add_filter('wp_ai_chatbot_context', function($context, $matches, $question) {
 
 ---
 
-### `wp_ai_chatbot_temperature`
+### `semantic_knowledge_chatbot_temperature`
 **Type:** Filter
 **Description:** Filter the temperature parameter for chatbot responses.
 
@@ -710,7 +710,7 @@ add_filter('wp_ai_chatbot_context', function($context, $matches, $question) {
 
 ---
 
-### `wp_ai_chatbot_system_prompt`
+### `semantic_knowledge_chatbot_system_prompt`
 **Type:** Filter
 **Description:** Filter the system prompt for chatbot responses.
 
@@ -723,7 +723,7 @@ add_filter('wp_ai_chatbot_context', function($context, $matches, $question) {
 
 ---
 
-### `wp_ai_chatbot_answer`
+### `semantic_knowledge_chatbot_answer`
 **Type:** Filter
 **Description:** Filter the chatbot answer before returning.
 
@@ -737,7 +737,7 @@ add_filter('wp_ai_chatbot_context', function($context, $matches, $question) {
 **Example:**
 ```php
 // Add contact CTA to certain answers
-add_filter('wp_ai_chatbot_answer', function($answer, $question, $context) {
+add_filter('semantic_knowledge_chatbot_answer', function($answer, $question, $context) {
     if (stripos($question, 'pricing') !== false || stripos($question, 'cost') !== false) {
         $answer .= "\n\nFor a detailed quote, please contact our sales team.";
     }
@@ -747,7 +747,7 @@ add_filter('wp_ai_chatbot_answer', function($answer, $question, $context) {
 
 ---
 
-### `wp_ai_chatbot_sources`
+### `semantic_knowledge_chatbot_sources`
 **Type:** Filter
 **Description:** Filter the chatbot sources before returning.
 
@@ -760,7 +760,7 @@ add_filter('wp_ai_chatbot_answer', function($answer, $question, $context) {
 
 ---
 
-### `wp_ai_chatbot_before_log`
+### `semantic_knowledge_chatbot_before_log`
 **Type:** Action
 **Description:** Fires before logging the chatbot interaction.
 
@@ -771,7 +771,7 @@ add_filter('wp_ai_chatbot_answer', function($answer, $question, $context) {
 
 ---
 
-### `wp_ai_chatbot_query_end`
+### `semantic_knowledge_chatbot_query_end`
 **Type:** Action
 **Description:** Fires at the end of a chatbot query.
 
@@ -783,7 +783,7 @@ add_filter('wp_ai_chatbot_answer', function($answer, $question, $context) {
 
 ## Indexer Hooks
 
-### `wp_ai_indexer_node_path`
+### `semantic_knowledge_indexer_node_path`
 **Type:** Filter
 **Description:** Filter the Node.js executable path used by the indexer.
 
@@ -795,7 +795,7 @@ add_filter('wp_ai_chatbot_answer', function($answer, $question, $context) {
 **Example:**
 ```php
 // Force use of specific Node.js version
-add_filter('wp_ai_indexer_node_path', function($node_path) {
+add_filter('semantic_knowledge_indexer_node_path', function($node_path) {
     return '/usr/local/bin/node';
 });
 ```
@@ -815,12 +815,12 @@ add_filter('wp_ai_indexer_node_path', function($node_path) {
 
 ```php
 // Enable debug logging for AI search
-add_action('wp_ai_search_query_start', function($query) {
+add_action('semantic_knowledge_search_query_start', function($query) {
     error_log('=== AI Search Debug ===');
     error_log('Query: ' . $query);
 }, 1);
 
-add_action('wp_ai_search_after_boost', function($matches, $query, $config) {
+add_action('semantic_knowledge_search_after_boost', function($matches, $query, $config) {
     error_log('Boosted Results:');
     foreach ($matches as $i => $match) {
         error_log(sprintf(
@@ -848,9 +848,9 @@ add_action('wp_ai_search_after_boost', function($matches, $query, $config) {
 // Organize hooks in a class
 class My_AI_Search_Customizations {
     public function __construct() {
-        add_filter('wp_ai_search_relevance_config', array($this, 'add_custom_post_type_boosts'), 10, 2);
-        add_filter('wp_ai_search_results', array($this, 'add_custom_metadata'), 10, 3);
-        add_action('wp_ai_search_before_log', array($this, 'track_analytics'), 10, 2);
+        add_filter('semantic_knowledge_search_relevance_config', array($this, 'add_custom_post_type_boosts'), 10, 2);
+        add_filter('semantic_knowledge_search_results', array($this, 'add_custom_metadata'), 10, 3);
+        add_action('semantic_knowledge_search_before_log', array($this, 'track_analytics'), 10, 2);
     }
 
     public function add_custom_post_type_boosts($config, $query) {

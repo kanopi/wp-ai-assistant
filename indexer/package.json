@@ -1,9 +1,9 @@
 {
-  "name": "wp-ai-assistant-indexer",
+  "name": "semantic-knowledge-indexer",
   "version": "1.0.0",
-  "description": "Local Node.js indexer for WP AI Assistant plugin",
+  "description": "Local Node.js indexer for Semantic Knowledge plugin",
   "private": true,
   "dependencies": {
-    "@kanopi/wp-ai-indexer": "^1.0.0"
+    "@kanopi/semantic-knowledge-indexer": "^1.0.0"
   }
 }

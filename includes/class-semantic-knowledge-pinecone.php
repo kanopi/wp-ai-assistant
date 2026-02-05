@@ -1,6 +1,6 @@
 <?php
 /**
- * Pinecone vector database integration for WP AI Assistant
+ * Pinecone vector database integration for Semantic Knowledge
  * Handles vector queries with domain filtering
  */
 
@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class WP_AI_Pinecone {
+class Semantic_Knowledge_Pinecone {
 	private $core;
 	private $secrets;
 	private $api_key;
@@ -56,7 +56,7 @@ class WP_AI_Pinecone {
 	public function query( $vector, $top_k, $filter = array() ) {
 		if ( empty( $this->api_key ) ) {
 			return new WP_Error(
-				'wp_ai_assistant_missing_key',
+				'semantic_knowledge_missing_key',
 				'Pinecone API key is not configured.',
 				array( 'status' => 500 )
 			);
@@ -64,7 +64,7 @@ class WP_AI_Pinecone {
 
 		if ( empty( $this->index_host ) ) {
 			return new WP_Error(
-				'wp_ai_assistant_missing_config',
+				'semantic_knowledge_missing_config',
 				'Pinecone index host is not configured.',
 				array( 'status' => 500 )
 			);
@@ -102,7 +102,7 @@ class WP_AI_Pinecone {
 		if ( 200 !== $code ) {
 			$error_message = $this->extract_error_message( $request );
 			return new WP_Error(
-				'wp_ai_assistant_pinecone_error',
+				'semantic_knowledge_pinecone_error',
 				'Pinecone query failed: ' . $error_message,
 				array( 'status' => $code )
 			);
@@ -189,7 +189,7 @@ class WP_AI_Pinecone {
 	public function get_index_stats() {
 		if ( empty( $this->api_key ) || empty( $this->index_host ) ) {
 			return new WP_Error(
-				'wp_ai_assistant_missing_config',
+				'semantic_knowledge_missing_config',
 				'Pinecone is not fully configured.',
 				array( 'status' => 500 )
 			);
@@ -215,7 +215,7 @@ class WP_AI_Pinecone {
 
 		if ( 200 !== $code ) {
 			return new WP_Error(
-				'wp_ai_assistant_pinecone_error',
+				'semantic_knowledge_pinecone_error',
 				'Failed to get index stats.',
 				array( 'status' => $code )
 			);

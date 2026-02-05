@@ -1,6 +1,6 @@
-# WP AI Assistant - Documentation
+# Semantic Knowledge - Documentation
 
-Welcome to the WP AI Assistant documentation. This directory contains comprehensive guides and references for customizing and extending the plugin.
+Welcome to the Semantic Knowledge documentation. This directory contains comprehensive guides and references for customizing and extending the plugin.
 
 ## Documentation Index
 
@@ -112,7 +112,7 @@ Welcome to the WP AI Assistant documentation. This directory contains comprehens
 
 ## Customization Philosophy
 
-The WP AI Assistant plugin follows a **progressive enhancement** approach to customization:
+The Semantic Knowledge plugin follows a **progressive enhancement** approach to customization:
 
 ### Level 1: System Prompt (No Code)
 → Perfect for content prioritization and tone adjustments

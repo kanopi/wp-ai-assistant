@@ -1,6 +1,6 @@
 <?php
 /**
- * Settings page for WP AI Assistant
+ * Settings page for Semantic Knowledge
  * Unified admin page with tabs for General, Chatbot, Search, and Indexer settings
  */
 
@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class WP_AI_Settings {
+class Semantic_Knowledge_Settings {
 	private $core;
 
 	public function __construct( WP_AI_Core $core ) {
@@ -32,7 +32,7 @@ class WP_AI_Settings {
 			'AI Assistant',
 			'AI Assistant',
 			'manage_options',
-			'wp-ai-assistant',
+			'semantic-knowledge',
 			array( $this, 'render_settings_page' )
 		);
 	}
@@ -42,7 +42,7 @@ class WP_AI_Settings {
 	 */
 	public function register_settings() {
 		register_setting(
-			'wp_ai_assistant',
+			'semantic_knowledge_assistant',
 			WP_AI_Core::OPTION_KEY,
 			array(
 				'sanitize_callback' => array( $this, 'sanitize_settings' ),
@@ -74,7 +74,7 @@ class WP_AI_Settings {
 		// Notify user if keys were removed
 		if ( ! empty( $removed_keys ) ) {
 			add_settings_error(
-				'wp_ai_assistant',
+				'semantic_knowledge_assistant',
 				'deprecated_keys_removed',
 				sprintf(
 					'Deprecated API keys (%s) have been removed from database for security. Please ensure they are configured via environment variables.',
@@ -89,7 +89,7 @@ class WP_AI_Settings {
 
 		if ( is_wp_error( $validated ) ) {
 			add_settings_error(
-				'wp_ai_assistant',
+				'semantic_knowledge_assistant',
 				'validation_error',
 				$validated->get_error_message()
 			);
@@ -131,7 +131,7 @@ class WP_AI_Settings {
 
 			<form method="post" action="options.php">
 				<?php
-				settings_fields( 'wp_ai_assistant' );
+				settings_fields( 'semantic_knowledge_assistant' );
 
 				switch ( $current_tab ) {
 					case 'chatbot':
@@ -497,7 +497,7 @@ class WP_AI_Settings {
 				<td colspan="2">
 					<p class="description">
 						<strong>Note:</strong> For advanced customizations like custom post type boosts or category-based filtering,
-						use the <code>wp_ai_search_relevance_config</code> filter in your theme or custom plugin.
+						use the <code>semantic_knowledge_search_relevance_config</code> filter in your theme or custom plugin.
 						See the plugin documentation for examples.
 					</p>
 				</td>
@@ -610,7 +610,7 @@ class WP_AI_Settings {
 			<tr>
 				<th scope="row">Indexer Settings Endpoint</th>
 				<td>
-					<code><?php echo esc_html( rest_url( 'ai-assistant/v1/indexer-settings' ) ); ?></code>
+					<code><?php echo esc_html( rest_url( 'semantic-knowledge/v1/indexer-settings' ) ); ?></code>
 					<p class="description">The <code>@kanopi/wp-ai-indexer</code> package fetches configuration from this endpoint</p>
 				</td>
 			</tr>

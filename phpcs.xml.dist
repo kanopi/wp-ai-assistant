@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="WP AI Assistant" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xsd">
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Semantic Knowledge" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xsd">
 
-	<description>WordPress Coding Standards for WP AI Assistant Plugin</description>
+	<description>WordPress Coding Standards for Semantic Knowledge Plugin</description>
 
 	<!-- What to scan -->
 	<file>.</file>
@@ -52,7 +52,7 @@
 	<rule ref="WordPress.WP.I18n">
 		<properties>
 			<property name="text_domain" type="array">
-				<element value="wp-ai-assistant"/>
+				<element value="semantic-knowledge"/>
 			</property>
 		</properties>
 	</rule>
@@ -61,8 +61,8 @@
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>
 			<property name="prefixes" type="array">
-				<element value="wp_ai"/>
-				<element value="WP_AI"/>
+				<element value="semantic_knowledge"/>
+				<element value="Semantic_Knowledge"/>
 			</property>
 		</properties>
 	</rule>

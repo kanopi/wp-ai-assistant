@@ -1,6 +1,6 @@
 # Accessibility Testing Guide
 
-Complete guide for developers to test accessibility of the WP AI Assistant plugin.
+Complete guide for developers to test accessibility of the Semantic Knowledge plugin.
 
 ## Table of Contents
 

@@ -1,5 +1,5 @@
 (function () {
-  const settings = window.wpAiAssistantChatbot;
+  const settings = window.semanticKnowledgeChatbot;
 
   if (!settings || !settings.endpoint) {
     return;
@@ -263,7 +263,7 @@
 
     // Don't configure Deep Chat here - will be done after lazy loading
 
-    const closeBtn = popup.querySelector('.wp-ai-chatbot-popup__close');
+    const closeBtn = popup.querySelector('.sk-chatbot-popup__close');
     closeBtn.addEventListener('click', () => {
       closePopup(popup);
     });
@@ -369,7 +369,7 @@
                   setTimeout(() => {
                     if (!popup.contains(document.activeElement)) {
                       // Fallback: focus the close button
-                      const closeBtn = popup.querySelector('.wp-ai-chatbot-popup__close');
+                      const closeBtn = popup.querySelector('.sk-chatbot-popup__close');
                       if (closeBtn) {
                         closeBtn.focus();
                       }
@@ -378,7 +378,7 @@
                 } catch (error) {
                   console.error('Failed to focus chat input:', error);
                   // Fallback to close button
-                  const closeBtn = popup.querySelector('.wp-ai-chatbot-popup__close');
+                  const closeBtn = popup.querySelector('.sk-chatbot-popup__close');
                   if (closeBtn) {
                     closeBtn.focus();
                   }
@@ -386,7 +386,7 @@
               }, 100);
             } else {
               // No focusInput method - focus close button as fallback
-              const closeBtn = popup.querySelector('.wp-ai-chatbot-popup__close');
+              const closeBtn = popup.querySelector('.sk-chatbot-popup__close');
               if (closeBtn) {
                 closeBtn.focus();
               }
@@ -406,7 +406,7 @@
                 setTimeout(() => {
                   if (!popup.contains(document.activeElement)) {
                     // Fallback: focus the close button
-                    const closeBtn = popup.querySelector('.wp-ai-chatbot-popup__close');
+                    const closeBtn = popup.querySelector('.sk-chatbot-popup__close');
                     if (closeBtn) {
                       closeBtn.focus();
                     }
@@ -415,7 +415,7 @@
               } catch (error) {
                 console.error('Failed to focus chat input:', error);
                 // Fallback to close button
-                const closeBtn = popup.querySelector('.wp-ai-chatbot-popup__close');
+                const closeBtn = popup.querySelector('.sk-chatbot-popup__close');
                 if (closeBtn) {
                   closeBtn.focus();
                 }
@@ -423,7 +423,7 @@
             }, 100);
           } else {
             // No focusInput method - focus close button as fallback
-            const closeBtn = popup.querySelector('.wp-ai-chatbot-popup__close');
+            const closeBtn = popup.querySelector('.sk-chatbot-popup__close');
             if (closeBtn) {
               closeBtn.focus();
             }
@@ -492,7 +492,7 @@
                   setTimeout(() => {
                     if (!popup.contains(document.activeElement)) {
                       // Fallback: focus the close button
-                      const closeBtn = popup.querySelector('.wp-ai-chatbot-popup__close');
+                      const closeBtn = popup.querySelector('.sk-chatbot-popup__close');
                       if (closeBtn) {
                         closeBtn.focus();
                       }
@@ -501,7 +501,7 @@
                 } catch (error) {
                   console.error('Failed to focus chat input:', error);
                   // Fallback to close button
-                  const closeBtn = popup.querySelector('.wp-ai-chatbot-popup__close');
+                  const closeBtn = popup.querySelector('.sk-chatbot-popup__close');
                   if (closeBtn) {
                     closeBtn.focus();
                   }
@@ -509,7 +509,7 @@
               }, 100);
             } else {
               // No focusInput method - focus close button as fallback
-              const closeBtn = popup.querySelector('.wp-ai-chatbot-popup__close');
+              const closeBtn = popup.querySelector('.sk-chatbot-popup__close');
               if (closeBtn) {
                 closeBtn.focus();
               }
@@ -544,7 +544,7 @@
       initFloatingButton();
     }
 
-    document.querySelectorAll('.wp-ai-chatbot').forEach((container) => {
+    document.querySelectorAll('.sk-chatbot').forEach((container) => {
       initShortcodeChat(container);
     });
   }

@@ -1,10 +1,10 @@
 <?php
 /**
- * WP-CLI Commands for WP AI Assistant
+ * WP-CLI Commands for Semantic Knowledge
  *
  * Provides WordPress-native CLI interface to the Node.js indexer package.
  *
- * @package WP_AI_Assistant
+ * @package Semantic_Knowledge
  */
 
 if (!defined('ABSPATH')) {
@@ -18,7 +18,7 @@ if (!class_exists('WP_CLI')) {
 /**
  * Manage AI indexing operations
  */
-class WP_AI_CLI_Command {
+class Semantic_Knowledge_CLI_Command {
 
     /**
      * Index all WordPress content
@@ -34,10 +34,10 @@ class WP_AI_CLI_Command {
      * ## EXAMPLES
      *
      *     # Index all content
-     *     wp ai-indexer index
+     *     wp sk-indexer index
      *
      *     # Index with debug output
-     *     wp ai-indexer index --debug
+     *     wp sk-indexer index --debug
      *
      * @when after_wp_load
      */
@@ -72,7 +72,7 @@ class WP_AI_CLI_Command {
      * ## EXAMPLES
      *
      *     # Clean deleted posts
-     *     wp ai-indexer clean
+     *     wp sk-indexer clean
      *
      * @when after_wp_load
      */
@@ -104,10 +104,10 @@ class WP_AI_CLI_Command {
      * ## EXAMPLES
      *
      *     # Delete all (with confirmation)
-     *     wp ai-indexer delete-all
+     *     wp sk-indexer delete-all
      *
      *     # Delete all (skip confirmation)
-     *     wp ai-indexer delete-all --yes
+     *     wp sk-indexer delete-all --yes
      *
      * @when after_wp_load
      */
@@ -135,7 +135,7 @@ class WP_AI_CLI_Command {
      * ## EXAMPLES
      *
      *     # Show configuration
-     *     wp ai-indexer config
+     *     wp sk-indexer config
      *
      * @when after_wp_load
      */
@@ -152,7 +152,7 @@ class WP_AI_CLI_Command {
      * ## EXAMPLES
      *
      *     # Check system requirements
-     *     wp ai-indexer check
+     *     wp sk-indexer check
      *
      * @when after_wp_load
      */
@@ -189,9 +189,9 @@ class WP_AI_CLI_Command {
             ));
         } else {
             WP_CLI::line('✗ Indexer: Not found');
-            WP_CLI::warning('For DDEV: ddev exec "cd packages/wp-ai-indexer && npm install && npm run build"');
-            WP_CLI::warning('For Local: cd packages/wp-ai-indexer && npm install && npm run build');
-            WP_CLI::warning('For CI/CD: npm install -g @kanopi/wp-ai-indexer');
+            WP_CLI::warning('For DDEV: ddev exec "cd packages/wp-sk-indexer && npm install && npm run build"');
+            WP_CLI::warning('For Local: cd packages/wp-sk-indexer && npm install && npm run build');
+            WP_CLI::warning('For CI/CD: npm install -g @kanopi/wp-sk-indexer');
         }
 
         WP_CLI::line('');
@@ -216,12 +216,12 @@ class WP_AI_CLI_Command {
             WP_CLI::error(
                 "Node.js indexer not found.\n\n" .
                 "For DDEV:\n" .
-                "  ddev exec \"cd packages/wp-ai-indexer && npm install && npm run build\"\n\n" .
+                "  ddev exec \"cd packages/wp-sk-indexer && npm install && npm run build\"\n\n" .
                 "For Local (non-DDEV):\n" .
-                "  cd packages/wp-ai-indexer && npm install && npm run build\n\n" .
+                "  cd packages/wp-sk-indexer && npm install && npm run build\n\n" .
                 "For CI/CD (global installation):\n" .
-                "  npm install -g @kanopi/wp-ai-indexer\n\n" .
-                "Documentation: https://github.com/kanopi/wp-ai-indexer"
+                "  npm install -g @kanopi/wp-sk-indexer\n\n" .
+                "Documentation: https://github.com/kanopi/wp-sk-indexer"
             );
         }
 
@@ -247,7 +247,7 @@ class WP_AI_CLI_Command {
          * @param string|null $node_path Path to Node.js or null to use default detection
          * @return string|null Modified path or null
          */
-        $node_path = apply_filters('wp_ai_indexer_node_path', null);
+        $node_path = apply_filters('semantic_knowledge_indexer_node_path', null);
 
         if (!empty($node_path) && file_exists($node_path)) {
             return $node_path;
@@ -334,12 +334,12 @@ class WP_AI_CLI_Command {
      *
      * ## EXAMPLES
      *
-     *     wp ai-assistant install-indexer
+     *     wp semantic-knowledge install-indexer
      *
      * @when after_wp_load
      */
     public function install_indexer() {
-        WP_CLI::line('Installing @kanopi/wp-ai-indexer...');
+        WP_CLI::line('Installing @kanopi/wp-sk-indexer...');
 
         $plugin_dir = dirname(dirname(__FILE__));
         $indexer_dir = $plugin_dir . '/indexer';
@@ -374,7 +374,7 @@ class WP_AI_CLI_Command {
 
         if ($return_code === 0) {
             WP_CLI::success('Indexer installed successfully!');
-            WP_CLI::line('You can now run: wp ai-indexer index');
+            WP_CLI::line('You can now run: wp sk-indexer index');
         } else {
             WP_CLI::error('Failed to install indexer. Try manually: cd indexer && npm install');
         }
@@ -385,13 +385,13 @@ class WP_AI_CLI_Command {
      *
      * ## EXAMPLES
      *
-     *     wp ai-assistant check-indexer
+     *     wp semantic-knowledge check-indexer
      *
      * @when after_wp_load
      */
     public function check_indexer() {
         $plugin_dir = dirname(dirname(__FILE__));
-        $indexer_path = $plugin_dir . '/indexer/node_modules/@kanopi/wp-ai-indexer';
+        $indexer_path = $plugin_dir . '/indexer/node_modules/@kanopi/wp-sk-indexer';
 
         if (file_exists($indexer_path)) {
             WP_CLI::success("Indexer is installed at: {$indexer_path}");
@@ -407,12 +407,12 @@ class WP_AI_CLI_Command {
             }
         } else {
             WP_CLI::warning('Indexer is not installed.');
-            WP_CLI::line('Install it with: wp ai-assistant install-indexer');
+            WP_CLI::line('Install it with: wp semantic-knowledge install-indexer');
         }
     }
 }
 
 // Register commands
-WP_CLI::add_command('ai-indexer', 'WP_AI_CLI_Command');
+WP_CLI::add_command('sk-indexer', 'WP_AI_CLI_Command');
 WP_CLI::add_command('ai-assistant install-indexer', ['WP_AI_CLI_Command', 'install_indexer']);
 WP_CLI::add_command('ai-assistant check-indexer', ['WP_AI_CLI_Command', 'check_indexer']);

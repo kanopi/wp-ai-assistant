@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 /**
  * Add site-specific context to summaries
  */
-add_filter('wp_ai_search_summary_context', 'my_add_site_context', 10, 4);
+add_filter('semantic_knowledge_search_summary_context', 'my_add_site_context', 10, 4);
 
 function my_add_site_context($context, $query, $results, $matches) {
     // Add company information
@@ -40,7 +40,7 @@ function my_add_site_context($context, $query, $results, $matches) {
 /**
  * Adjust system prompt based on query type
  */
-add_filter('wp_ai_search_summary_system_prompt', 'my_adjust_summary_prompt', 10, 3);
+add_filter('semantic_knowledge_search_summary_system_prompt', 'my_adjust_summary_prompt', 10, 3);
 
 function my_adjust_summary_prompt($prompt, $query, $results) {
     // For question queries, be more direct
@@ -64,7 +64,7 @@ function my_adjust_summary_prompt($prompt, $query, $results) {
 /**
  * Add disclaimers or CTAs to summaries
  */
-add_filter('wp_ai_search_summary', 'my_add_summary_enhancements', 10, 2);
+add_filter('semantic_knowledge_search_summary', 'my_add_summary_enhancements', 10, 2);
 
 function my_add_summary_enhancements($summary, $query) {
     if (empty($summary)) {
@@ -92,7 +92,7 @@ function my_add_summary_enhancements($summary, $query) {
 /**
  * Disable summaries for specific query types
  */
-add_filter('wp_ai_search_summary_enabled', 'my_conditional_summary_generation', 10, 3);
+add_filter('semantic_knowledge_search_summary_enabled', 'my_conditional_summary_generation', 10, 3);
 
 function my_conditional_summary_generation($enabled, $query, $results) {
     // Disable for single-word queries
@@ -117,7 +117,7 @@ function my_conditional_summary_generation($enabled, $query, $results) {
 /**
  * Inject structured data into summaries
  */
-add_filter('wp_ai_search_summary', 'my_add_structured_data', 20, 2);
+add_filter('semantic_knowledge_search_summary', 'my_add_structured_data', 20, 2);
 
 function my_add_structured_data($summary, $query) {
     if (empty($summary)) {
@@ -150,7 +150,7 @@ function my_add_structured_data($summary, $query) {
 /**
  * Add inline images or media to summaries
  */
-add_filter('wp_ai_search_summary_context', 'my_add_media_context', 10, 4);
+add_filter('semantic_knowledge_search_summary_context', 'my_add_media_context', 10, 4);
 
 function my_add_media_context($context, $query, $results, $matches) {
     // Find relevant featured images
@@ -181,7 +181,7 @@ function my_add_media_context($context, $query, $results, $matches) {
 /**
  * Translate summaries based on user language
  */
-add_filter('wp_ai_search_summary', 'my_translate_summary', 30, 2);
+add_filter('semantic_knowledge_search_summary', 'my_translate_summary', 30, 2);
 
 function my_translate_summary($summary, $query) {
     if (empty($summary)) {
@@ -203,7 +203,7 @@ function my_translate_summary($summary, $query) {
 /**
  * Add personalization based on user history
  */
-add_filter('wp_ai_search_summary_context', 'my_personalize_context', 10, 4);
+add_filter('semantic_knowledge_search_summary_context', 'my_personalize_context', 10, 4);
 
 function my_personalize_context($context, $query, $results, $matches) {
     // Get user's previous searches (requires tracking)
@@ -231,7 +231,7 @@ function my_personalize_context($context, $query, $results, $matches) {
 /**
  * Format summaries for accessibility
  */
-add_filter('wp_ai_search_summary', 'my_enhance_accessibility', 40, 2);
+add_filter('semantic_knowledge_search_summary', 'my_enhance_accessibility', 40, 2);
 
 function my_enhance_accessibility($summary, $query) {
     if (empty($summary)) {
@@ -250,7 +250,7 @@ function my_enhance_accessibility($summary, $query) {
 /**
  * Provide fallback content when AI summary fails
  */
-add_filter('wp_ai_search_summary', 'my_fallback_summary', 50, 2);
+add_filter('semantic_knowledge_search_summary', 'my_fallback_summary', 50, 2);
 
 function my_fallback_summary($summary, $query) {
     // If AI failed to generate a summary, provide a fallback

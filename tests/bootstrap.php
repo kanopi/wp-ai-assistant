@@ -10,9 +10,9 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 WP_Mock::bootstrap();
 
 // Define test constants
-define('WP_AI_PLUGIN_DIR', dirname(__DIR__));
-define('WP_AI_PLUGIN_FILE', WP_AI_PLUGIN_DIR . '/wp-ai-assistant.php');
-define('WP_AI_PLUGIN_BASENAME', 'wp-ai-assistant/wp-ai-assistant.php');
+define('Semantic_Knowledge_PLUGIN_DIR', dirname(__DIR__));
+define('Semantic_Knowledge_PLUGIN_FILE', Semantic_Knowledge_PLUGIN_DIR . '/wp-ai-assistant.php');
+define('Semantic_Knowledge_PLUGIN_BASENAME', 'wp-ai-assistant/wp-ai-assistant.php');
 
 // Mock WordPress constants if not defined
 if (!defined('ABSPATH')) {
@@ -97,12 +97,12 @@ if (!class_exists('WP_CLI')) {
     }
 }
 
-// Define WP_AI_ASSISTANT_DIR if not defined
-if (!defined('WP_AI_ASSISTANT_DIR')) {
-    define('WP_AI_ASSISTANT_DIR', WP_AI_PLUGIN_DIR . '/');
+// Define Semantic_Knowledge_ASSISTANT_DIR if not defined
+if (!defined('Semantic_Knowledge_ASSISTANT_DIR')) {
+    define('Semantic_Knowledge_ASSISTANT_DIR', Semantic_Knowledge_PLUGIN_DIR . '/');
 }
 
 // Load plugin classes
-require_once WP_AI_PLUGIN_DIR . '/includes/class-wp-ai-indexer-controller.php';
-require_once WP_AI_PLUGIN_DIR . '/includes/class-wp-ai-system-check.php';
-require_once WP_AI_PLUGIN_DIR . '/includes/class-wp-ai-cli.php';
+require_once Semantic_Knowledge_PLUGIN_DIR . '/includes/class-wp-ai-indexer-controller.php';
+require_once Semantic_Knowledge_PLUGIN_DIR . '/includes/class-wp-ai-system-check.php';
+require_once Semantic_Knowledge_PLUGIN_DIR . '/includes/class-wp-ai-cli.php';

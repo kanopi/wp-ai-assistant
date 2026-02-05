@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###############################################################################
-# Automated Rollback Script for WP AI Assistant Plugin
+# Automated Rollback Script for Semantic Knowledge Plugin
 #
 # This script performs an automated rollback to the previous deployment
 # when health checks fail or critical issues are detected.
@@ -67,7 +67,7 @@ usage() {
     cat << EOF
 Usage: $0 [options]
 
-Automated rollback script for WP AI Assistant Plugin deployment.
+Automated rollback script for Semantic Knowledge Plugin deployment.
 
 Options:
     --environment <env>   Target environment (dev, test, live) [required]
@@ -272,7 +272,7 @@ verify_rollback() {
     # Check plugin status
     log_step "Checking plugin status..."
     local plugin_status
-    plugin_status=$(terminus wp ${TERMINUS_SITE}.${ENVIRONMENT} -- plugin list --name=wp-ai-assistant --field=status 2>&1 || echo "error")
+    plugin_status=$(terminus wp ${TERMINUS_SITE}.${ENVIRONMENT} -- plugin list --name=semantic-knowledge --field=status 2>&1 || echo "error")
 
     if [[ "$plugin_status" == "active" ]]; then
         log_info "Plugin is active after rollback"
@@ -323,7 +323,7 @@ send_notification() {
 main() {
     echo "=================================================="
     echo "Automated Rollback Script"
-    echo "WP AI Assistant Plugin"
+    echo "Semantic Knowledge Plugin"
     echo "=================================================="
     echo "Environment: ${ENVIRONMENT}"
     echo "Dry Run: ${DRY_RUN}"

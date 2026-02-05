@@ -1,6 +1,6 @@
 # Troubleshooting Guide
 
-Comprehensive troubleshooting guide for developers working with the WP AI Assistant plugin.
+Comprehensive troubleshooting guide for developers working with the Semantic Knowledge plugin.
 
 ## Table of Contents
 
@@ -58,7 +58,7 @@ ddev exec "cd packages/wp-ai-indexer && npm install && npm run build"
 
 **For standalone (local installation)**:
 ```bash
-cd wp-content/plugins/wp-ai-assistant/indexer
+cd wp-content/plugins/semantic-knowledge/indexer
 npm install
 ```
 
@@ -69,13 +69,13 @@ npm install -g @kanopi/wp-ai-indexer
 
 3. **Verify installation**:
 ```bash
-wp ai-indexer check
+wp sk-indexer check
 # Should output: ✓ Node.js found (v18.x.x)
 #                ✓ Indexer package found
 ```
 
 **Still not working?**
-- Clear system check cache: `wp transient delete wp_ai_assistant_system_check`
+- Clear system check cache: `wp transient delete semantic_knowledge_system_check`
 - Check file permissions: `ls -la indexer/`
 - Try reinstalling: `rm -rf indexer/node_modules && npm install`
 
@@ -113,7 +113,7 @@ Edit `.ddev/config.yaml`:
 web_environment:
   - OPENAI_API_KEY=sk-proj-your-key-here
   - PINECONE_API_KEY=your-key-here
-  - WP_AI_INDEXER_KEY=your-secure-key-here
+  - Semantic_Knowledge_INDEXER_KEY=your-secure-key-here
 ```
 
 Then restart:
@@ -126,7 +126,7 @@ ddev restart
 // Add before "That's all, stop editing!"
 define('OPENAI_API_KEY', 'sk-proj-your-key-here');
 define('PINECONE_API_KEY', 'your-key-here');
-define('WP_AI_INDEXER_KEY', 'your-secure-key-here');
+define('Semantic_Knowledge_INDEXER_KEY', 'your-secure-key-here');
 ```
 
 **Option C: Environment variable (standalone)**:
@@ -134,7 +134,7 @@ define('WP_AI_INDEXER_KEY', 'your-secure-key-here');
 # .env file
 export OPENAI_API_KEY="sk-proj-your-key-here"
 export PINECONE_API_KEY="your-key-here"
-export WP_AI_INDEXER_KEY="your-secure-key-here"
+export Semantic_Knowledge_INDEXER_KEY="your-secure-key-here"
 
 # Load variables
 source .env
@@ -160,7 +160,7 @@ Should return list of available models, not an error.
 **Error Message**:
 ```json
 {
-  "code": "wp_ai_assistant_invalid_nonce",
+  "code": "semantic_knowledge_invalid_nonce",
   "message": "Invalid security token. Please refresh the page and try again."
 }
 ```
@@ -191,7 +191,7 @@ console.log('Nonce:', wpAiAssistantChatbot.nonce);
 5. **Verify AJAX URL**:
 ```javascript
 console.log('Endpoint:', wpAiAssistantChatbot.endpoint);
-// Should be: https://yoursite.com/wp-json/ai-assistant/v1/chat
+// Should be: https://yoursite.com/wp-json/semantic-knowledge/v1/chat
 ```
 
 ---
@@ -201,7 +201,7 @@ console.log('Endpoint:', wpAiAssistantChatbot.endpoint);
 **Error Message**:
 ```json
 {
-  "code": "wp_ai_assistant_rate_limit_exceeded",
+  "code": "semantic_knowledge_rate_limit_exceeded",
   "message": "Rate limit exceeded. Please wait before making another request. Limit: 10 requests per 60 seconds."
 }
 ```
@@ -215,11 +215,11 @@ console.log('Endpoint:', wpAiAssistantChatbot.endpoint);
 2. **Increase rate limits for development**:
 ```php
 // In functions.php or custom plugin
-add_filter('wp_ai_chatbot_rate_limit', function($limit) {
+add_filter('semantic_knowledge_chatbot_rate_limit', function($limit) {
     return WP_DEBUG ? 100 : 10; // Higher limit in dev
 });
 
-add_filter('wp_ai_chatbot_rate_window', function($window) {
+add_filter('semantic_knowledge_chatbot_rate_window', function($window) {
     return WP_DEBUG ? 10 : 60; // Shorter window in dev
 });
 ```
@@ -235,7 +235,7 @@ wp transient delete wp_ai_chatbot_rl_{hash}
 ```bash
 wp eval "
 \$request = new WP_REST_Request();
-\$chatbot = new WP_AI_Chatbot_Module(new WP_AI_Core(), new WP_AI_OpenAI(...), new WP_AI_Pinecone(...));
+\$chatbot = new Semantic_Knowledge_Chatbot_Module(new Semantic_Knowledge_Core(), new Semantic_Knowledge_OpenAI(...), new Semantic_Knowledge_Pinecone(...));
 echo 'Detected IP: ' . \$chatbot->get_client_ip();
 "
 ```
@@ -243,8 +243,8 @@ echo 'Detected IP: ' . \$chatbot->get_client_ip();
 5. **Disable rate limiting temporarily**:
 ```php
 // Return true to bypass rate limit check
-add_filter('wp_ai_chatbot_rate_limit', '__return_false');
-add_filter('wp_ai_search_rate_limit', '__return_false');
+add_filter('semantic_knowledge_chatbot_rate_limit', '__return_false');
+add_filter('semantic_knowledge_search_rate_limit', '__return_false');
 ```
 
 ---
@@ -262,7 +262,7 @@ Error: Pinecone query failed: Index not found
 
 1. **Verify Pinecone configuration**:
 ```bash
-wp option get wp_ai_assistant_settings --format=json | jq '{
+wp option get semantic_knowledge_settings --format=json | jq '{
   pinecone_index_host,
   pinecone_index_name
 }'
@@ -277,9 +277,9 @@ wp option get wp_ai_assistant_settings --format=json | jq '{
 ```bash
 # Get index stats
 wp eval "
-\$core = new WP_AI_Core();
-\$secrets = new WP_AI_Secrets();
-\$pinecone = new WP_AI_Pinecone(\$core, \$secrets);
+\$core = new Semantic_Knowledge_Core();
+\$secrets = new Semantic_Knowledge_Secrets();
+\$pinecone = new Semantic_Knowledge_Pinecone(\$core, \$secrets);
 print_r(\$pinecone->get_index_stats());
 "
 ```
@@ -331,11 +331,11 @@ tail -f wp-content/debug.log | grep "WP AI"
 
 ```php
 // Add to chatbot module or via filter
-add_action('wp_ai_chatbot_query_start', function($question) {
+add_action('semantic_knowledge_chatbot_query_start', function($question) {
     error_log("CHATBOT QUERY START: $question");
 });
 
-add_action('wp_ai_chatbot_query_end', function($response, $question) {
+add_action('semantic_knowledge_chatbot_query_end', function($response, $question) {
     error_log("CHATBOT QUERY END: " . json_encode([
         'question' => $question,
         'answer_length' => strlen($response['answer']),
@@ -347,11 +347,11 @@ add_action('wp_ai_chatbot_query_end', function($response, $question) {
 #### Debug Search Queries
 
 ```php
-add_action('wp_ai_search_query_start', function($query) {
+add_action('semantic_knowledge_search_query_start', function($query) {
     error_log("SEARCH QUERY START: $query");
 });
 
-add_action('wp_ai_search_query_end', function($response, $query) {
+add_action('semantic_knowledge_search_query_end', function($response, $query) {
     error_log("SEARCH QUERY END: " . json_encode([
         'query' => $query,
         'total_results' => $response['total'],
@@ -364,7 +364,7 @@ add_action('wp_ai_search_query_end', function($response, $query) {
 
 **OpenAI requests**:
 ```php
-// In WP_AI_OpenAI class, temporarily add
+// In Semantic_Knowledge_OpenAI class, temporarily add
 error_log('OpenAI Request: ' . json_encode([
     'model' => $model,
     'text_length' => strlen($text),
@@ -376,7 +376,7 @@ error_log('OpenAI Response Code: ' . wp_remote_retrieve_response_code($response)
 
 **Pinecone queries**:
 ```php
-// In WP_AI_Pinecone class, temporarily add
+// In Semantic_Knowledge_Pinecone class, temporarily add
 error_log('Pinecone Query: ' . json_encode([
     'vector_length' => count($vector),
     'top_k' => $top_k,
@@ -392,10 +392,10 @@ error_log('Pinecone Matches: ' . count($matches));
 ```bash
 # Test chatbot flow
 wp eval "
-\$core = new WP_AI_Core();
-\$secrets = new WP_AI_Secrets();
-\$openai = new WP_AI_OpenAI(\$core, \$secrets);
-\$pinecone = new WP_AI_Pinecone(\$core, \$secrets);
+\$core = new Semantic_Knowledge_Core();
+\$secrets = new Semantic_Knowledge_Secrets();
+\$openai = new Semantic_Knowledge_OpenAI(\$core, \$secrets);
+\$pinecone = new Semantic_Knowledge_Pinecone(\$core, \$secrets);
 
 // Create embedding
 \$embedding = \$openai->create_embedding('What services do you offer?');
@@ -442,13 +442,13 @@ View: tail -f wp-content/debug.log
 ### Plugin Logs (Database)
 ```sql
 -- Chat logs
-SELECT * FROM wp_ai_chat_logs ORDER BY created_at DESC LIMIT 10;
+SELECT * FROM wp_sk_chat_logs ORDER BY created_at DESC LIMIT 10;
 
 -- Search logs
-SELECT * FROM wp_ai_search_logs ORDER BY created_at DESC LIMIT 10;
+SELECT * FROM wp_sk_search_logs ORDER BY created_at DESC LIMIT 10;
 
 -- Via WP-CLI
-wp db query "SELECT * FROM wp_ai_chat_logs ORDER BY created_at DESC LIMIT 10"
+wp db query "SELECT * FROM wp_sk_chat_logs ORDER BY created_at DESC LIMIT 10"
 ```
 
 ### Web Server Logs (DDEV)
@@ -466,7 +466,7 @@ ddev logs -f web
 ### Indexer Logs
 ```bash
 # Run indexer with debug flag
-wp ai-indexer index --debug
+wp sk-indexer index --debug
 
 # Outputs detailed progress and errors to stdout
 ```
@@ -483,7 +483,7 @@ wp ai-indexer index --debug
 
 1. **Check if caching is working**:
 ```bash
-wp eval "print_r(WP_AI_Cache::get_stats());"
+wp eval "print_r(Semantic_Knowledge_Cache::get_stats());"
 ```
 
 Expected output:
@@ -503,21 +503,21 @@ If `using_object_cache` is 0:
 2. **Monitor cache hit rate**:
 ```php
 // Add temporarily to track cache performance
-add_action('wp_ai_chatbot_query_start', function() {
+add_action('semantic_knowledge_chatbot_query_start', function() {
     global $wp_ai_cache_hits, $wp_ai_cache_misses;
     $wp_ai_cache_hits = 0;
     $wp_ai_cache_misses = 0;
 });
 
-// In WP_AI_Cache::get()
+// In Semantic_Knowledge_Cache::get()
 if ($value !== false) {
-    $GLOBALS['wp_ai_cache_hits']++;
+    $GLOBALS['semantic_knowledge_cache_hits']++;
 } else {
-    $GLOBALS['wp_ai_cache_misses']++;
+    $GLOBALS['semantic_knowledge_cache_misses']++;
 }
 
-add_action('wp_ai_chatbot_query_end', function() {
-    error_log("Cache hits: {$GLOBALS['wp_ai_cache_hits']}, misses: {$GLOBALS['wp_ai_cache_misses']}");
+add_action('semantic_knowledge_chatbot_query_end', function() {
+    error_log("Cache hits: {$GLOBALS['semantic_knowledge_cache_hits']}, misses: {$GLOBALS['semantic_knowledge_cache_misses']}");
 });
 ```
 
@@ -552,7 +552,7 @@ error_log("Pinecone query: {$duration}ms");
 3. **Enable response compression**:
 ```php
 // In wp-config.php
-define('WP_AI_ENABLE_COMPRESSION', true);
+define('Semantic_Knowledge_ENABLE_COMPRESSION', true);
 ```
 
 4. **Optimize chunk size** - Larger chunks = fewer API calls
@@ -574,14 +574,14 @@ define('WP_AI_ENABLE_COMPRESSION', true);
 ```sql
 -- Chat queries per day
 SELECT DATE(created_at) as date, COUNT(*) as queries
-FROM wp_ai_chat_logs
+FROM wp_sk_chat_logs
 GROUP BY DATE(created_at)
 ORDER BY date DESC
 LIMIT 30;
 
 -- Search queries per day
 SELECT DATE(created_at) as date, COUNT(*) as queries
-FROM wp_ai_search_logs
+FROM wp_sk_search_logs
 GROUP BY DATE(created_at)
 ORDER BY date DESC
 LIMIT 30;
@@ -600,12 +600,12 @@ LIMIT 30;
 2. **Increase cache TTL**:
 ```php
 // Increase embedding cache from 1 hour to 24 hours
-add_filter('wp_ai_embedding_cache_ttl', function() {
+add_filter('semantic_knowledge_embedding_cache_ttl', function() {
     return DAY_IN_SECONDS;
 });
 
 // Increase query cache from 15 minutes to 1 hour
-add_filter('wp_ai_query_cache_ttl', function() {
+add_filter('semantic_knowledge_query_cache_ttl', function() {
     return HOUR_IN_SECONDS;
 });
 ```
@@ -613,7 +613,7 @@ add_filter('wp_ai_query_cache_ttl', function() {
 3. **Implement request throttling**:
 ```php
 // Lower rate limits
-add_filter('wp_ai_chatbot_rate_limit', function() {
+add_filter('semantic_knowledge_chatbot_rate_limit', function() {
     return 5; // Instead of 10
 });
 ```
@@ -692,7 +692,7 @@ add_filter('http_request_args', function($args) {
 
 2. **Check index host URL format**:
 ```bash
-wp option get wp_ai_assistant_settings --format=json | jq '.pinecone_index_host'
+wp option get semantic_knowledge_settings --format=json | jq '.pinecone_index_host'
 # Should be: "https://index-abc123.svc.pinecone.io"
 # NOT: "index-abc123.svc.pinecone.io" (missing https://)
 ```
@@ -715,7 +715,7 @@ curl -X POST "https://your-index.svc.pinecone.io/query" \
 
 ### No Content Indexed
 
-**Symptoms**: `wp ai-indexer index` reports 0 posts indexed.
+**Symptoms**: `wp sk-indexer index` reports 0 posts indexed.
 
 **Diagnosis**:
 
@@ -726,7 +726,7 @@ wp post list --post_type=post,page --post_status=publish
 
 2. **Check post types configuration**:
 ```bash
-wp option get wp_ai_assistant_settings --format=json | jq '{
+wp option get semantic_knowledge_settings --format=json | jq '{
   post_types,
   post_types_exclude,
   auto_discover
@@ -735,28 +735,28 @@ wp option get wp_ai_assistant_settings --format=json | jq '{
 
 3. **Run with debug flag**:
 ```bash
-wp ai-indexer index --debug
+wp sk-indexer index --debug
 ```
 
 **Solutions**:
 
 1. **Enable auto-discovery**:
 ```bash
-wp option patch update wp_ai_assistant_settings auto_discover true
+wp option patch update semantic_knowledge_settings auto_discover true
 ```
 
 2. **Manually specify post types**:
 ```bash
-wp option patch update wp_ai_assistant_settings post_types "post,page,custom_type"
+wp option patch update semantic_knowledge_settings post_types "post,page,custom_type"
 ```
 
 3. **Check excluded post types**:
 ```bash
 # View current exclusions
-wp option get wp_ai_assistant_settings --format=json | jq '.post_types_exclude'
+wp option get semantic_knowledge_settings --format=json | jq '.post_types_exclude'
 
 # Remove unwanted exclusions
-wp option patch update wp_ai_assistant_settings post_types_exclude "attachment,revision"
+wp option patch update semantic_knowledge_settings post_types_exclude "attachment,revision"
 ```
 
 ---
@@ -776,17 +776,17 @@ define('WP_TIMEOUT', 300); // 5 minutes
 2. **Index in batches**:
 ```bash
 # Index recent posts only
-wp ai-indexer index --since=2024-01-01
+wp sk-indexer index --since=2024-01-01
 
 # Clean and re-index incrementally
-wp ai-indexer clean
-wp ai-indexer index
+wp sk-indexer clean
+wp sk-indexer index
 ```
 
 3. **Check Node.js memory**:
 ```bash
 # Increase Node.js heap size
-NODE_OPTIONS=--max-old-space-size=4096 wp ai-indexer index
+NODE_OPTIONS=--max-old-space-size=4096 wp sk-indexer index
 ```
 
 4. **Check for large posts**:
@@ -801,7 +801,7 @@ LIMIT 10;
 
 If posts are very large, reduce chunk size:
 ```bash
-wp option patch update wp_ai_assistant_settings chunk_size 800
+wp option patch update semantic_knowledge_settings chunk_size 800
 ```
 
 ---
@@ -823,7 +823,7 @@ wp cache flush
 wp redis clear
 
 # Plugin cache
-wp eval "WP_AI_Cache::flush_all();"
+wp eval "Semantic_Knowledge_Cache::flush_all();"
 
 # Transients
 wp transient delete --all
@@ -831,14 +831,14 @@ wp transient delete --all
 
 2. **Re-index content**:
 ```bash
-wp ai-indexer clean
-wp ai-indexer index
+wp sk-indexer clean
+wp sk-indexer index
 ```
 
 3. **Disable caching temporarily for testing**:
 ```php
 // In wp-config.php
-define('WP_AI_DISABLE_CACHE', true);
+define('Semantic_Knowledge_DISABLE_CACHE', true);
 ```
 
 ---
@@ -897,8 +897,8 @@ redis-cli ping
 // In wp-config.php or functions.php
 
 // Disable rate limiting
-add_filter('wp_ai_chatbot_rate_limit', '__return_false');
-add_filter('wp_ai_search_rate_limit', '__return_false');
+add_filter('semantic_knowledge_chatbot_rate_limit', '__return_false');
+add_filter('semantic_knowledge_search_rate_limit', '__return_false');
 
 // Disable nonce validation (NOT recommended for production)
 add_filter('rest_authentication_errors', function($result) {
@@ -934,19 +934,19 @@ add_action('rest_api_init', function() {
 
 1. **Manually create tables**:
 ```bash
-wp eval "WP_AI_Database::init();"
+wp eval "Semantic_Knowledge_Database::init();"
 ```
 
 2. **Verify tables exist**:
 ```bash
-wp db query "SHOW TABLES LIKE 'wp_ai_%';"
-# Should show: wp_ai_chat_logs, wp_ai_search_logs
+wp db query "SHOW TABLES LIKE 'semantic_knowledge_%';"
+# Should show: wp_sk_chat_logs, wp_sk_search_logs
 ```
 
 3. **Re-activate plugin**:
 ```bash
-wp plugin deactivate wp-ai-assistant
-wp plugin activate wp-ai-assistant
+wp plugin deactivate semantic-knowledge
+wp plugin activate semantic-knowledge
 ```
 
 ---
@@ -959,22 +959,22 @@ wp plugin activate wp-ai-assistant
 
 1. **Add missing indexes** (should exist by default):
 ```sql
-ALTER TABLE wp_ai_chat_logs ADD INDEX created_at (created_at DESC);
-ALTER TABLE wp_ai_chat_logs ADD INDEX question (question(100));
+ALTER TABLE wp_sk_chat_logs ADD INDEX created_at (created_at DESC);
+ALTER TABLE wp_sk_chat_logs ADD INDEX question (question(100));
 
-ALTER TABLE wp_ai_search_logs ADD INDEX created_at (created_at DESC);
-ALTER TABLE wp_ai_search_logs ADD INDEX query (query(100));
+ALTER TABLE wp_sk_search_logs ADD INDEX created_at (created_at DESC);
+ALTER TABLE wp_sk_search_logs ADD INDEX query (query(100));
 ```
 
 2. **Clean old logs**:
 ```bash
 # Delete logs older than 90 days
-wp eval "WP_AI_Database::cleanup_old_logs(90);"
+wp eval "Semantic_Knowledge_Database::cleanup_old_logs(90);"
 ```
 
 3. **Optimize tables**:
 ```bash
-wp db query "OPTIMIZE TABLE wp_ai_chat_logs, wp_ai_search_logs;"
+wp db query "OPTIMIZE TABLE wp_sk_chat_logs, wp_sk_search_logs;"
 ```
 
 ---
@@ -1008,13 +1008,13 @@ console.log(customElements.get('deep-chat'));
 
 1. **Verify chatbot is enabled**:
 ```bash
-wp option get wp_ai_assistant_settings --format=json | jq '.chatbot_enabled'
+wp option get semantic_knowledge_settings --format=json | jq '.chatbot_enabled'
 # Should output: true
 ```
 
 2. **Check floating button setting**:
 ```bash
-wp option get wp_ai_assistant_settings --format=json | jq '.chatbot_floating_button'
+wp option get semantic_knowledge_settings --format=json | jq '.chatbot_floating_button'
 # Should output: true (if using floating button)
 ```
 
@@ -1032,7 +1032,7 @@ wp cache flush
 5. **Verify plugin is configured**:
 ```bash
 wp eval "
-\$core = new WP_AI_Core();
+\$core = new Semantic_Knowledge_Core();
 echo \$core->is_configured() ? 'Configured' : 'Not configured';
 "
 ```
@@ -1053,7 +1053,7 @@ echo \$core->is_configured() ? 'Configured' : 'Not configured';
 NONCE=$(wp eval "echo wp_create_nonce('wp_rest');")
 
 # Test search endpoint
-curl -X POST "https://yoursite.com/wp-json/ai-assistant/v1/search" \
+curl -X POST "https://yoursite.com/wp-json/semantic-knowledge/v1/search" \
   -H "Content-Type: application/json" \
   -H "X-WP-Nonce: $NONCE" \
   -d '{"query": "test", "top_k": 10}'
@@ -1061,13 +1061,13 @@ curl -X POST "https://yoursite.com/wp-json/ai-assistant/v1/search" \
 
 3. **Verify content is indexed**:
 ```bash
-wp ai-indexer config
+wp sk-indexer config
 # Check: vector_count should be > 0
 ```
 
 4. **Check search is enabled**:
 ```bash
-wp option get wp_ai_assistant_settings --format=json | jq '.search_enabled'
+wp option get semantic_knowledge_settings --format=json | jq '.search_enabled'
 # Should output: true
 ```
 
@@ -1081,7 +1081,7 @@ If none of these solutions work:
 2. **Note exact error messages** and steps to reproduce
 3. **Check system information**:
 ```bash
-wp ai-indexer check
+wp sk-indexer check
 wp core version
 php --version
 ```
@@ -1092,7 +1092,7 @@ php --version
    - Steps to reproduce
    - System information
 
-5. **Or email**: hello@kanopi.com with "WP AI Assistant" in subject
+5. **Or email**: hello@kanopi.com with "Semantic Knowledge" in subject
 
 ---
 
@@ -1102,4 +1102,4 @@ php --version
 - [API Documentation](API.md) - Complete API reference
 - [Local Development Guide](LOCAL-DEVELOPMENT.md) - Setup instructions
 - [Performance Guide](PERFORMANCE.md) - Optimization tips
-- [GitHub Issues](https://github.com/kanopi/wp-ai-assistant/issues) - Report bugs
+- [GitHub Issues](https://github.com/kanopi/semantic-knowledge/issues) - Report bugs

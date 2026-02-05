@@ -1,20 +1,20 @@
 <?php
 /**
- * WP AI Assistant Cache Helper
+ * Semantic Knowledge Cache Helper
  *
  * Provides caching functionality for embeddings and query results
  * Uses WordPress transients with Redis/Memcached object cache support
  *
- * @package WP_AI_Assistant
+ * @package Semantic_Knowledge
  */
 
-class WP_AI_Cache {
+class Semantic_Knowledge_Cache {
 	/**
 	 * Cache key prefix
 	 *
 	 * @var string
 	 */
-	const CACHE_PREFIX = 'wp_ai_cache_';
+	const CACHE_PREFIX = 'semantic_knowledge_cache_';
 
 	/**
 	 * Default cache TTL (15 minutes for hot cache)
@@ -41,7 +41,7 @@ class WP_AI_Cache {
 
 		// Try to get from object cache first (Redis/Memcached)
 		if ( wp_using_ext_object_cache() ) {
-			return wp_cache_get( $cache_key, 'wp_ai_assistant' );
+			return wp_cache_get( $cache_key, 'semantic_knowledge_assistant' );
 		}
 
 		// Fall back to transients
@@ -61,7 +61,7 @@ class WP_AI_Cache {
 
 		// Use object cache if available (Redis/Memcached)
 		if ( wp_using_ext_object_cache() ) {
-			return wp_cache_set( $cache_key, $value, 'wp_ai_assistant', $ttl );
+			return wp_cache_set( $cache_key, $value, 'semantic_knowledge_assistant', $ttl );
 		}
 
 		// Fall back to transients
@@ -79,7 +79,7 @@ class WP_AI_Cache {
 
 		// Delete from object cache if available
 		if ( wp_using_ext_object_cache() ) {
-			return wp_cache_delete( $cache_key, 'wp_ai_assistant' );
+			return wp_cache_delete( $cache_key, 'semantic_knowledge_assistant' );
 		}
 
 		// Delete transient
@@ -98,8 +98,8 @@ class WP_AI_Cache {
 		// The consumer should handle cache invalidation on settings changes
 		if ( wp_using_ext_object_cache() ) {
 			// Increment cache version to effectively invalidate all caches
-			$version = (int) get_option( 'wp_ai_cache_version', 0 );
-			update_option( 'wp_ai_cache_version', $version + 1 );
+			$version = (int) get_option( 'semantic_knowledge_cache_version', 0 );
+			update_option( 'semantic_knowledge_cache_version', $version + 1 );
 			return true;
 		}
 

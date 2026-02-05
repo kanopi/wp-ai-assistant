@@ -1,6 +1,6 @@
-# WP AI Assistant - Deployment Guide
+# Semantic Knowledge - Deployment Guide
 
-Complete deployment procedures and best practices for the WP AI Assistant plugin across all environments.
+Complete deployment procedures and best practices for the Semantic Knowledge plugin across all environments.
 
 ## Table of Contents
 
@@ -18,7 +18,7 @@ Complete deployment procedures and best practices for the WP AI Assistant plugin
 
 ## Overview
 
-The WP AI Assistant plugin is deployed via CircleCI to Pantheon hosting environments. The deployment pipeline includes:
+The Semantic Knowledge plugin is deployed via CircleCI to Pantheon hosting environments. The deployment pipeline includes:
 
 - Automated testing (PHPUnit, Jest)
 - Security audits (npm audit, composer audit)
@@ -74,12 +74,12 @@ The WP AI Assistant plugin is deployed via CircleCI to Pantheon hosting environm
 
 - [ ] Database backups exist (automatic on Pantheon)
 - [ ] No pending migrations (handled by plugin activation)
-- [ ] Schema version compatible: `WP_AI_ASSISTANT_SCHEMA_VERSION`
+- [ ] Schema version compatible: `Semantic_Knowledge_ASSISTANT_SCHEMA_VERSION`
 
 #### 5. Plugin Readiness
 
 - [ ] Node.js indexer package built: `cd packages/wp-ai-indexer && npm run build`
-- [ ] System requirements met: `wp ai-indexer check`
+- [ ] System requirements met: `wp sk-indexer check`
 - [ ] Plugin activated in target environment
 - [ ] Settings configured in WordPress admin
 
@@ -169,7 +169,7 @@ Multidev URL: `https://pr-{number}-kanopi-2019.pantheonsite.io`
 terminus env:deploy kanopi-2019.test --note="Deploy AI Assistant v1.0.0"
 
 # Activate plugin
-terminus wp kanopi-2019.test -- plugin activate wp-ai-assistant
+terminus wp kanopi-2019.test -- plugin activate semantic-knowledge
 
 # Verify system requirements
 terminus wp kanopi-2019.test -- ai-indexer check
@@ -204,14 +204,14 @@ terminus backup:create kanopi-2019.live --element=all
 
 # Deploy test to live
 terminus env:deploy kanopi-2019.live \
-  --note="Deploy WP AI Assistant v1.0.0 - [Ticket-123]" \
+  --note="Deploy Semantic Knowledge v1.0.0 - [Ticket-123]" \
   --sync-content=false
 
 # Clear all caches
 terminus env:clear-cache kanopi-2019.live
 
 # Activate plugin (if not already active)
-terminus wp kanopi-2019.live -- plugin activate wp-ai-assistant
+terminus wp kanopi-2019.live -- plugin activate semantic-knowledge
 
 # Verify system requirements
 terminus wp kanopi-2019.live -- ai-indexer check
@@ -326,7 +326,7 @@ The indexer runs conditionally to avoid unnecessary processing:
 # Checks for changes in:
 - web/wp-content/themes/**/*.php
 - web/wp-content/plugins/**/*.php
-- web/wp-content/plugins/wp-ai-assistant/**
+- web/wp-content/plugins/semantic-knowledge/**
 
 # If no changes detected, indexer is skipped
 ```
@@ -351,11 +351,11 @@ CircleCI performs these checks automatically, but manual verification is recomme
 
 ```bash
 # Verify plugin is active
-terminus wp kanopi-2019.{env} -- plugin list --status=active --name=wp-ai-assistant
+terminus wp kanopi-2019.{env} -- plugin list --status=active --name=semantic-knowledge
 
 # Expected output:
 # name               status version
-# wp-ai-assistant    active 1.0.0
+# semantic-knowledge    active 1.0.0
 ```
 
 #### 2. System Requirements
@@ -388,11 +388,11 @@ terminus wp kanopi-2019.{env} -- ai-indexer config
 ```bash
 # Verify database tables exist
 terminus wp kanopi-2019.{env} -- db query \
-  "SHOW TABLES LIKE 'wp_ai_%'"
+  "SHOW TABLES LIKE 'semantic_knowledge_%'"
 
 # Expected tables:
-# wp_ai_chat_logs
-# wp_ai_search_logs
+# wp_sk_chat_logs
+# wp_sk_search_logs
 ```
 
 #### 5. Indexer Status
@@ -440,7 +440,7 @@ curl -w "@curl-format.txt" -o /dev/null -s \
 
 ```bash
 # Check for PHP errors
-terminus wp kanopi-2019.{env} -- tail -n 100 wp-content/debug.log | grep "WP_AI_ASSISTANT"
+terminus wp kanopi-2019.{env} -- tail -n 100 wp-content/debug.log | grep "Semantic_Knowledge_ASSISTANT"
 
 # Check for fatal errors
 terminus logs kanopi-2019.{env} --type=php-error
@@ -480,10 +480,10 @@ Fastest method - immediately disables plugin:
 
 ```bash
 # Via Terminus
-terminus wp kanopi-2019.{env} -- plugin deactivate wp-ai-assistant
+terminus wp kanopi-2019.{env} -- plugin deactivate semantic-knowledge
 
 # Via WordPress admin
-# Navigate to: Plugins → Deactivate WP AI Assistant
+# Navigate to: Plugins → Deactivate Semantic Knowledge
 ```
 
 This removes all plugin functionality but preserves:
@@ -537,7 +537,7 @@ terminus backup:restore kanopi-2019.{env} \
 
 ```bash
 # Check plugin version
-terminus wp kanopi-2019.{env} -- plugin list --name=wp-ai-assistant
+terminus wp kanopi-2019.{env} -- plugin list --name=semantic-knowledge
 
 # Verify site functionality
 curl -I https://{env}-kanopi-2019.pantheonsite.io
@@ -612,7 +612,7 @@ Use feature flags for gradual rollout:
 
 ```php
 // Enable new feature for admins only
-if ( current_user_can( 'manage_options' ) || get_option( 'wp_ai_new_feature_enabled' ) ) {
+if ( current_user_can( 'manage_options' ) || get_option( 'semantic_knowledge_new_feature_enabled' ) ) {
     // New feature code
 }
 ```
@@ -666,7 +666,7 @@ For critical security fixes or outages:
 **Resolution**:
 ```bash
 # Run tests locally
-cd web/wp-content/plugins/wp-ai-assistant
+cd web/wp-content/plugins/semantic-knowledge
 vendor/bin/phpunit
 
 # Check linting
@@ -716,7 +716,7 @@ git push
 terminus env:info kanopi-2019.{env}
 
 # Verify plugin activation
-terminus wp kanopi-2019.{env} -- plugin activate wp-ai-assistant
+terminus wp kanopi-2019.{env} -- plugin activate semantic-knowledge
 
 # Test manually
 terminus wp kanopi-2019.{env} -- ai-indexer check

@@ -1,21 +1,21 @@
 <?php
 /**
- * Tests for WP_AI_Core validation methods
+ * Tests for Semantic_Knowledge_Core validation methods
  *
- * @package WP_AI_Assistant
+ * @package Semantic_Knowledge_Assistant
  */
 
-namespace WP_AI_Tests\Unit\Core;
+namespace Semantic_Knowledge_Tests\Unit\Core;
 
-use WP_AI_Tests\Helpers\TestCase;
-use WP_AI_Core;
+use Semantic_Knowledge_Tests\Helpers\TestCase;
+use Semantic_Knowledge_Core;
 
 class CoreValidationTest extends TestCase {
 
 	/**
 	 * Core instance
 	 *
-	 * @var WP_AI_Core
+	 * @var Semantic_Knowledge_Core
 	 */
 	private $core;
 
@@ -24,7 +24,7 @@ class CoreValidationTest extends TestCase {
 	 */
 	public function setUp(): void {
 		parent::setUp();
-		$this->core = new WP_AI_Core();
+		$this->core = new Semantic_Knowledge_Core();
 
 		// Mock get_option to return empty settings
 		\WP_Mock::userFunction( 'get_option' )
@@ -340,7 +340,7 @@ class CoreValidationTest extends TestCase {
 				)
 			);
 
-		$core = new WP_AI_Core();
+		$core = new Semantic_Knowledge_Core();
 		$this->assertTrue( $core->is_configured() );
 	}
 
@@ -351,7 +351,7 @@ class CoreValidationTest extends TestCase {
 		\WP_Mock::userFunction( 'get_option' )
 			->andReturn( array() );
 
-		$core = new WP_AI_Core();
+		$core = new Semantic_Knowledge_Core();
 		$this->assertFalse( $core->is_configured() );
 	}
 }

@@ -1,21 +1,21 @@
 <?php
 /**
- * Tests for WP_AI_Logger class
+ * Tests for Semantic_Knowledge_Logger class
  *
- * @package WP_AI_Assistant
+ * @package Semantic_Knowledge_Assistant
  */
 
-namespace WP_AI_Tests\Unit\Logger;
+namespace Semantic_Knowledge_Tests\Unit\Logger;
 
-use WP_AI_Tests\Helpers\TestCase;
-use WP_AI_Logger;
+use Semantic_Knowledge_Tests\Helpers\TestCase;
+use Semantic_Knowledge_Logger;
 
 class LoggerTest extends TestCase {
 
 	/**
 	 * Logger instance
 	 *
-	 * @var WP_AI_Logger
+	 * @var Semantic_Knowledge_Logger
 	 */
 	private $logger;
 
@@ -24,15 +24,15 @@ class LoggerTest extends TestCase {
 	 */
 	public function setUp(): void {
 		parent::setUp();
-		$this->logger = WP_AI_Logger::instance();
+		$this->logger = Semantic_Knowledge_Logger::instance();
 	}
 
 	/**
 	 * Test logger singleton instance
 	 */
 	public function test_singleton_instance() {
-		$instance1 = WP_AI_Logger::instance();
-		$instance2 = WP_AI_Logger::instance();
+		$instance1 = Semantic_Knowledge_Logger::instance();
+		$instance2 = Semantic_Knowledge_Logger::instance();
 
 		$this->assertSame( $instance1, $instance2, 'Logger should return same instance' );
 	}
@@ -132,17 +132,17 @@ class LoggerTest extends TestCase {
 		// Set minimum level to WARNING via reflection
 		$prop = $reflection->getProperty( 'min_level' );
 		$prop->setAccessible( true );
-		$prop->setValue( $this->logger, WP_AI_Logger::WARNING );
+		$prop->setValue( $this->logger, Semantic_Knowledge_Logger::WARNING );
 
 		// Should log WARNING and above
-		$this->assertTrue( $method->invoke( $this->logger, WP_AI_Logger::EMERGENCY ) );
-		$this->assertTrue( $method->invoke( $this->logger, WP_AI_Logger::ERROR ) );
-		$this->assertTrue( $method->invoke( $this->logger, WP_AI_Logger::WARNING ) );
+		$this->assertTrue( $method->invoke( $this->logger, Semantic_Knowledge_Logger::EMERGENCY ) );
+		$this->assertTrue( $method->invoke( $this->logger, Semantic_Knowledge_Logger::ERROR ) );
+		$this->assertTrue( $method->invoke( $this->logger, Semantic_Knowledge_Logger::WARNING ) );
 
 		// Should NOT log below WARNING
-		$this->assertFalse( $method->invoke( $this->logger, WP_AI_Logger::NOTICE ) );
-		$this->assertFalse( $method->invoke( $this->logger, WP_AI_Logger::INFO ) );
-		$this->assertFalse( $method->invoke( $this->logger, WP_AI_Logger::DEBUG ) );
+		$this->assertFalse( $method->invoke( $this->logger, Semantic_Knowledge_Logger::NOTICE ) );
+		$this->assertFalse( $method->invoke( $this->logger, Semantic_Knowledge_Logger::INFO ) );
+		$this->assertFalse( $method->invoke( $this->logger, Semantic_Knowledge_Logger::DEBUG ) );
 	}
 
 	/**
@@ -156,9 +156,9 @@ class LoggerTest extends TestCase {
 		$message = 'Test message';
 		$context = array( 'key' => 'value' );
 
-		$formatted = $method->invoke( $this->logger, WP_AI_Logger::ERROR, $message, $context );
+		$formatted = $method->invoke( $this->logger, Semantic_Knowledge_Logger::ERROR, $message, $context );
 
-		$this->assertStringContainsString( 'WP_AI_ASSISTANT.ERROR', $formatted );
+		$this->assertStringContainsString( 'Semantic_Knowledge_ASSISTANT.ERROR', $formatted );
 		$this->assertStringContainsString( 'Test message', $formatted );
 		$this->assertStringContainsString( '"key":"value"', $formatted );
 	}

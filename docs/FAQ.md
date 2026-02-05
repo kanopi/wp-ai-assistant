@@ -1,6 +1,6 @@
 # Frequently Asked Questions
 
-Common questions and answers for WP AI Assistant users.
+Common questions and answers for Semantic Knowledge users.
 
 ## Table of Contents
 
@@ -15,9 +15,9 @@ Common questions and answers for WP AI Assistant users.
 
 ## General Questions
 
-### What is WP AI Assistant?
+### What is Semantic Knowledge?
 
-WP AI Assistant is a WordPress plugin that adds AI-powered features to your website:
+Semantic Knowledge is a WordPress plugin that adds AI-powered features to your website:
 - **AI Chatbot** - Answers visitor questions using your website content
 - **AI Search** - Semantic search that understands meaning, not just keywords
 
@@ -151,7 +151,7 @@ Yes! The plugin is designed to work with any WordPress theme:
 **How to re-index:**
 Ask your developer to run:
 ```bash
-wp ai-indexer index
+wp sk-indexer index
 ```
 
 **Recommendation:** Re-index weekly or monthly depending on publishing frequency.
@@ -311,7 +311,7 @@ These REQUIRE technical knowledge.
    - Should show green "✓ Configured"
 
 3. **Is content indexed?**
-   - Ask developer: `wp ai-indexer check`
+   - Ask developer: `wp sk-indexer check`
    - Should show indexer is installed
 
 4. **Clear cache:**
@@ -434,7 +434,7 @@ These REQUIRE technical knowledge.
 1. **Verify content is indexed:**
    ```bash
    # Developer runs
-   wp ai-indexer config
+   wp sk-indexer config
    ```
    Check if post type is included
 
@@ -697,7 +697,7 @@ These REQUIRE technical knowledge.
 
 3. **Use custom filter (developer):**
    ```php
-   add_filter('wp_ai_indexer_should_index', function($should_index, $post) {
+   add_filter('semantic_knowledge_indexer_should_index', function($should_index, $post) {
        // Skip posts in specific category
        if (has_category('private-category', $post)) {
            return false;
@@ -709,7 +709,7 @@ These REQUIRE technical knowledge.
 4. **Remove from index (developer):**
    ```bash
    # Delete specific post from index
-   wp ai-indexer delete-post <post-id>
+   wp sk-indexer delete-post <post-id>
    ```
 
 ### Are API keys secure?
@@ -760,7 +760,7 @@ These REQUIRE technical knowledge.
 
 2. **Clear Pinecone index**:
    - Option A: Delete index from Pinecone dashboard
-   - Option B: Run `wp ai-indexer delete-all --yes` (before uninstalling)
+   - Option B: Run `wp sk-indexer delete-all --yes` (before uninstalling)
 
 3. **Uninstall plugin:**
    - Plugins > Installed Plugins
@@ -835,7 +835,7 @@ The chatbot uses a third-party component (Deep Chat) which may have some minor s
 **We take accessibility seriously!**
 
 **To report an issue:**
-1. Visit https://github.com/kanopi/wp-ai-assistant/issues
+1. Visit https://github.com/kanopi/semantic-knowledge/issues
 2. Click "New Issue"
 3. Add label "Accessibility Issue"
 4. Describe:
@@ -854,7 +854,7 @@ The chatbot uses a third-party component (Deep Chat) which may have some minor s
 
 1. **Customize ARIA labels:**
    ```php
-   add_filter('wp_ai_chatbot_aria_label', function($label) {
+   add_filter('semantic_knowledge_chatbot_aria_label', function($label) {
        return 'Custom accessible label';
    });
    ```
@@ -872,7 +872,7 @@ The chatbot uses a third-party component (Deep Chat) which may have some minor s
 4. **Override default styles:**
    ```css
    /* Enhance focus indicators */
-   .wp-ai-chatbot:focus {
+   .sk-chatbot:focus {
        outline: 3px solid blue;
    }
    ```
@@ -886,13 +886,13 @@ The chatbot uses a third-party component (Deep Chat) which may have some minor s
 **1. Via CSS (theme stylesheet):**
 ```css
 /* Chatbot button */
-.wp-ai-chatbot-button {
+.sk-chatbot-button {
     background: your-brand-color;
     border-radius: 50%;
 }
 
 /* Chat popup */
-.wp-ai-chatbot-popup {
+.sk-chatbot-popup {
     max-width: 400px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
@@ -909,7 +909,7 @@ The chatbot uses a third-party component (Deep Chat) which may have some minor s
 **4. Via developer filters:**
 ```php
 // Customize chatbot config
-add_filter('wp_ai_chatbot_config', function($config) {
+add_filter('semantic_knowledge_chatbot_config', function($config) {
     $config['theme'] = 'dark';
     return $config;
 });
@@ -977,7 +977,7 @@ Settings > AI Assistant > Search > Advanced Relevance Boosting:
 **3. Custom Filters (developer):**
 
 ```php
-add_filter('wp_ai_search_relevance_config', function($config, $query) {
+add_filter('semantic_knowledge_search_relevance_config', function($config, $query) {
     // Boost custom post types
     $config['post_type_boosts']['services'] = 0.08;
     $config['post_type_boosts']['case-study'] = 0.06;
@@ -992,7 +992,7 @@ See [CUSTOMIZATION.md](CUSTOMIZATION.md) for detailed examples.
 **Yes, developers can:**
 
 ```php
-add_filter('wp_ai_indexer_post_data', function($data, $post) {
+add_filter('semantic_knowledge_indexer_post_data', function($data, $post) {
     // Add custom field to indexed content
     $custom_value = get_post_meta($post->ID, 'custom_field', true);
     if ($custom_value) {
@@ -1010,7 +1010,7 @@ After adding filter, re-index content.
 
 **1. Filter results (developer):**
 ```php
-add_filter('wp_ai_search_results', function($results, $query, $matches) {
+add_filter('semantic_knowledge_search_results', function($results, $query, $matches) {
     // Customize results array
     foreach ($results as &$result) {
         // Add featured image
@@ -1022,7 +1022,7 @@ add_filter('wp_ai_search_results', function($results, $query, $matches) {
 
 **2. Customize AI summary (developer):**
 ```php
-add_filter('wp_ai_search_summary', function($summary, $query) {
+add_filter('semantic_knowledge_search_summary', function($summary, $query) {
     // Add custom formatting or CTA
     $summary .= '<p class="cta">Need help? <a href="/contact/">Contact us</a></p>';
     return $summary;
@@ -1031,7 +1031,7 @@ add_filter('wp_ai_search_summary', function($summary, $query) {
 
 **3. Override CSS:**
 ```css
-.wp-ai-search__results {
+.sk-search__results {
     /* Custom styles */
 }
 ```
@@ -1042,7 +1042,7 @@ add_filter('wp_ai_search_summary', function($summary, $query) {
 
 **Google Analytics 4:**
 ```php
-add_action('wp_ai_chatbot_query_end', function($response, $question) {
+add_action('semantic_knowledge_chatbot_query_end', function($response, $question) {
     // Track chat interactions
     ?>
     <script>
@@ -1054,7 +1054,7 @@ add_action('wp_ai_chatbot_query_end', function($response, $question) {
     <?php
 }, 10, 2);
 
-add_action('wp_ai_search_query_end', function($response, $query) {
+add_action('semantic_knowledge_search_query_end', function($response, $query) {
     // Track searches
     ?>
     <script>
@@ -1070,7 +1070,7 @@ add_action('wp_ai_search_query_end', function($response, $query) {
 
 **Custom Analytics:**
 ```php
-add_action('wp_ai_chatbot_query_end', function($response, $question) {
+add_action('semantic_knowledge_chatbot_query_end', function($response, $question) {
     // Send to custom analytics service
     wp_remote_post('https://your-analytics.com/track', [
         'body' => [
@@ -1103,7 +1103,7 @@ npm install -g @kanopi/wp-ai-indexer
 
 **Verify:**
 ```bash
-wp ai-indexer check
+wp sk-indexer check
 ```
 
 ### "Configuration Status: Not configured"
@@ -1216,8 +1216,8 @@ wp ai-indexer check
 **Database cleanup (ask developer):**
 ```bash
 # Delete logs older than 30 days
-wp db query "DELETE FROM wp_ai_assistant_chat_logs WHERE created_at < DATE_SUB(NOW(), INTERVAL 30 DAY);"
-wp db query "DELETE FROM wp_ai_assistant_search_logs WHERE created_at < DATE_SUB(NOW(), INTERVAL 30 DAY);"
+wp db query "DELETE FROM semantic_knowledge_chat_logs WHERE created_at < DATE_SUB(NOW(), INTERVAL 30 DAY);"
+wp db query "DELETE FROM semantic_knowledge_search_logs WHERE created_at < DATE_SUB(NOW(), INTERVAL 30 DAY);"
 ```
 
 ### Plugin conflicts with another plugin
@@ -1240,7 +1240,7 @@ wp db query "DELETE FROM wp_ai_assistant_search_logs WHERE created_at < DATE_SUB
 
 3. **Check for REST API conflicts:**
    - Some plugins block REST API
-   - WP AI Assistant requires REST API access
+   - Semantic Knowledge requires REST API access
 
 **Common conflicts:**
 - Security plugins blocking REST API
@@ -1262,7 +1262,7 @@ wp db query "DELETE FROM wp_ai_assistant_search_logs WHERE created_at < DATE_SUB
 - [Shortcodes Guide](SHORTCODES.md) - Shortcode examples
 
 **Support:**
-- [GitHub Issues](https://github.com/kanopi/wp-ai-assistant/issues) - Bug reports and feature requests
+- [GitHub Issues](https://github.com/kanopi/semantic-knowledge/issues) - Bug reports and feature requests
 - [Developer Documentation](https://github.com/kanopi/wp-ai-indexer) - Technical docs
 - Developer contact - For custom development and support
 

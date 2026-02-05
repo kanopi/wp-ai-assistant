@@ -1,13 +1,13 @@
 <?php
 /**
- * WP AI Assistant Asset Manager
+ * Semantic Knowledge Asset Manager
  *
  * Handles asset optimization, versioning, and CDN integration
  *
- * @package WP_AI_Assistant
+ * @package Semantic_Knowledge
  */
 
-class WP_AI_Assets {
+class Semantic_Knowledge_Assets {
 	/**
 	 * Register asset optimization hooks
 	 */
@@ -47,7 +47,7 @@ class WP_AI_Assets {
 		$src = remove_query_arg( 'ver', $src );
 
 		// Get file path from URL
-		$file_path = str_replace( WP_AI_ASSISTANT_URL, WP_AI_ASSISTANT_DIR, $src );
+		$file_path = str_replace( SEMANTIC_KNOWLEDGE_URL, SEMANTIC_KNOWLEDGE_DIR, $src );
 		$file_path = strtok( $file_path, '?' ); // Remove query string
 
 		// If file exists, use modification time as version
@@ -90,7 +90,7 @@ class WP_AI_Assets {
 	public static function add_sri_to_scripts( $tag, $handle, $src ) {
 		// List of known external scripts with SRI hashes
 		$sri_scripts = apply_filters(
-			'wp_ai_assistant_sri_scripts',
+			'semantic_knowledge_sri_scripts',
 			array(
 				'deep-chat' => array(
 					'integrity' => 'sha384-PLACEHOLDER', // Should be updated with actual hash
@@ -141,7 +141,7 @@ class WP_AI_Assets {
 		$cdn_url = WP_AI_CDN_URL;
 
 		// Replace plugin URL with CDN URL
-		$cdn_src = str_replace( WP_AI_ASSISTANT_URL, trailingslashit( $cdn_url ) . 'wp-content/plugins/wp-ai-assistant/', $src );
+		$cdn_src = str_replace( SEMANTIC_KNOWLEDGE_URL, trailingslashit( $cdn_url ) . 'wp-content/plugins/wp-ai-assistant/', $src );
 
 		return $cdn_src;
 	}
@@ -215,7 +215,7 @@ class WP_AI_Assets {
 	 * Run this during build process or plugin activation
 	 */
 	public static function create_minified_assets() {
-		$assets_dir = WP_AI_ASSISTANT_DIR . 'assets/';
+		$assets_dir = SEMANTIC_KNOWLEDGE_DIR . 'assets/';
 
 		// Minify CSS files
 		$css_files = glob( $assets_dir . 'css/*.css' );
@@ -254,7 +254,7 @@ class WP_AI_Assets {
 	 * @return array Asset statistics
 	 */
 	public static function get_stats() {
-		$assets_dir = WP_AI_ASSISTANT_DIR . 'assets/';
+		$assets_dir = SEMANTIC_KNOWLEDGE_DIR . 'assets/';
 		$css_dir = $assets_dir . 'css/';
 		$js_dir = $assets_dir . 'js/';
 

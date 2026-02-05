@@ -9,7 +9,7 @@
 #   test-wp-plugin.sh [OPTIONS] PLUGIN_PATH
 #
 # Arguments:
-#   PLUGIN_PATH               Path to the plugin (e.g., web/wp-content/plugins/wp-ai-assistant)
+#   PLUGIN_PATH               Path to the plugin (e.g., web/wp-content/plugins/semantic-knowledge)
 #
 # Options:
 #   --cache-key KEY           Custom cache key prefix (default: v1-plugin-composer-deps)

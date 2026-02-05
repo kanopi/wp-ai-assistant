@@ -1,6 +1,6 @@
 # Performance Optimization Guide
 
-This guide covers performance optimization strategies for WP AI Assistant, including caching, compression, and CDN configuration.
+This guide covers performance optimization strategies for Semantic Knowledge, including caching, compression, and CDN configuration.
 
 ## Object Caching for Transients
 
@@ -119,15 +119,15 @@ time wp transient get wp_ai_indexer_settings_response
 time wp transient get wp_ai_indexer_settings_response
 ```
 
-### Transients Used by WP AI Assistant
+### Transients Used by Semantic Knowledge
 
 The plugin uses the following transients:
 
 | Transient Key | Purpose | TTL | Impact |
 |--------------|---------|-----|--------|
-| `wp_ai_indexer_settings_response` | Indexer settings cache | 1 hour | High - reduces DB queries |
-| `wp_ai_chatbot_rl_{hash}` | Rate limiting counters | 60 seconds | High - prevents abuse |
-| `wp_ai_assistant_system_check` | System requirements check | 6 hours | Low - admin only |
+| `semantic_knowledge_indexer_settings_response` | Indexer settings cache | 1 hour | High - reduces DB queries |
+| `semantic_knowledge_chatbot_rl_{hash}` | Rate limiting counters | 60 seconds | High - prevents abuse |
+| `semantic_knowledge_system_check` | System requirements check | 6 hours | Low - admin only |
 
 With object caching enabled, these transients are stored in Redis/Memcached instead of the database.
 
@@ -208,13 +208,13 @@ Test with curl:
 
 ```bash
 # Check for Gzip
-curl -I -H "Accept-Encoding: gzip" https://yoursite.com/wp-content/plugins/wp-ai-assistant/assets/css/chatbot.css
+curl -I -H "Accept-Encoding: gzip" https://yoursite.com/wp-content/plugins/semantic-knowledge/assets/css/chatbot.css
 
 # Look for:
 # Content-Encoding: gzip
 
 # Check for Brotli
-curl -I -H "Accept-Encoding: br" https://yoursite.com/wp-content/plugins/wp-ai-assistant/assets/css/chatbot.css
+curl -I -H "Accept-Encoding: br" https://yoursite.com/wp-content/plugins/semantic-knowledge/assets/css/chatbot.css
 
 # Look for:
 # Content-Encoding: br
@@ -280,7 +280,7 @@ The plugin assets are already minified in production, but you can further optimi
 
 **Install dependencies:**
 ```bash
-cd web/wp-content/plugins/wp-ai-assistant
+cd web/wp-content/plugins/semantic-knowledge
 npm install --save-dev terser clean-css-cli
 ```
 
@@ -306,7 +306,7 @@ Currently, Deep Chat is loaded from CDN. For better performance and reliability,
 
 **1. Download Deep Chat:**
 ```bash
-cd web/wp-content/plugins/wp-ai-assistant/assets/vendor
+cd web/wp-content/plugins/semantic-knowledge/assets/vendor
 wget https://cdn.jsdelivr.net/npm/deep-chat@2.3.0/dist/deepChat.bundle.js
 ```
 
@@ -324,7 +324,7 @@ script.src = settings.deepChatUrl || 'https://cdn.jsdelivr.net/npm/deep-chat@2.3
 
 To:
 ```javascript
-script.src = settings.deepChatUrl || '/wp-content/plugins/wp-ai-assistant/assets/vendor/deepChat.bundle.js';
+script.src = settings.deepChatUrl || '/wp-content/plugins/semantic-knowledge/assets/vendor/deepChat.bundle.js';
 ```
 
 **4. Add SRI integrity attribute** (optional but recommended):
@@ -434,7 +434,7 @@ nginx -V 2>&1 | grep -o with-http_gzip_static_module
 
 **Verify CDN is serving files:**
 ```bash
-curl -I https://yoursite.com/wp-content/plugins/wp-ai-assistant/assets/css/chatbot.css | grep -i cf-cache
+curl -I https://yoursite.com/wp-content/plugins/semantic-knowledge/assets/css/chatbot.css | grep -i cf-cache
 # Should show: cf-cache-status: HIT
 ```
 
@@ -448,4 +448,4 @@ curl -I https://yoursite.com/wp-content/plugins/wp-ai-assistant/assets/css/chatb
 4. ✅ Monitor performance metrics
 5. ✅ Optimize based on real-world data
 
-For additional optimization strategies, see Phase 2 of the [Implementation Plan](../../../wp-ai-assistant-implementation-plan.md).
+For additional optimization strategies, see Phase 2 of the [Implementation Plan](../../../semantic-knowledge-implementation-plan.md).

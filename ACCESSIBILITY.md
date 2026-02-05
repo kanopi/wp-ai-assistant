@@ -1,11 +1,11 @@
 # Accessibility Statement
 
-**WP AI Assistant Plugin**
+**Semantic Knowledge Plugin**
 **Last Updated:** January 28, 2026
 
 ## Our Commitment to Accessibility
 
-The WP AI Assistant plugin is committed to providing an accessible experience for all users, including those who rely on assistive technologies. We strive to meet Web Content Accessibility Guidelines (WCAG) 2.1 Level AA standards.
+The Semantic Knowledge plugin is committed to providing an accessible experience for all users, including those who rely on assistive technologies. We strive to meet Web Content Accessibility Guidelines (WCAG) 2.1 Level AA standards.
 
 ## WCAG 2.1 Level AA Compliance Status
 
@@ -205,7 +205,7 @@ We take accessibility seriously and welcome feedback from the community.
 If you encounter an accessibility barrier while using this plugin, please report it:
 
 **Via GitHub:**
-1. Visit [github.com/kanopi/wp-ai-assistant/issues](https://github.com/kanopi/wp-ai-assistant/issues)
+1. Visit [github.com/kanopi/semantic-knowledge/issues](https://github.com/kanopi/semantic-knowledge/issues)
 2. Click "New Issue"
 3. Select "Accessibility Issue" template
 4. Provide detailed information about the barrier
@@ -241,12 +241,12 @@ We aim to:
 
 **Team:** Kanopi Studios Development Team
 **Email:** [accessibility@kanopi.com](mailto:accessibility@kanopi.com)
-**GitHub:** [github.com/kanopi/wp-ai-assistant](https://github.com/kanopi/wp-ai-assistant)
+**GitHub:** [github.com/kanopi/semantic-knowledge](https://github.com/kanopi/semantic-knowledge)
 
 ### Support Channels
 
-- **GitHub Issues:** [Report bugs and accessibility issues](https://github.com/kanopi/wp-ai-assistant/issues)
-- **Documentation:** [Read detailed developer docs](https://github.com/kanopi/wp-ai-assistant#readme)
+- **GitHub Issues:** [Report bugs and accessibility issues](https://github.com/kanopi/semantic-knowledge/issues)
+- **Documentation:** [Read detailed developer docs](https://github.com/kanopi/semantic-knowledge#readme)
 - **Email Support:** [support@kanopi.com](mailto:support@kanopi.com)
 
 ## Technical Specifications

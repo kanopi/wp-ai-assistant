@@ -1,21 +1,21 @@
 <?php
 /**
- * Tests for WP_AI_Secrets class
+ * Tests for Semantic_Knowledge_Secrets class
  *
- * @package WP_AI_Assistant
+ * @package Semantic_Knowledge_Assistant
  */
 
-namespace WP_AI_Tests\Unit\Core;
+namespace Semantic_Knowledge_Tests\Unit\Core;
 
-use WP_AI_Tests\Helpers\TestCase;
-use WP_AI_Secrets;
+use Semantic_Knowledge_Tests\Helpers\TestCase;
+use Semantic_Knowledge_Secrets;
 
 class SecretsTest extends TestCase {
 
 	/**
 	 * Secrets instance
 	 *
-	 * @var WP_AI_Secrets
+	 * @var Semantic_Knowledge_Secrets
 	 */
 	private $secrets;
 
@@ -24,7 +24,7 @@ class SecretsTest extends TestCase {
 	 */
 	public function setUp(): void {
 		parent::setUp();
-		$this->secrets = new WP_AI_Secrets();
+		$this->secrets = new Semantic_Knowledge_Secrets();
 	}
 
 	/**
@@ -32,12 +32,12 @@ class SecretsTest extends TestCase {
 	 */
 	public function test_get_secret_uses_constant_first() {
 		// Mock constant
-		if ( ! defined( 'WP_AI_OPENAI_API_KEY' ) ) {
-			define( 'WP_AI_OPENAI_API_KEY', 'constant-key' );
+		if ( ! defined( 'Semantic_Knowledge_OPENAI_API_KEY' ) ) {
+			define( 'Semantic_Knowledge_OPENAI_API_KEY', 'constant-key' );
 		}
 
 		// Mock environment variable
-		putenv( 'WP_AI_OPENAI_API_KEY=env-key' );
+		putenv( 'Semantic_Knowledge_OPENAI_API_KEY=env-key' );
 
 		// Mock option
 		\WP_Mock::userFunction( 'get_option' )
@@ -58,7 +58,7 @@ class SecretsTest extends TestCase {
 	public function test_get_secret_uses_env_var_second() {
 		// No constant defined for this test
 		// Mock environment variable
-		putenv( 'WP_AI_TEST_KEY=env-key' );
+		putenv( 'Semantic_Knowledge_TEST_KEY=env-key' );
 
 		// Mock option
 		\WP_Mock::userFunction( 'get_option' )
@@ -116,12 +116,12 @@ class SecretsTest extends TestCase {
 		$method->setAccessible( true );
 
 		$this->assertEquals(
-			'WP_AI_OPENAI_API_KEY',
+			'Semantic_Knowledge_OPENAI_API_KEY',
 			$method->invoke( $this->secrets, 'openai_api_key' )
 		);
 
 		$this->assertEquals(
-			'WP_AI_PINECONE_API_KEY',
+			'Semantic_Knowledge_PINECONE_API_KEY',
 			$method->invoke( $this->secrets, 'pinecone_api_key' )
 		);
 	}
@@ -135,12 +135,12 @@ class SecretsTest extends TestCase {
 		$method->setAccessible( true );
 
 		$this->assertEquals(
-			'WP_AI_OPENAI_API_KEY',
+			'Semantic_Knowledge_OPENAI_API_KEY',
 			$method->invoke( $this->secrets, 'openai_api_key' )
 		);
 
 		$this->assertEquals(
-			'WP_AI_PINECONE_API_KEY',
+			'Semantic_Knowledge_PINECONE_API_KEY',
 			$method->invoke( $this->secrets, 'pinecone_api_key' )
 		);
 	}
@@ -149,8 +149,8 @@ class SecretsTest extends TestCase {
 	 * Test has_secret method
 	 */
 	public function test_has_secret_returns_true_when_exists() {
-		if ( ! defined( 'WP_AI_TEST_SECRET' ) ) {
-			define( 'WP_AI_TEST_SECRET', 'test-value' );
+		if ( ! defined( 'Semantic_Knowledge_TEST_SECRET' ) ) {
+			define( 'Semantic_Knowledge_TEST_SECRET', 'test-value' );
 		}
 
 		// Note: has_secret would need to be a public method or we test via get_secret
@@ -224,8 +224,8 @@ class SecretsTest extends TestCase {
 	 * Test get_all_secrets method
 	 */
 	public function test_get_all_secrets() {
-		if ( ! defined( 'WP_AI_OPENAI_API_KEY' ) ) {
-			define( 'WP_AI_OPENAI_API_KEY', 'openai-key' );
+		if ( ! defined( 'Semantic_Knowledge_OPENAI_API_KEY' ) ) {
+			define( 'Semantic_Knowledge_OPENAI_API_KEY', 'openai-key' );
 		}
 
 		\WP_Mock::userFunction( 'get_option' )

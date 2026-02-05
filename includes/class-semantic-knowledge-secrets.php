@@ -1,6 +1,6 @@
 <?php
 /**
- * Secrets management for WP AI Assistant
+ * Secrets management for Semantic Knowledge
  * Hierarchical secret retrieval: Constants → Env → Pantheon → File
  */
 
@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class WP_AI_Secrets {
+class Semantic_Knowledge_Secrets {
 	private $secrets_cache = array();
 	private $secrets_file_path;
 
@@ -87,14 +87,14 @@ class WP_AI_Secrets {
 		}
 
 		// Check if setting exists (deprecated behavior)
-		$settings = get_option( 'wp_ai_assistant_settings', array() );
+		$settings = get_option( 'semantic_knowledge_settings', array() );
 		$setting_value = isset( $settings[ $setting_key ] ) ? $settings[ $setting_key ] : '';
 
 		// Log deprecation warning if setting is being used
 		if ( ! empty( $setting_value ) && defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 			error_log(
 				sprintf(
-					'WP AI Assistant: Storing API key "%s" in database settings is deprecated and insecure. ' .
+					'Semantic Knowledge: Storing API key "%s" in database settings is deprecated and insecure. ' .
 					'Please use environment variables, PHP constants, or the secrets file instead. ' .
 					'This fallback will be removed in a future version.',
 					$setting_key

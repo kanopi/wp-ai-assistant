@@ -1,6 +1,6 @@
-# Configuration Guide: WP AI Assistant
+# Configuration Guide: Semantic Knowledge
 
-Detailed configuration reference for administrators setting up and fine-tuning the WP AI Assistant plugin.
+Detailed configuration reference for administrators setting up and fine-tuning the Semantic Knowledge plugin.
 
 ## Table of Contents
 
@@ -29,7 +29,7 @@ OPENAI_API_KEY=sk-proj-your-key-here
 PINECONE_API_KEY=your-pinecone-key-here
 
 # Indexer API Key for REST authentication (required for CI/CD)
-WP_AI_INDEXER_KEY=generate-a-secure-random-32-char-string
+Semantic_Knowledge_INDEXER_KEY=generate-a-secure-random-32-char-string
 ```
 
 ### Optional Variables
@@ -39,10 +39,10 @@ These variables provide additional security and configuration options:
 ```bash
 # Trusted proxy IPs (for rate limiting behind load balancer)
 # Only set if you're behind CDN/load balancer and need accurate client IPs
-WP_AI_TRUSTED_PROXIES=10.0.0.1,10.0.0.2
+Semantic_Knowledge_TRUSTED_PROXIES=10.0.0.1,10.0.0.2
 
 # Enable Content Security Policy headers (disabled by default for compatibility)
-WP_AI_ENABLE_CSP=true
+Semantic_Knowledge_ENABLE_CSP=true
 ```
 
 ### Configuration Methods
@@ -55,8 +55,8 @@ Create or edit `.ddev/config.yaml`:
 web_environment:
   - OPENAI_API_KEY=sk-proj-...
   - PINECONE_API_KEY=...
-  - WP_AI_INDEXER_KEY=...
-  - WP_AI_TRUSTED_PROXIES=10.0.0.1
+  - Semantic_Knowledge_INDEXER_KEY=...
+  - Semantic_Knowledge_TRUSTED_PROXIES=10.0.0.1
 ```
 
 Then restart DDEV:
@@ -69,16 +69,16 @@ ddev restart
 Add to `wp-config.php` before "That's all, stop editing!":
 
 ```php
-// WP AI Assistant Configuration
+// Semantic Knowledge Configuration
 define('OPENAI_API_KEY', 'sk-proj-...');
 define('PINECONE_API_KEY', '...');
-define('WP_AI_INDEXER_KEY', '...');
+define('Semantic_Knowledge_INDEXER_KEY', '...');
 
 // Optional: Trusted proxies for rate limiting
-define('WP_AI_TRUSTED_PROXIES', '10.0.0.1,10.0.0.2');
+define('Semantic_Knowledge_TRUSTED_PROXIES', '10.0.0.1,10.0.0.2');
 
 // Optional: Enable Content Security Policy
-define('WP_AI_ENABLE_CSP', true);
+define('Semantic_Knowledge_ENABLE_CSP', true);
 ```
 
 #### Method 3: Server Environment Variables
@@ -87,7 +87,7 @@ define('WP_AI_ENABLE_CSP', true);
 ```apache
 SetEnv OPENAI_API_KEY "sk-proj-..."
 SetEnv PINECONE_API_KEY "..."
-SetEnv WP_AI_INDEXER_KEY "..."
+SetEnv Semantic_Knowledge_INDEXER_KEY "..."
 ```
 
 **Nginx (server config):**
@@ -95,7 +95,7 @@ SetEnv WP_AI_INDEXER_KEY "..."
 location / {
     fastcgi_param OPENAI_API_KEY "sk-proj-...";
     fastcgi_param PINECONE_API_KEY "...";
-    fastcgi_param WP_AI_INDEXER_KEY "...";
+    fastcgi_param Semantic_Knowledge_INDEXER_KEY "...";
 }
 ```
 
@@ -941,7 +941,7 @@ Boosts WordPress "page" post type slightly over "post" type.
 - **0.0:** No post type preference
 - **0.10+:** Strong preference (may over-prioritize pages)
 
-**Note:** For custom post type boosts, use the `wp_ai_search_relevance_config` filter (requires custom code).
+**Note:** For custom post type boosts, use the `semantic_knowledge_search_relevance_config` filter (requires custom code).
 
 ## Advanced Settings
 
@@ -980,7 +980,7 @@ which node
 
 ### Trusted Proxy IPs
 
-**Location:** Environment variable: `WP_AI_TRUSTED_PROXIES`
+**Location:** Environment variable: `Semantic_Knowledge_TRUSTED_PROXIES`
 **Type:** Comma-separated IP addresses
 **Default:** None
 
@@ -993,10 +993,10 @@ Configure if your site is behind a load balancer, CDN, or proxy that sets `X-For
 **Configuration:**
 ```bash
 # Single IP
-WP_AI_TRUSTED_PROXIES=10.0.0.1
+Semantic_Knowledge_TRUSTED_PROXIES=10.0.0.1
 
 # Multiple IPs
-WP_AI_TRUSTED_PROXIES=10.0.0.1,10.0.0.2,10.0.0.3
+Semantic_Knowledge_TRUSTED_PROXIES=10.0.0.1,10.0.0.2,10.0.0.3
 ```
 
 **When to Configure:**
@@ -1021,7 +1021,7 @@ wp eval 'echo $_SERVER["HTTP_X_FORWARDED_FOR"] ?? "not set";'
 
 ### Content Security Policy (CSP)
 
-**Location:** Environment variable: `WP_AI_ENABLE_CSP`
+**Location:** Environment variable: `Semantic_Knowledge_ENABLE_CSP`
 **Type:** Boolean (true/false)
 **Default:** False (disabled for compatibility)
 
@@ -1029,7 +1029,7 @@ Enables Content Security Policy headers for enhanced security.
 
 **Configuration:**
 ```bash
-WP_AI_ENABLE_CSP=true
+Semantic_Knowledge_ENABLE_CSP=true
 ```
 
 **CSP Directives Added:**
@@ -1057,7 +1057,7 @@ Content-Security-Policy:
 
 Developers can filter directives:
 ```php
-add_filter('wp_ai_assistant_csp_directives', function($directives) {
+add_filter('semantic_knowledge_csp_directives', function($directives) {
     // Add custom directive
     $directives[] = "font-src 'self' https://custom-cdn.com";
     return $directives;
@@ -1073,16 +1073,16 @@ add_filter('wp_ai_assistant_csp_directives', function($directives) {
 
 ```php
 // Change chatbot rate limit
-add_filter('wp_ai_chatbot_rate_limit', function($limit) {
+add_filter('semantic_knowledge_chatbot_rate_limit', function($limit) {
     return 20; // 20 requests per window
 });
 
-add_filter('wp_ai_chatbot_rate_window', function($window) {
+add_filter('semantic_knowledge_chatbot_rate_window', function($window) {
     return 120; // 120 seconds (2 minutes)
 });
 
 // Change search rate limit
-add_filter('wp_ai_search_rate_limit', function($limit) {
+add_filter('semantic_knowledge_search_rate_limit', function($limit) {
     return 30;
 });
 ```
@@ -1167,8 +1167,8 @@ For high-traffic sites:
 
 ```bash
 # Optimize log tables monthly
-wp db query "OPTIMIZE TABLE wp_ai_assistant_chat_logs;"
-wp db query "OPTIMIZE TABLE wp_ai_assistant_search_logs;"
+wp db query "OPTIMIZE TABLE semantic_knowledge_chat_logs;"
+wp db query "OPTIMIZE TABLE semantic_knowledge_search_logs;"
 ```
 
 ### CDN Integration
@@ -1182,7 +1182,7 @@ Use CDN for plugin assets:
 
 **Other CDNs:**
 - Configure similar caching rules
-- Cache `/wp-content/plugins/wp-ai-assistant/assets/*`
+- Cache `/wp-content/plugins/semantic-knowledge/assets/*`
 - Set long cache TTLs (1 year for versioned assets)
 
 ### Model Selection for Performance
@@ -1250,7 +1250,7 @@ Configure rate limits to prevent abuse:
 
 ```php
 // Stricter rate limiting for anonymous users
-add_filter('wp_ai_chatbot_rate_limit', function($limit) {
+add_filter('semantic_knowledge_chatbot_rate_limit', function($limit) {
     return is_user_logged_in() ? 20 : 10;
 });
 ```

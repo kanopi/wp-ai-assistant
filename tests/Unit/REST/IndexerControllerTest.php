@@ -1,11 +1,11 @@
 <?php
 /**
- * Tests for WP_AI_Indexer_Settings_Controller class
+ * Tests for Semantic_Knowledge_Indexer_Settings_Controller class
  */
 
-namespace WP_AI_Tests\Unit\REST;
+namespace Semantic_Knowledge_Tests\Unit\REST;
 
-use WP_AI_Tests\Helpers\TestCase;
+use Semantic_Knowledge_Tests\Helpers\TestCase;
 use WP_Mock;
 use Mockery;
 
@@ -13,7 +13,7 @@ class IndexerControllerTest extends TestCase {
     /**
      * Controller instance
      *
-     * @var \WP_AI_Indexer_Settings_Controller
+     * @var \Semantic_Knowledge_Indexer_Settings_Controller
      */
     private $controller;
 
@@ -22,7 +22,7 @@ class IndexerControllerTest extends TestCase {
      */
     protected function setUp(): void {
         parent::setUp();
-        $this->controller = new \WP_AI_Indexer_Settings_Controller();
+        $this->controller = new \Semantic_Knowledge_Indexer_Settings_Controller();
     }
 
     /**
@@ -63,7 +63,7 @@ class IndexerControllerTest extends TestCase {
     public function testGetSettingsSuccess() {
         $request = Mockery::mock('WP_REST_Request');
 
-        $this->mockGetOption('wp_ai_assistant_settings', [
+        $this->mockGetOption('semantic_knowledge_settings', [
             'post_types' => 'post,page',
             'post_types_exclude' => 'attachment,revision',
             'auto_discover' => true,
@@ -106,7 +106,7 @@ class IndexerControllerTest extends TestCase {
     public function testMissingConfigReturnsError() {
         // Test that the controller properly validates Pinecone configuration
         // by checking it returns WP_Error when config is missing
-        $reflection = new \ReflectionClass('WP_AI_Indexer_Settings_Controller');
+        $reflection = new \ReflectionClass('Semantic_Knowledge_Indexer_Settings_Controller');
         $method = $reflection->getMethod('get_settings');
 
         $this->assertTrue($method->isPublic());
@@ -152,23 +152,23 @@ class IndexerControllerTest extends TestCase {
      * Test constants
      */
     public function testConstants() {
-        $this->assertEquals(1, \WP_AI_Indexer_Settings_Controller::SCHEMA_VERSION);
-        $this->assertEquals('wp_ai_assistant_settings', \WP_AI_Indexer_Settings_Controller::OPTION_KEY);
-        $this->assertEquals('ai-assistant/v1', \WP_AI_Indexer_Settings_Controller::NAMESPACE);
+        $this->assertEquals(1, \Semantic_Knowledge_Indexer_Settings_Controller::SCHEMA_VERSION);
+        $this->assertEquals('semantic_knowledge_settings', \Semantic_Knowledge_Indexer_Settings_Controller::OPTION_KEY);
+        $this->assertEquals('ai-assistant/v1', \Semantic_Knowledge_Indexer_Settings_Controller::NAMESPACE);
     }
 
     /**
      * Test class exists
      */
     public function testControllerClassExists() {
-        $this->assertTrue(class_exists('WP_AI_Indexer_Settings_Controller'));
+        $this->assertTrue(class_exists('Semantic_Knowledge_Indexer_Settings_Controller'));
     }
 
     /**
      * Test class extends WP_REST_Controller
      */
     public function testControllerExtendsBase() {
-        $reflection = new \ReflectionClass('WP_AI_Indexer_Settings_Controller');
+        $reflection = new \ReflectionClass('Semantic_Knowledge_Indexer_Settings_Controller');
         $this->assertTrue($reflection->isSubclassOf('WP_REST_Controller'));
     }
 
@@ -176,7 +176,7 @@ class IndexerControllerTest extends TestCase {
      * Test class has required methods
      */
     public function testControllerHasRequiredMethods() {
-        $reflection = new \ReflectionClass('WP_AI_Indexer_Settings_Controller');
+        $reflection = new \ReflectionClass('Semantic_Knowledge_Indexer_Settings_Controller');
 
         $this->assertTrue($reflection->hasMethod('register_routes'));
         $this->assertTrue($reflection->hasMethod('get_settings'));
@@ -188,7 +188,7 @@ class IndexerControllerTest extends TestCase {
      * Test methods are public
      */
     public function testControllerMethodsArePublic() {
-        $reflection = new \ReflectionClass('WP_AI_Indexer_Settings_Controller');
+        $reflection = new \ReflectionClass('Semantic_Knowledge_Indexer_Settings_Controller');
 
         $this->assertTrue($reflection->getMethod('register_routes')->isPublic());
         $this->assertTrue($reflection->getMethod('get_settings')->isPublic());
@@ -200,7 +200,7 @@ class IndexerControllerTest extends TestCase {
      * Test get_settings method signature
      */
     public function testGetSettingsSignature() {
-        $reflection = new \ReflectionClass('WP_AI_Indexer_Settings_Controller');
+        $reflection = new \ReflectionClass('Semantic_Knowledge_Indexer_Settings_Controller');
         $method = $reflection->getMethod('get_settings');
 
         $this->assertEquals(1, $method->getNumberOfParameters());
@@ -211,7 +211,7 @@ class IndexerControllerTest extends TestCase {
      * Test get_settings_permissions_check method signature
      */
     public function testGetSettingsPermissionsCheckSignature() {
-        $reflection = new \ReflectionClass('WP_AI_Indexer_Settings_Controller');
+        $reflection = new \ReflectionClass('Semantic_Knowledge_Indexer_Settings_Controller');
         $method = $reflection->getMethod('get_settings_permissions_check');
 
         $this->assertEquals(1, $method->getNumberOfParameters());

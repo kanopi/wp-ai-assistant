@@ -13,10 +13,10 @@
   function handleSearchSubmit(event, form) {
     event.preventDefault();
 
-    const container = form.closest('.wp-ai-search');
-    const input = form.querySelector('.wp-ai-search__input');
-    const resultsContainer = container.querySelector('.wp-ai-search__results');
-    const resultsList = container.querySelector('.wp-ai-search__results-list');
+    const container = form.closest('.sk-search');
+    const input = form.querySelector('.sk-search__input');
+    const resultsContainer = container.querySelector('.sk-search__results');
+    const resultsList = container.querySelector('.sk-search__results-list');
     const query = input.value.trim();
 
     if (!query) {
@@ -168,7 +168,7 @@
    * Initialize search forms
    */
   function init() {
-    document.querySelectorAll('.wp-ai-search__form').forEach((form) => {
+    document.querySelectorAll('.sk-search__form').forEach((form) => {
       form.addEventListener('submit', (event) => {
         handleSearchSubmit(event, form);
       });

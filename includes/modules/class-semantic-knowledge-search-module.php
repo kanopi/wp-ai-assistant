@@ -8,8 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class WP_AI_Search_Module {
-	const ROUTE_NAMESPACE = 'ai-assistant/v1';
+class Semantic_Knowledge_Search_Module {
+	const ROUTE_NAMESPACE = 'semantic-knowledge/v1';
 	const ROUTE_SEARCH = '/search';
 	const POST_TYPE = 'ai_search_log';
 
@@ -99,7 +99,7 @@ class WP_AI_Search_Module {
 
 		if ( empty( $nonce ) || ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
 			return new WP_Error(
-				'wp_ai_assistant_invalid_nonce',
+				'semantic_knowledge_invalid_nonce',
 				'Invalid security token. Please refresh the page and try again.',
 				array( 'status' => 403 )
 			);
@@ -120,7 +120,7 @@ class WP_AI_Search_Module {
 		// Check maximum length (1000 characters)
 		if ( strlen( $value ) > 1000 ) {
 			return new WP_Error(
-				'wp_ai_assistant_query_too_long',
+				'semantic_knowledge_query_too_long',
 				'Search query must be 1000 characters or less.',
 				array( 'status' => 400 )
 			);
@@ -129,7 +129,7 @@ class WP_AI_Search_Module {
 		// Check minimum length
 		if ( strlen( trim( $value ) ) === 0 ) {
 			return new WP_Error(
-				'wp_ai_assistant_query_empty',
+				'semantic_knowledge_query_empty',
 				'Search query cannot be empty.',
 				array( 'status' => 400 )
 			);
@@ -150,11 +150,11 @@ class WP_AI_Search_Module {
 		$ip_address = $this->get_client_ip();
 
 		// Allow filtering of rate limit settings
-		$rate_limit = apply_filters( 'wp_ai_search_rate_limit', 10 );
-		$rate_window = apply_filters( 'wp_ai_search_rate_window', 60 ); // seconds
+		$rate_limit = apply_filters( 'semantic_knowledge_search_rate_limit', 10 );
+		$rate_window = apply_filters( 'semantic_knowledge_search_rate_window', 60 ); // seconds
 
 		// Create transient key
-		$transient_key = 'wp_ai_search_rl_' . wp_hash( $ip_address );
+		$transient_key = 'semantic_knowledge_search_rl_' . wp_hash( $ip_address );
 
 		// Get current request count
 		$requests = get_transient( $transient_key );
@@ -168,7 +168,7 @@ class WP_AI_Search_Module {
 		// Check if limit exceeded
 		if ( $requests >= $rate_limit ) {
 			return new WP_Error(
-				'wp_ai_assistant_rate_limit_exceeded',
+				'semantic_knowledge_rate_limit_exceeded',
 				sprintf(
 					'Rate limit exceeded. Please wait before making another request. Limit: %d requests per %d seconds.',
 					$rate_limit,
@@ -256,22 +256,22 @@ class WP_AI_Search_Module {
 	 * Register and enqueue frontend assets
 	 */
 	public function register_assets() {
-		$handle = 'wp-ai-assistant-search';
+		$handle = 'semantic-knowledge-search';
 
 		// Register search styles
 		wp_register_style(
 			$handle,
-			WP_AI_ASSISTANT_URL . 'assets/css/search.css',
+			SEMANTIC_KNOWLEDGE_URL . 'assets/css/search.css',
 			array(),
-			WP_AI_ASSISTANT_VERSION
+			SEMANTIC_KNOWLEDGE_VERSION
 		);
 
 		// Register search script
 		wp_register_script(
 			$handle,
-			WP_AI_ASSISTANT_URL . 'assets/js/search.js',
+			SEMANTIC_KNOWLEDGE_URL . 'assets/js/search.js',
 			array( 'jquery' ),
-			WP_AI_ASSISTANT_VERSION,
+			SEMANTIC_KNOWLEDGE_VERSION,
 			array(
 				'strategy'  => 'defer',
 				'in_footer' => true,
@@ -289,7 +289,7 @@ class WP_AI_Search_Module {
 	 */
 	public function add_csp_nonce_to_script( $tag, $handle, $src ) {
 		// Add CSP nonce to our search script for security
-		if ( 'wp-ai-assistant-search' === $handle ) {
+		if ( 'semantic-knowledge-search' === $handle ) {
 			$nonce = $this->core->get_csp_nonce();
 			if ( ! empty( $nonce ) && strpos( $tag, 'nonce=' ) === false ) {
 				$tag = str_replace( '<script ', '<script nonce="' . esc_attr( $nonce ) . '" ', $tag );
@@ -314,7 +314,7 @@ class WP_AI_Search_Module {
 
 		if ( ! $this->is_configured() ) {
 			return new WP_Error(
-				'wp_ai_assistant_not_configured',
+				'semantic_knowledge_not_configured',
 				'Search API keys are missing.',
 				array( 'status' => 500 )
 			);
@@ -325,7 +325,7 @@ class WP_AI_Search_Module {
 
 		if ( empty( $query ) ) {
 			return new WP_Error(
-				'wp_ai_assistant_empty_query',
+				'semantic_knowledge_empty_query',
 				'Please provide a search query.',
 				array( 'status' => 400 )
 			);
@@ -337,7 +337,7 @@ class WP_AI_Search_Module {
 		 * @param string $query Search query text
 		 * @param WP_REST_Request $request REST request object
 		 */
-		do_action( 'wp_ai_search_query_start', $query, $request );
+		do_action( 'semantic_knowledge_search_query_start', $query, $request );
 
 		/**
 		 * Filter the search query text before processing.
@@ -346,7 +346,7 @@ class WP_AI_Search_Module {
 		 * @param WP_REST_Request $request REST request object
 		 * @return string Modified query text
 		 */
-		$query = apply_filters( 'wp_ai_search_query_text', $query, $request );
+		$query = apply_filters( 'semantic_knowledge_search_query_text', $query, $request );
 
 		if ( $top_k <= 0 ) {
 			$top_k = (int) $this->core->get_setting( 'search_top_k', 10 );
@@ -359,14 +359,14 @@ class WP_AI_Search_Module {
 		 * @param string $query Search query text
 		 * @return int Modified top_k value
 		 */
-		$top_k = apply_filters( 'wp_ai_search_top_k', $top_k, $query );
+		$top_k = apply_filters( 'semantic_knowledge_search_top_k', $top_k, $query );
 
 		/**
 		 * Fires before creating the search embedding.
 		 *
 		 * @param string $query Search query text
 		 */
-		do_action( 'wp_ai_search_before_embedding', $query );
+		do_action( 'semantic_knowledge_search_before_embedding', $query );
 
 		// Step 1: Create embedding (with caching)
 		$cached_embedding = WP_AI_Cache::get_embedding( $query );
@@ -404,7 +404,7 @@ class WP_AI_Search_Module {
 		 * @param array $matches Raw Pinecone matches
 		 * @param string $query Search query text
 		 */
-		do_action( 'wp_ai_search_after_pinecone_query', $matches, $query );
+		do_action( 'semantic_knowledge_search_after_pinecone_query', $matches, $query );
 
 		// Debug: Log domain filter and results
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
@@ -428,7 +428,7 @@ class WP_AI_Search_Module {
 		 * @param string $query Search query text
 		 * @return float Modified threshold
 		 */
-		$min_score = apply_filters( 'wp_ai_search_min_score', $min_score, $query );
+		$min_score = apply_filters( 'semantic_knowledge_search_min_score', $min_score, $query );
 
 		$matches = $this->filter_by_score( $matches, $min_score );
 
@@ -446,7 +446,7 @@ class WP_AI_Search_Module {
 		 * @param array $matches Raw Pinecone matches
 		 * @return array Modified results
 		 */
-		$results = apply_filters( 'wp_ai_search_results', $results, $query, $matches );
+		$results = apply_filters( 'semantic_knowledge_search_results', $results, $query, $matches );
 
 		// Step 6: Generate AI summary from results
 		$summary = $this->generate_search_summary( $query, $results, $matches );
@@ -457,7 +457,7 @@ class WP_AI_Search_Module {
 		 * @param string $query Search query text
 		 * @param array $results Formatted results
 		 */
-		do_action( 'wp_ai_search_before_log', $query, $results );
+		do_action( 'semantic_knowledge_search_before_log', $query, $results );
 
 		// Step 7: Log search
 		$this->log_search_query( $query, $results );
@@ -476,7 +476,7 @@ class WP_AI_Search_Module {
 		 * @param array $response Complete response array
 		 * @param string $query Search query text
 		 */
-		do_action( 'wp_ai_search_query_end', $response, $query );
+		do_action( 'semantic_knowledge_search_query_end', $response, $query );
 
 		return rest_ensure_response( $response );
 	}
@@ -587,7 +587,7 @@ class WP_AI_Search_Module {
 			'ai_search'
 		);
 
-		$handle = 'wp-ai-assistant-search';
+		$handle = 'semantic-knowledge-search';
 		wp_enqueue_style( $handle );
 		wp_enqueue_script( $handle );
 
@@ -668,7 +668,7 @@ class WP_AI_Search_Module {
 	 * Get relevance boosting configuration
 	 *
 	 * Returns the configuration for relevance boosting, including default values
-	 * and settings-based overrides. Can be filtered via wp_ai_search_relevance_config.
+	 * and settings-based overrides. Can be filtered via semantic_knowledge_search_relevance_config.
 	 *
 	 * @param string $query User's search query
 	 * @return array Configuration array
@@ -731,7 +731,7 @@ class WP_AI_Search_Module {
 		 * @param string $query User's search query
 		 * @return array Modified configuration
 		 */
-		return apply_filters( 'wp_ai_search_relevance_config', $default_config, $query );
+		return apply_filters( 'semantic_knowledge_search_relevance_config', $default_config, $query );
 	}
 
 	/**
@@ -766,7 +766,7 @@ class WP_AI_Search_Module {
 		 * @param string $query User's search query
 		 * @param array $config Boosting configuration
 		 */
-		do_action( 'wp_ai_search_before_boost', $matches, $query, $config );
+		do_action( 'semantic_knowledge_search_before_boost', $matches, $query, $config );
 
 		/**
 		 * Filter raw matches before boosting calculations.
@@ -775,7 +775,7 @@ class WP_AI_Search_Module {
 		 * @param string $query User's search query
 		 * @return array Filtered matches
 		 */
-		$matches = apply_filters( 'wp_ai_search_raw_matches', $matches, $query );
+		$matches = apply_filters( 'semantic_knowledge_search_raw_matches', $matches, $query );
 
 		// Normalize query for comparison
 		$query_lower = strtolower( trim( $query ) );
@@ -801,7 +801,7 @@ class WP_AI_Search_Module {
 				 * @param string $query User's search query
 				 * @return float Modified boost value
 				 */
-				$url_boost = apply_filters( 'wp_ai_search_url_boost', $url_boost, $match, $query );
+				$url_boost = apply_filters( 'semantic_knowledge_search_url_boost', $url_boost, $match, $query );
 				$boost += $url_boost;
 			}
 
@@ -816,7 +816,7 @@ class WP_AI_Search_Module {
 				 * @param string $query User's search query
 				 * @return float Modified boost value
 				 */
-				$title_exact_boost = apply_filters( 'wp_ai_search_title_exact_boost', $title_exact_boost, $match, $query );
+				$title_exact_boost = apply_filters( 'semantic_knowledge_search_title_exact_boost', $title_exact_boost, $match, $query );
 				$boost += $title_exact_boost;
 			}
 
@@ -831,7 +831,7 @@ class WP_AI_Search_Module {
 				 * @param string $query User's search query
 				 * @return float Modified boost value
 				 */
-				$title_words_boost = apply_filters( 'wp_ai_search_title_words_boost', $title_words_boost, $match, $query );
+				$title_words_boost = apply_filters( 'semantic_knowledge_search_title_words_boost', $title_words_boost, $match, $query );
 				$boost += $title_words_boost;
 			}
 
@@ -847,7 +847,7 @@ class WP_AI_Search_Module {
 				 * @param string $query User's search query
 				 * @return float Modified boost value
 				 */
-				$post_type_boost = apply_filters( 'wp_ai_search_post_type_boost', $post_type_boost, $post_type, $match, $query );
+				$post_type_boost = apply_filters( 'semantic_knowledge_search_post_type_boost', $post_type_boost, $post_type, $match, $query );
 				$boost += $post_type_boost;
 			}
 
@@ -866,7 +866,7 @@ class WP_AI_Search_Module {
 					 * @param string $query User's search query
 					 * @return float Modified boost value
 					 */
-					$custom_boost = apply_filters( "wp_ai_search_custom_boost_{$rule_name}", $custom_boost, $rule, $match, $query );
+					$custom_boost = apply_filters( "semantic_knowledge_search_custom_boost_{$rule_name}", $custom_boost, $rule, $match, $query );
 					$boost += $custom_boost;
 				}
 			}
@@ -884,7 +884,7 @@ class WP_AI_Search_Module {
 			 * @param string $query User's search query
 			 * @return float Modified final score
 			 */
-			$final_score = apply_filters( 'wp_ai_search_match_score', $final_score, $base_score, $boost, $match, $query );
+			$final_score = apply_filters( 'semantic_knowledge_search_match_score', $final_score, $base_score, $boost, $match, $query );
 
 			// Store scores in match
 			$matches[ $index ]['score'] = $final_score;
@@ -907,7 +907,7 @@ class WP_AI_Search_Module {
 		 * @param array $config Boosting configuration
 		 * @return array Modified matches
 		 */
-		$matches = apply_filters( 'wp_ai_search_boosted_matches', $matches, $query, $config );
+		$matches = apply_filters( 'semantic_knowledge_search_boosted_matches', $matches, $query, $config );
 
 		/**
 		 * Fires after relevance boosting is complete.
@@ -916,7 +916,7 @@ class WP_AI_Search_Module {
 		 * @param string $query User's search query
 		 * @param array $config Boosting configuration
 		 */
-		do_action( 'wp_ai_search_after_boost', $matches, $query, $config );
+		do_action( 'semantic_knowledge_search_after_boost', $matches, $query, $config );
 
 		return $matches;
 	}
@@ -1039,7 +1039,7 @@ class WP_AI_Search_Module {
 				 * @param array $match Raw Pinecone match
 				 * @return array Modified result
 				 */
-				$result = apply_filters( 'wp_ai_search_result_format', $result, $match );
+				$result = apply_filters( 'semantic_knowledge_search_result_format', $result, $match );
 
 				$results[] = $result;
 				$seen_post_ids[] = $post_id;
@@ -1068,7 +1068,7 @@ class WP_AI_Search_Module {
 		 * @param array $results Formatted results
 		 * @return bool Modified enabled status
 		 */
-		$enabled = apply_filters( 'wp_ai_search_summary_enabled', $enabled, $query, $results );
+		$enabled = apply_filters( 'semantic_knowledge_search_summary_enabled', $enabled, $query, $results );
 
 		// Check if AI summary is enabled
 		if ( ! $enabled ) {
@@ -1134,7 +1134,7 @@ class WP_AI_Search_Module {
 		 * @param array $matches Raw Pinecone matches
 		 * @return string Modified context
 		 */
-		$context = apply_filters( 'wp_ai_search_summary_context', $context, $query, $results, $matches );
+		$context = apply_filters( 'semantic_knowledge_search_summary_context', $context, $query, $results, $matches );
 
 		// Get search-specific system prompt
 		$system_prompt = $this->core->get_setting(
@@ -1150,7 +1150,7 @@ class WP_AI_Search_Module {
 		 * @param array $results Formatted results
 		 * @return string Modified system prompt
 		 */
-		$system_prompt = apply_filters( 'wp_ai_search_summary_system_prompt', $system_prompt, $query, $results );
+		$system_prompt = apply_filters( 'semantic_knowledge_search_summary_system_prompt', $system_prompt, $query, $results );
 
 		// Generate summary using chat completion
 		$summary = $this->openai->chat_completion(
@@ -1211,7 +1211,7 @@ class WP_AI_Search_Module {
 	 *
 	 * Use this in your theme's search.php template to display the AI summary:
 	 *
-	 * if ( function_exists( 'wp_ai_get_search_summary' ) ) {
+	 * if ( function_exists( 'semantic_knowledge_get_search_summary' ) ) {
 	 *     $summary = wp_ai_get_search_summary();
 	 *     if ( $summary ) {
 	 *         echo '<div class="ai-search-summary">' . wp_kses_post( $summary ) . '</div>';
@@ -1241,7 +1241,7 @@ class WP_AI_Search_Module {
 
 		// Allow themes to filter the summary HTML
 		if ( ! empty( $summary ) ) {
-			$summary = apply_filters( 'wp_ai_search_summary', $summary, $query );
+			$summary = apply_filters( 'semantic_knowledge_search_summary', $summary, $query );
 		}
 
 		return $summary;
@@ -1303,7 +1303,7 @@ class WP_AI_Search_Module {
 	 */
 	public function add_search_log_meta_boxes() {
 		add_meta_box(
-			'wp_ai_search_log_details',
+			'semantic_knowledge_search_log_details',
 			'Search Results',
 			array( $this, 'render_search_log_meta_box' ),
 			self::POST_TYPE,

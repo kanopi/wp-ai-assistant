@@ -1,10 +1,10 @@
-# Customizing WP AI Assistant Content Preferences
+# Customizing Semantic Knowledge Content Preferences
 
-This guide explains how to customize the WP AI Assistant plugin to prioritize specific types of content for your website **without writing any code**.
+This guide explains how to customize the Semantic Knowledge plugin to prioritize specific types of content for your website **without writing any code**.
 
 ## Overview
 
-The WP AI Assistant uses AI to understand and present search results. Instead of hardcoding business logic in PHP, you can simply tell the AI what to prioritize in natural language by editing the **Search System Prompt** in the plugin settings.
+The Semantic Knowledge uses AI to understand and present search results. Instead of hardcoding business logic in PHP, you can simply tell the AI what to prioritize in natural language by editing the **Search System Prompt** in the plugin settings.
 
 ## Key Innovation
 
@@ -247,7 +247,7 @@ Services:
 PHP Filter (in `functions.php` or custom plugin):
 ```php
 // Add extra algorithmic boost for services post type
-add_filter('wp_ai_search_relevance_config', function($config, $query) {
+add_filter('semantic_knowledge_search_relevance_config', function($config, $query) {
     $config['post_type_boosts']['services'] = 0.07;
     return $config;
 }, 10, 2);

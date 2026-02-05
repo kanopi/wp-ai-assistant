@@ -4,7 +4,7 @@
  *
  * Centralized logging system with PII masking and configurable log levels.
  *
- * @package WP_AI_Assistant
+ * @package Semantic_Knowledge
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -12,9 +12,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Logger class for WP AI Assistant
+ * Logger class for Semantic Knowledge
  */
-class WP_AI_Logger {
+class Semantic_Knowledge_Logger {
 
 	/**
 	 * Log levels
@@ -200,8 +200,8 @@ class WP_AI_Logger {
 		}
 
 		// Allow custom log handlers
-		do_action( 'wp_ai_log', $level, $message, $context );
-		do_action( "wp_ai_log_{$level}", $message, $context );
+		do_action( 'semantic_knowledge_log', $level, $message, $context );
+		do_action( "semantic_knowledge_log_{$level}", $message, $context );
 	}
 
 	/**
@@ -286,7 +286,7 @@ class WP_AI_Logger {
 			$text
 		);
 
-		return apply_filters( 'wp_ai_mask_pii_string', $text );
+		return apply_filters( 'semantic_knowledge_mask_pii_string', $text );
 	}
 
 	/**
@@ -340,7 +340,7 @@ class WP_AI_Logger {
 			}
 		}
 
-		return apply_filters( 'wp_ai_mask_pii_array', $data );
+		return apply_filters( 'semantic_knowledge_mask_pii_array', $data );
 	}
 
 	/**
@@ -447,6 +447,6 @@ class WP_AI_Logger {
 		// This would be implemented based on the log storage method
 		// For file-based logs, could rotate/truncate the debug.log
 		// For database-based logs, delete old entries
-		do_action( 'wp_ai_cleanup_logs', $days );
+		do_action( 'semantic_knowledge_cleanup_logs', $days );
 	}
 }

@@ -1,6 +1,6 @@
-# WP AI Assistant API Documentation
+# Semantic Knowledge API Documentation
 
-Complete API reference for the WP AI Assistant plugin including REST endpoints, PHP classes, JavaScript APIs, and WordPress hooks.
+Complete API reference for the Semantic Knowledge plugin including REST endpoints, PHP classes, JavaScript APIs, and WordPress hooks.
 
 ## Table of Contents
 
@@ -21,14 +21,14 @@ All REST API endpoints use WordPress nonce validation for CSRF protection.
 
 **Header Method** (Recommended):
 ```http
-POST /wp-json/ai-assistant/v1/chat
+POST /wp-json/semantic-knowledge/v1/chat
 X-WP-Nonce: {nonce}
 Content-Type: application/json
 ```
 
 **Parameter Method**:
 ```http
-POST /wp-json/ai-assistant/v1/chat
+POST /wp-json/semantic-knowledge/v1/chat
 Content-Type: application/json
 
 {
@@ -51,26 +51,26 @@ const nonce = wpAiAssistantChatbot.nonce;
 
 **Header Method**:
 ```http
-GET /wp-json/ai-assistant/v1/indexer/settings
+GET /wp-json/semantic-knowledge/v1/indexer/settings
 X-Indexer-Key: {secret_key}
 ```
 
 **Parameter Method**:
 ```http
-GET /wp-json/ai-assistant/v1/indexer/settings?indexer_key={secret_key}
+GET /wp-json/semantic-knowledge/v1/indexer/settings?indexer_key={secret_key}
 ```
 
-**Secret Key**: Set via `WP_AI_INDEXER_KEY` environment variable
+**Secret Key**: Set via `Semantic_Knowledge_INDEXER_KEY` environment variable
 
 ### Endpoints
 
-#### POST /ai-assistant/v1/chat
+#### POST /semantic-knowledge/v1/chat
 
 Submit a question to the AI chatbot.
 
 **Request:**
 ```http
-POST /wp-json/ai-assistant/v1/chat
+POST /wp-json/semantic-knowledge/v1/chat
 X-WP-Nonce: abc123
 Content-Type: application/json
 
@@ -105,7 +105,7 @@ Content-Type: application/json
 **Response (Error - 400):**
 ```json
 {
-  "code": "wp_ai_assistant_question_too_long",
+  "code": "semantic_knowledge_question_too_long",
   "message": "Question must be 1000 characters or less.",
   "data": {
     "status": 400
@@ -116,7 +116,7 @@ Content-Type: application/json
 **Response (Error - 403):**
 ```json
 {
-  "code": "wp_ai_assistant_invalid_nonce",
+  "code": "semantic_knowledge_invalid_nonce",
   "message": "Invalid security token. Please refresh the page and try again.",
   "data": {
     "status": 403
@@ -127,7 +127,7 @@ Content-Type: application/json
 **Response (Error - 429):**
 ```json
 {
-  "code": "wp_ai_assistant_rate_limit_exceeded",
+  "code": "semantic_knowledge_rate_limit_exceeded",
   "message": "Rate limit exceeded. Please wait before making another request. Limit: 10 requests per 60 seconds.",
   "data": {
     "status": 429
@@ -138,7 +138,7 @@ Content-Type: application/json
 **Response (Error - 500):**
 ```json
 {
-  "code": "wp_ai_assistant_not_configured",
+  "code": "semantic_knowledge_not_configured",
   "message": "Chatbot API keys are missing.",
   "data": {
     "status": 500
@@ -148,15 +148,15 @@ Content-Type: application/json
 
 **Rate Limits:**
 - 10 requests per 60 seconds per IP address
-- Configurable via `wp_ai_chatbot_rate_limit` and `wp_ai_chatbot_rate_window` filters
+- Configurable via `semantic_knowledge_chatbot_rate_limit` and `semantic_knowledge_chatbot_rate_window` filters
 
-#### POST /ai-assistant/v1/search
+#### POST /semantic-knowledge/v1/search
 
 Perform an AI-powered semantic search.
 
 **Request:**
 ```http
-POST /wp-json/ai-assistant/v1/search
+POST /wp-json/semantic-knowledge/v1/search
 X-WP-Nonce: abc123
 Content-Type: application/json
 
@@ -196,13 +196,13 @@ Content-Type: application/json
 
 **Rate Limits**: Same as chat endpoint
 
-#### GET /ai-assistant/v1/indexer/settings
+#### GET /semantic-knowledge/v1/indexer/settings
 
 Retrieve plugin settings for the Node.js indexer. Authenticated endpoint.
 
 **Request:**
 ```http
-GET /wp-json/ai-assistant/v1/indexer/settings
+GET /wp-json/semantic-knowledge/v1/indexer/settings
 X-Indexer-Key: your-secure-key-here
 ```
 
@@ -248,13 +248,13 @@ X-Indexer-Key: your-secure-key-here
 
 ### Core Classes
 
-#### WP_AI_Core
+#### Semantic_Knowledge_Core
 
 Main settings and configuration manager.
 
 **Instantiation:**
 ```php
-$core = new WP_AI_Core();
+$core = new Semantic_Knowledge_Core();
 ```
 
 **Methods:**
@@ -317,15 +317,15 @@ if ($core->is_configured()) {
 }
 ```
 
-#### WP_AI_OpenAI
+#### Semantic_Knowledge_OpenAI
 
 OpenAI API integration for embeddings and chat.
 
 **Instantiation:**
 ```php
-$core = new WP_AI_Core();
-$secrets = new WP_AI_Secrets();
-$openai = new WP_AI_OpenAI($core, $secrets);
+$core = new Semantic_Knowledge_Core();
+$secrets = new Semantic_Knowledge_Secrets();
+$openai = new Semantic_Knowledge_OpenAI($core, $secrets);
 ```
 
 **Methods:**
@@ -347,8 +347,8 @@ if (is_wp_error($embedding)) {
 **Returns**: Array of floats (embedding vector) or WP_Error
 
 **Errors**:
-- `wp_ai_assistant_missing_key` - API key not configured
-- `wp_ai_assistant_openai_error` - API request failed
+- `semantic_knowledge_missing_key` - API key not configured
+- `semantic_knowledge_openai_error` - API request failed
 
 ##### `chat_completion( string $question, string $context, array $options = [] ): string|WP_Error`
 
@@ -392,15 +392,15 @@ if ($openai->is_configured()) {
 }
 ```
 
-#### WP_AI_Pinecone
+#### Semantic_Knowledge_Pinecone
 
 Pinecone vector database integration.
 
 **Instantiation:**
 ```php
-$core = new WP_AI_Core();
-$secrets = new WP_AI_Secrets();
-$pinecone = new WP_AI_Pinecone($core, $secrets);
+$core = new Semantic_Knowledge_Core();
+$secrets = new Semantic_Knowledge_Secrets();
+$pinecone = new Semantic_Knowledge_Pinecone($core, $secrets);
 ```
 
 **Methods:**
@@ -481,7 +481,7 @@ if ($pinecone->is_configured()) {
 }
 ```
 
-#### WP_AI_Cache
+#### Semantic_Knowledge_Cache
 
 Unified caching layer with Redis/Memcached support.
 
@@ -494,7 +494,7 @@ Unified caching layer with Redis/Memcached support.
 Retrieve value from cache.
 
 ```php
-$value = WP_AI_Cache::get('my_key');
+$value = Semantic_Knowledge_Cache::get('my_key');
 if ($value !== false) {
     // Cache hit
 }
@@ -505,7 +505,7 @@ if ($value !== false) {
 Store value in cache.
 
 ```php
-$success = WP_AI_Cache::set('my_key', $data, 3600);
+$success = Semantic_Knowledge_Cache::set('my_key', $data, 3600);
 // Cache for 1 hour
 ```
 
@@ -516,7 +516,7 @@ $success = WP_AI_Cache::set('my_key', $data, 3600);
 Delete value from cache.
 
 ```php
-WP_AI_Cache::delete('my_key');
+Semantic_Knowledge_Cache::delete('my_key');
 ```
 
 ##### `flush_all(): bool`
@@ -524,7 +524,7 @@ WP_AI_Cache::delete('my_key');
 Flush all plugin caches.
 
 ```php
-WP_AI_Cache::flush_all();
+Semantic_Knowledge_Cache::flush_all();
 ```
 
 ##### `get_embedding( string $text ): array|false`
@@ -532,7 +532,7 @@ WP_AI_Cache::flush_all();
 Get cached embedding for text.
 
 ```php
-$embedding = WP_AI_Cache::get_embedding('Hello world');
+$embedding = Semantic_Knowledge_Cache::get_embedding('Hello world');
 if ($embedding === false) {
     // Cache miss - create embedding
 }
@@ -543,7 +543,7 @@ if ($embedding === false) {
 Cache an embedding.
 
 ```php
-WP_AI_Cache::set_embedding($text, $embedding, 3600);
+Semantic_Knowledge_Cache::set_embedding($text, $embedding, 3600);
 // Cache for 1 hour
 ```
 
@@ -552,7 +552,7 @@ WP_AI_Cache::set_embedding($text, $embedding, 3600);
 Get cached query results.
 
 ```php
-$results = WP_AI_Cache::get_query_results($embedding, 5);
+$results = Semantic_Knowledge_Cache::get_query_results($embedding, 5);
 ```
 
 ##### `set_query_results( array $embedding, int $top_k, array $results, int $ttl = 900 ): bool`
@@ -560,7 +560,7 @@ $results = WP_AI_Cache::get_query_results($embedding, 5);
 Cache query results.
 
 ```php
-WP_AI_Cache::set_query_results($embedding, 5, $results, 900);
+Semantic_Knowledge_Cache::set_query_results($embedding, 5, $results, 900);
 // Cache for 15 minutes
 ```
 
@@ -569,18 +569,18 @@ WP_AI_Cache::set_query_results($embedding, 5, $results, 900);
 Get cache statistics.
 
 ```php
-$stats = WP_AI_Cache::get_stats();
+$stats = Semantic_Knowledge_Cache::get_stats();
 print_r($stats);
 // ['using_object_cache' => true, 'cache_type' => 'Redis/Memcached', ...]
 ```
 
 **Constants**:
-- `WP_AI_Cache::DEFAULT_TTL` - 900 seconds (hot cache)
-- `WP_AI_Cache::WARM_CACHE_TTL` - 3600 seconds (warm cache)
+- `Semantic_Knowledge_Cache::DEFAULT_TTL` - 900 seconds (hot cache)
+- `Semantic_Knowledge_Cache::WARM_CACHE_TTL` - 3600 seconds (warm cache)
 
 ### Module Classes
 
-#### WP_AI_Chatbot_Module
+#### Semantic_Knowledge_Chatbot_Module
 
 Chatbot functionality and REST API.
 
@@ -606,7 +606,7 @@ echo do_shortcode('[ai_chatbot mode="popup" button="Chat with us"]');
 - `mode` - 'inline' or 'popup' (default: 'inline')
 - `button` - Button text for popup mode (default: 'Chat with AI')
 
-#### WP_AI_Search_Module
+#### Semantic_Knowledge_Search_Module
 
 Search functionality and REST API.
 
@@ -635,7 +635,7 @@ echo do_shortcode('[ai_search placeholder="Search our site..." button="Search"]'
 Get AI summary for search query (theme integration).
 
 ```php
-$summary = WP_AI_Search_Module::get_search_summary();
+$summary = Semantic_Knowledge_Search_Module::get_search_summary();
 if ($summary) {
     echo '<div class="ai-summary">' . wp_kses_post($summary) . '</div>';
 }
@@ -646,7 +646,7 @@ if ($summary) {
 Check if query is AI-powered search.
 
 ```php
-if (WP_AI_Search_Module::is_ai_search()) {
+if (Semantic_Knowledge_Search_Module::is_ai_search()) {
     // Show AI indicator
 }
 ```
@@ -659,8 +659,8 @@ The chatbot JavaScript automatically initializes when included.
 
 **Configuration** (via `wp_localize_script`):
 ```php
-wp_localize_script('wp-ai-assistant-chatbot', 'wpAiAssistantChatbot', [
-    'endpoint' => rest_url('ai-assistant/v1/chat'),
+wp_localize_script('semantic-knowledge-chatbot', 'wpAiAssistantChatbot', [
+    'endpoint' => rest_url('semantic-knowledge/v1/chat'),
     'nonce' => wp_create_nonce('wp_rest'),
     'topK' => 5,
     'enableFloatingButton' => true,
@@ -684,8 +684,8 @@ The search JavaScript automatically initializes when included.
 
 **Configuration** (via `wp_localize_script`):
 ```php
-wp_localize_script('wp-ai-assistant-search', 'wpAiAssistantSearch', [
-    'endpoint' => rest_url('ai-assistant/v1/search'),
+wp_localize_script('semantic-knowledge-search', 'wpAiAssistantSearch', [
+    'endpoint' => rest_url('semantic-knowledge/v1/search'),
     'nonce' => wp_create_nonce('wp_rest'),
     'topK' => 10
 ]);
@@ -705,24 +705,24 @@ See [HOOKS.md](HOOKS.md) for complete filter and action reference.
 
 ### Most Used Filters
 
-#### `wp_ai_chatbot_answer`
+#### `semantic_knowledge_chatbot_answer`
 
 Modify chatbot answer before returning.
 
 ```php
-add_filter('wp_ai_chatbot_answer', function($answer, $question, $context) {
+add_filter('semantic_knowledge_chatbot_answer', function($answer, $question, $context) {
     // Add call-to-action
     $answer .= '<p><a href="/contact">Contact us for more info</a></p>';
     return $answer;
 }, 10, 3);
 ```
 
-#### `wp_ai_search_results`
+#### `semantic_knowledge_search_results`
 
 Modify search results.
 
 ```php
-add_filter('wp_ai_search_results', function($results, $query, $matches) {
+add_filter('semantic_knowledge_search_results', function($results, $query, $matches) {
     // Boost certain post types
     usort($results, function($a, $b) {
         // Your custom sorting
@@ -731,12 +731,12 @@ add_filter('wp_ai_search_results', function($results, $query, $matches) {
 }, 10, 3);
 ```
 
-#### `wp_ai_search_relevance_config`
+#### `semantic_knowledge_search_relevance_config`
 
 Customize relevance boosting algorithm.
 
 ```php
-add_filter('wp_ai_search_relevance_config', function($config, $query) {
+add_filter('semantic_knowledge_search_relevance_config', function($config, $query) {
     // Add custom post type boost
     $config['post_type_boosts']['case_study'] = 0.10;
 
@@ -752,12 +752,12 @@ add_filter('wp_ai_search_relevance_config', function($config, $query) {
 
 ### Most Used Actions
 
-#### `wp_ai_search_query_end`
+#### `semantic_knowledge_search_query_end`
 
 Track search queries for analytics.
 
 ```php
-add_action('wp_ai_search_query_end', function($response, $query) {
+add_action('semantic_knowledge_search_query_end', function($response, $query) {
     // Send to analytics
     if (function_exists('ga_send_event')) {
         ga_send_event('AI Search', $query, $response['total']);
@@ -765,12 +765,12 @@ add_action('wp_ai_search_query_end', function($response, $query) {
 }, 10, 2);
 ```
 
-#### `wp_ai_chatbot_before_log`
+#### `semantic_knowledge_chatbot_before_log`
 
 Intercept before logging chat.
 
 ```php
-add_action('wp_ai_chatbot_before_log', function($question, $answer, $sources) {
+add_action('semantic_knowledge_chatbot_before_log', function($question, $answer, $sources) {
     // Custom logging
     error_log("Chat: $question");
 }, 10, 3);
@@ -780,7 +780,7 @@ add_action('wp_ai_chatbot_before_log', function($question, $answer, $sources) {
 
 These functions are available globally for theme integration.
 
-### `wp_ai_get_search_summary( WP_Query|null $query = null ): string|null`
+### `semantic_knowledge_get_search_summary( WP_Query|null $query = null ): string|null`
 
 Get AI-generated summary for search results.
 
@@ -788,7 +788,7 @@ Get AI-generated summary for search results.
 ```php
 <?php if (have_posts()) : ?>
     <?php
-    $summary = wp_ai_get_search_summary();
+    $summary = semantic_knowledge_get_search_summary();
     if ($summary) :
     ?>
         <div class="ai-search-summary">
@@ -805,25 +805,25 @@ Get AI-generated summary for search results.
 
 **Returns**: HTML summary or null if not available
 
-### `wp_ai_is_search( WP_Query|null $query = null ): bool`
+### `semantic_knowledge_is_search( WP_Query|null $query = null ): bool`
 
 Check if current query is AI-powered search.
 
 **Usage:**
 ```php
-<?php if (wp_ai_is_search()) : ?>
+<?php if (semantic_knowledge_is_search()) : ?>
     <div class="ai-badge">AI-Powered Results</div>
 <?php endif; ?>
 ```
 
-### `wp_ai_the_search_summary( array $args = [] ): void`
+### `semantic_knowledge_the_search_summary( array $args = [] ): void`
 
 Display formatted AI summary with wrapper HTML.
 
 **Usage:**
 ```php
 <?php
-wp_ai_the_search_summary([
+semantic_knowledge_the_search_summary([
     'before' => '<div class="ai-summary">',
     'after' => '</div>',
     'title' => '<h2>AI Summary</h2>',
@@ -844,15 +844,15 @@ wp_ai_the_search_summary([
 
 ## WP-CLI Commands
 
-### `wp ai-indexer index`
+### `wp sk-indexer index`
 
 Index all WordPress content to Pinecone.
 
 **Usage:**
 ```bash
-wp ai-indexer index
-wp ai-indexer index --debug
-wp ai-indexer index --since=2024-01-01
+wp sk-indexer index
+wp sk-indexer index --debug
+wp sk-indexer index --since=2024-01-01
 ```
 
 **Options**:
@@ -870,27 +870,27 @@ Indexing WordPress content...
 Success: Indexing complete
 ```
 
-### `wp ai-indexer clean`
+### `wp sk-indexer clean`
 
 Remove deleted posts from Pinecone index.
 
 **Usage:**
 ```bash
-wp ai-indexer clean
-wp ai-indexer clean --debug
+wp sk-indexer clean
+wp sk-indexer clean --debug
 ```
 
 **Options**:
 - `--debug` - Enable debug logging
 
-### `wp ai-indexer delete-all`
+### `wp sk-indexer delete-all`
 
 Delete all vectors for current domain from Pinecone.
 
 **Usage:**
 ```bash
-wp ai-indexer delete-all
-wp ai-indexer delete-all --yes
+wp sk-indexer delete-all
+wp sk-indexer delete-all --yes
 ```
 
 **Options**:
@@ -898,13 +898,13 @@ wp ai-indexer delete-all --yes
 
 **Warning**: This is destructive and cannot be undone.
 
-### `wp ai-indexer check`
+### `wp sk-indexer check`
 
 Verify system requirements and configuration.
 
 **Usage:**
 ```bash
-wp ai-indexer check
+wp sk-indexer check
 ```
 
 **Checks**:
@@ -913,13 +913,13 @@ wp ai-indexer check
 - API keys configured
 - Pinecone index accessible
 
-### `wp ai-indexer config`
+### `wp sk-indexer config`
 
 Display current configuration.
 
 **Usage:**
 ```bash
-wp ai-indexer config
+wp sk-indexer config
 ```
 
 **Output**:
@@ -948,14 +948,14 @@ add_action('wp_footer', function() {
 });
 
 // Customize chatbot response
-add_filter('wp_ai_chatbot_answer', function($answer, $question, $context) {
+add_filter('semantic_knowledge_chatbot_answer', function($answer, $question, $context) {
     // Add signature
     $answer .= '<p><em>- Your Friendly AI Assistant</em></p>';
     return $answer;
 }, 10, 3);
 
 // Track chatbot usage
-add_action('wp_ai_chatbot_query_end', function($response, $question) {
+add_action('semantic_knowledge_chatbot_query_end', function($response, $question) {
     update_option('chatbot_query_count', get_option('chatbot_query_count', 0) + 1);
 }, 10, 2);
 ```
@@ -971,7 +971,7 @@ add_action('wp_ai_chatbot_query_end', function($response, $question) {
 
     <?php
     // Display AI summary if available
-    $summary = wp_ai_get_search_summary();
+    $summary = semantic_knowledge_get_search_summary();
     if ($summary) :
     ?>
         <div class="ai-summary" role="region" aria-label="AI-generated summary">
@@ -1001,7 +1001,7 @@ add_action('wp_ai_chatbot_query_end', function($response, $question) {
 
 ```php
 // Boost industry-specific content
-add_filter('wp_ai_search_relevance_config', function($config, $query) {
+add_filter('semantic_knowledge_search_relevance_config', function($config, $query) {
     $query_lower = strtolower($query);
 
     // Boost healthcare content for health queries
@@ -1024,8 +1024,8 @@ add_filter('wp_ai_search_relevance_config', function($config, $query) {
 
 ```php
 // Track all AI interactions
-add_action('wp_ai_chatbot_query_end', 'track_ai_analytics', 10, 2);
-add_action('wp_ai_search_query_end', 'track_ai_analytics', 10, 2);
+add_action('semantic_knowledge_chatbot_query_end', 'track_ai_analytics', 10, 2);
+add_action('semantic_knowledge_search_query_end', 'track_ai_analytics', 10, 2);
 
 function track_ai_analytics($response, $query) {
     // Send to Google Analytics

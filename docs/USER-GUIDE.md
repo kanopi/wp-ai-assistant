@@ -1,6 +1,6 @@
-# User Guide: WP AI Assistant Plugin
+# User Guide: Semantic Knowledge Plugin
 
-A comprehensive guide for site administrators and content editors using the WP AI Assistant plugin.
+A comprehensive guide for site administrators and content editors using the Semantic Knowledge plugin.
 
 ## Table of Contents
 
@@ -18,9 +18,9 @@ A comprehensive guide for site administrators and content editors using the WP A
 
 ## Introduction
 
-### What is WP AI Assistant?
+### What is Semantic Knowledge?
 
-WP AI Assistant is a WordPress plugin that provides AI-powered features for your website:
+Semantic Knowledge is a WordPress plugin that provides AI-powered features for your website:
 
 - **AI Chatbot** - An intelligent chatbot that answers visitor questions using your website's content
 - **AI Search** - Semantic search that understands meaning, not just keywords
@@ -125,14 +125,14 @@ The plugin may be installed via:
 #### FTP Upload
 
 1. Extract the plugin ZIP file
-2. Upload the `wp-ai-assistant` folder to `/wp-content/plugins/`
+2. Upload the `semantic-knowledge` folder to `/wp-content/plugins/`
 3. Navigate to **Plugins** in WordPress admin
-4. Find "WP AI Assistant" and click **Activate**
+4. Find "Semantic Knowledge" and click **Activate**
 
 #### Via Composer (for developers)
 
 ```bash
-composer require kanopi/wp-ai-assistant
+composer require kanopi/semantic-knowledge
 ```
 
 ### Step 2: Install Node.js Indexer
@@ -179,7 +179,7 @@ After activation, check that everything is working:
 # Required environment variables
 OPENAI_API_KEY=sk-your-openai-key
 PINECONE_API_KEY=your-pinecone-key
-WP_AI_INDEXER_KEY=your-secure-random-string
+Semantic_Knowledge_INDEXER_KEY=your-secure-random-string
 ```
 
 Your developer can add these to:
@@ -249,10 +249,10 @@ Before the AI features work, you must index your website content.
 
 ```bash
 # Via WP-CLI
-wp ai-indexer index
+wp sk-indexer index
 
 # Or with debug output
-wp ai-indexer index --debug
+wp sk-indexer index --debug
 ```
 
 Indexing time depends on your content:
@@ -1017,11 +1017,11 @@ Monitor performance and adjust based on:
 **Ask your developer to run:**
 ```bash
 # Re-index all content
-wp ai-indexer index
+wp sk-indexer index
 
 # Or delete and re-index everything
-wp ai-indexer delete-all --yes
-wp ai-indexer index
+wp sk-indexer delete-all --yes
+wp sk-indexer index
 ```
 
 **When to re-index:**
@@ -1221,7 +1221,7 @@ Simply check the boxes again and save to re-enable. No re-indexing needed.
 **Check:**
 
 1. **Is Content Indexed?**
-   - Ask developer: `wp ai-indexer config`
+   - Ask developer: `wp sk-indexer config`
    - Verify post types being indexed
 
 2. **Is Post Type Included?**
@@ -1274,7 +1274,7 @@ Simply check the boxes again and save to re-enable. No re-indexing needed.
 - Include screen reader name and version
 
 **Report Issues:**
-- GitHub: https://github.com/kanopi/wp-ai-assistant/issues
+- GitHub: https://github.com/kanopi/semantic-knowledge/issues
 - Label as "Accessibility Issue"
 
 ### Need More Help?
@@ -1283,7 +1283,7 @@ Simply check the boxes again and save to re-enable. No re-indexing needed.
 - [Configuration Guide](CONFIGURATION.md) - Detailed configuration reference
 - [FAQ](FAQ.md) - Frequently asked questions
 - [Shortcode Guide](SHORTCODES.md) - Shortcode usage examples
-- [GitHub Issues](https://github.com/kanopi/wp-ai-assistant/issues) - Report bugs
+- [GitHub Issues](https://github.com/kanopi/semantic-knowledge/issues) - Report bugs
 
 **Contact Developer:**
 - For server/environment issues
@@ -1293,7 +1293,7 @@ Simply check the boxes again and save to re-enable. No re-indexing needed.
 
 **Check System Status:**
 ```bash
-wp ai-indexer check
+wp sk-indexer check
 ```
 
 This verifies Node.js, indexer installation, and system requirements.

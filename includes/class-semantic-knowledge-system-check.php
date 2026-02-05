@@ -1,24 +1,24 @@
 <?php
 /**
- * System Check for WP AI Assistant
+ * System Check for Semantic Knowledge
  *
  * Checks for required dependencies:
  * - Node.js >= 18.0.0
  * - @kanopi/wp-ai-indexer npm package
  *
- * @package WP_AI_Assistant
+ * @package Semantic_Knowledge
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class WP_AI_System_Check {
+class Semantic_Knowledge_System_Check {
 
     /**
      * Transient key for caching check results
      */
-    const CACHE_KEY = 'wp_ai_assistant_system_check';
+    const CACHE_KEY = 'semantic_knowledge_system_check';
 
     /**
      * Cache TTL (1 hour)
@@ -105,7 +105,7 @@ class WP_AI_System_Check {
         }
 
         // Check plugin's local installation (for standalone usage)
-        $local_path = WP_AI_ASSISTANT_DIR . 'indexer/node_modules/@kanopi/wp-ai-indexer';
+        $local_path = SEMANTIC_KNOWLEDGE_DIR . 'indexer/node_modules/@kanopi/wp-ai-indexer';
         if (file_exists($local_path)) {
             return true;
         }
@@ -135,7 +135,7 @@ class WP_AI_System_Check {
         }
 
         // Check plugin's local version
-        $local_package_json = WP_AI_ASSISTANT_DIR . 'indexer/node_modules/@kanopi/wp-ai-indexer/package.json';
+        $local_package_json = SEMANTIC_KNOWLEDGE_DIR . 'indexer/node_modules/@kanopi/wp-ai-indexer/package.json';
         if (file_exists($local_package_json)) {
             $package_data = json_decode(file_get_contents($local_package_json), true);
             if (isset($package_data['version'])) {
@@ -166,7 +166,7 @@ class WP_AI_System_Check {
         }
 
         // Check plugin's local installation
-        $local_bin = WP_AI_ASSISTANT_DIR . 'indexer/node_modules/.bin/wp-ai-indexer';
+        $local_bin = SEMANTIC_KNOWLEDGE_DIR . 'indexer/node_modules/.bin/wp-ai-indexer';
         if (file_exists($local_bin)) {
             return $local_bin;
         }
@@ -197,7 +197,7 @@ class WP_AI_System_Check {
         }
 
         // Check if notice is dismissed
-        $dismissed = get_user_meta(get_current_user_id(), 'wp_ai_assistant_system_notice_dismissed', true);
+        $dismissed = get_user_meta(get_current_user_id(), 'semantic_knowledge_system_notice_dismissed', true);
         if ($dismissed) {
             return;
         }
@@ -209,7 +209,7 @@ class WP_AI_System_Check {
         }
 
         // Build notice message
-        $message = '<strong>WP AI Assistant</strong> requires additional setup:';
+        $message = '<strong>Semantic Knowledge</strong> requires additional setup:';
         $steps = array();
 
         if (!$status['node_available']) {
@@ -251,8 +251,8 @@ class WP_AI_System_Check {
             // Handle notice dismissal
             $(document).on('click', '.wp-ai-assistant-notice .notice-dismiss', function() {
                 $.post(ajaxurl, {
-                    action: 'wp_ai_assistant_dismiss_notice',
-                    nonce: '<?php echo wp_create_nonce('wp_ai_assistant_dismiss'); ?>'
+                    action: 'semantic_knowledge_dismiss_notice',
+                    nonce: '<?php echo wp_create_nonce('semantic_knowledge_dismiss'); ?>'
                 });
             });
 
@@ -260,8 +260,8 @@ class WP_AI_System_Check {
             $(document).on('click', '.wp-ai-assistant-recheck', function(e) {
                 e.preventDefault();
                 $.post(ajaxurl, {
-                    action: 'wp_ai_assistant_recheck',
-                    nonce: '<?php echo wp_create_nonce('wp_ai_assistant_recheck'); ?>'
+                    action: 'semantic_knowledge_recheck',
+                    nonce: '<?php echo wp_create_nonce('semantic_knowledge_recheck'); ?>'
                 }, function(response) {
                     location.reload();
                 });
@@ -275,7 +275,7 @@ class WP_AI_System_Check {
      * Handle AJAX notice dismissal
      */
     public static function ajax_dismiss_notice() {
-        check_ajax_referer('wp_ai_assistant_dismiss', 'nonce');
+        check_ajax_referer('semantic_knowledge_dismiss', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error('Insufficient permissions');
@@ -283,7 +283,7 @@ class WP_AI_System_Check {
 
         update_user_meta(
             get_current_user_id(),
-            'wp_ai_assistant_system_notice_dismissed',
+            'semantic_knowledge_system_notice_dismissed',
             true
         );
 
@@ -294,7 +294,7 @@ class WP_AI_System_Check {
      * Handle AJAX re-check
      */
     public static function ajax_recheck() {
-        check_ajax_referer('wp_ai_assistant_recheck', 'nonce');
+        check_ajax_referer('semantic_knowledge_recheck', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error('Insufficient permissions');
@@ -308,7 +308,7 @@ class WP_AI_System_Check {
         if ($status['all_ok']) {
             delete_user_meta(
                 get_current_user_id(),
-                'wp_ai_assistant_system_notice_dismissed'
+                'semantic_knowledge_system_notice_dismissed'
             );
         }
 

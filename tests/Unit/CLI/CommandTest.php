@@ -1,11 +1,11 @@
 <?php
 /**
- * Tests for WP_AI_CLI_Command class
+ * Tests for Semantic_Knowledge_CLI_Command class
  */
 
-namespace WP_AI_Tests\Unit\CLI;
+namespace Semantic_Knowledge_Tests\Unit\CLI;
 
-use WP_AI_Tests\Helpers\TestCase;
+use Semantic_Knowledge_Tests\Helpers\TestCase;
 use WP_Mock;
 use Mockery;
 
@@ -15,7 +15,7 @@ class CommandTest extends TestCase {
      */
     public function testCheckCommandStructure() {
         // Test that check command exists and has correct structure
-        $reflection = new \ReflectionClass('WP_AI_CLI_Command');
+        $reflection = new \ReflectionClass('Semantic_Knowledge_CLI_Command');
         $checkMethod = $reflection->getMethod('check');
 
         $this->assertTrue($checkMethod->isPublic());
@@ -29,14 +29,14 @@ class CommandTest extends TestCase {
      * Test command class exists
      */
     public function testCommandClassExists() {
-        $this->assertTrue(class_exists('WP_AI_CLI_Command'));
+        $this->assertTrue(class_exists('Semantic_Knowledge_CLI_Command'));
     }
 
     /**
      * Test command has required methods
      */
     public function testCommandHasRequiredMethods() {
-        $reflection = new \ReflectionClass('WP_AI_CLI_Command');
+        $reflection = new \ReflectionClass('Semantic_Knowledge_CLI_Command');
 
         $this->assertTrue($reflection->hasMethod('index'));
         $this->assertTrue($reflection->hasMethod('clean'));
@@ -49,7 +49,7 @@ class CommandTest extends TestCase {
      * Test command methods are public
      */
     public function testCommandMethodsArePublic() {
-        $reflection = new \ReflectionClass('WP_AI_CLI_Command');
+        $reflection = new \ReflectionClass('Semantic_Knowledge_CLI_Command');
 
         $this->assertTrue($reflection->getMethod('index')->isPublic());
         $this->assertTrue($reflection->getMethod('clean')->isPublic());
@@ -62,7 +62,7 @@ class CommandTest extends TestCase {
      * Test command methods have correct signatures
      */
     public function testCommandMethodSignatures() {
-        $reflection = new \ReflectionClass('WP_AI_CLI_Command');
+        $reflection = new \ReflectionClass('Semantic_Knowledge_CLI_Command');
 
         // All commands should accept ($args, $assoc_args)
         $this->assertEquals(2, $reflection->getMethod('index')->getNumberOfParameters());
@@ -76,7 +76,7 @@ class CommandTest extends TestCase {
      * Test command has private helper methods
      */
     public function testCommandHasPrivateHelperMethods() {
-        $reflection = new \ReflectionClass('WP_AI_CLI_Command');
+        $reflection = new \ReflectionClass('Semantic_Knowledge_CLI_Command');
 
         $this->assertTrue($reflection->hasMethod('check_indexer_available'));
         $this->assertTrue($reflection->hasMethod('run_command'));
@@ -89,7 +89,7 @@ class CommandTest extends TestCase {
      * Test command documentation (PHPDoc blocks exist)
      */
     public function testCommandDocumentation() {
-        $reflection = new \ReflectionClass('WP_AI_CLI_Command');
+        $reflection = new \ReflectionClass('Semantic_Knowledge_CLI_Command');
 
         // Check index command has docblock
         $indexMethod = $reflection->getMethod('index');
@@ -104,7 +104,7 @@ class CommandTest extends TestCase {
      * Test config command can be instantiated and called
      */
     public function testConfigCommandInstantiation() {
-        $command = new \WP_AI_CLI_Command();
-        $this->assertInstanceOf('WP_AI_CLI_Command', $command);
+        $command = new \Semantic_Knowledge_CLI_Command();
+        $this->assertInstanceOf('Semantic_Knowledge_CLI_Command', $command);
     }
 }

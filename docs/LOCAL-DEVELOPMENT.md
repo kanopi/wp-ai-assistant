@@ -1,6 +1,6 @@
 # Local Development Guide
 
-Complete guide for setting up and developing the WP AI Assistant plugin locally.
+Complete guide for setting up and developing the Semantic Knowledge plugin locally.
 
 ## Table of Contents
 
@@ -203,13 +203,13 @@ ddev wp core install \
 
 ```bash
 # Install PHP dependencies
-ddev composer install --working-dir=web/wp-content/plugins/wp-ai-assistant
+ddev composer install --working-dir=web/wp-content/plugins/semantic-knowledge
 
 # Build indexer package (monorepo)
 ddev exec "cd packages/wp-ai-indexer && npm install && npm run build"
 
 # Activate plugin
-ddev wp plugin activate wp-ai-assistant
+ddev wp plugin activate semantic-knowledge
 ```
 
 #### 4. Configure Environment Variables
@@ -235,8 +235,8 @@ composer_version: "2"
 web_environment:
   - OPENAI_API_KEY=sk-your-key-here
   - PINECONE_API_KEY=your-key-here
-  - WP_AI_INDEXER_KEY=your-secure-random-key-here
-  - WP_AI_ENABLE_CSP=false  # Optional: Enable CSP for testing
+  - Semantic_Knowledge_INDEXER_KEY=your-secure-random-key-here
+  - Semantic_Knowledge_ENABLE_CSP=false  # Optional: Enable CSP for testing
 ```
 
 **Generate secure indexer key**:
@@ -258,7 +258,7 @@ ddev restart
 
 ```bash
 # Via WP-CLI
-ddev wp option update wp_ai_assistant_settings '
+ddev wp option update semantic_knowledge_settings '
 {
   "pinecone_index_host": "https://your-index-abc123.svc.pinecone.io",
   "pinecone_index_name": "your-index",
@@ -277,13 +277,13 @@ ddev wp option update wp_ai_assistant_settings '
 
 ```bash
 # Check system status
-ddev wp ai-indexer check
+ddev wp sk-indexer check
 
 # Index all content
-ddev wp ai-indexer index --debug
+ddev wp sk-indexer index --debug
 
 # Verify indexing
-ddev wp ai-indexer config
+ddev wp sk-indexer config
 ```
 
 #### 8. Verify Installation
@@ -307,7 +307,7 @@ Test search:
 #### 1. Navigate to Plugin Directory
 
 ```bash
-cd path/to/wordpress/wp-content/plugins/wp-ai-assistant
+cd path/to/wordpress/wp-content/plugins/semantic-knowledge
 ```
 
 #### 2. Install Dependencies
@@ -326,7 +326,7 @@ cd ..
 
 ```bash
 # Via WP-CLI
-wp plugin activate wp-ai-assistant
+wp plugin activate semantic-knowledge
 
 # Or via WordPress admin
 ```
@@ -339,7 +339,7 @@ Add to `.env` file or shell:
 ```bash
 export OPENAI_API_KEY="sk-your-key-here"
 export PINECONE_API_KEY="your-key-here"
-export WP_AI_INDEXER_KEY="your-secure-key-here"
+export Semantic_Knowledge_INDEXER_KEY="your-secure-key-here"
 ```
 
 **Option B: wp-config.php**
@@ -348,7 +348,7 @@ export WP_AI_INDEXER_KEY="your-secure-key-here"
 // Add to wp-config.php (before "That's all, stop editing!")
 define('OPENAI_API_KEY', 'sk-your-key-here');
 define('PINECONE_API_KEY', 'your-key-here');
-define('WP_AI_INDEXER_KEY', 'your-secure-key-here');
+define('Semantic_Knowledge_INDEXER_KEY', 'your-secure-key-here');
 ```
 
 #### 5. Configure Plugin Settings
@@ -359,10 +359,10 @@ Same as DDEV Option 1, Step 6
 
 ```bash
 # Check system
-wp ai-indexer check
+wp sk-indexer check
 
 # Index content
-wp ai-indexer index
+wp sk-indexer index
 
 # Or use global indexer (if installed globally)
 npm install -g @kanopi/wp-ai-indexer
@@ -401,13 +401,13 @@ wp-ai-indexer index
 
 ```bash
 # Get current settings
-ddev wp option get wp_ai_assistant_settings --format=json | jq
+ddev wp option get semantic_knowledge_settings --format=json | jq
 
 # Update specific setting
-ddev wp option patch update wp_ai_assistant_settings chatbot_enabled true
+ddev wp option patch update semantic_knowledge_settings chatbot_enabled true
 
 # Update multiple settings
-ddev wp option update wp_ai_assistant_settings '
+ddev wp option update semantic_knowledge_settings '
 {
   "chatbot_enabled": true,
   "chatbot_model": "gpt-4o-mini",
@@ -551,10 +551,10 @@ nodemon --watch includes --watch tests --ext php --exec "composer test"
 **Unit Test Example**:
 ```php
 <?php
-namespace WP_AI_Tests\Unit\Core;
+namespace Semantic_Knowledge_Tests\Unit\Core;
 
-use WP_AI_Core;
-use WP_AI_Tests\Helpers\TestCase;
+use Semantic_Knowledge_Core;
+use Semantic_Knowledge_Tests\Helpers\TestCase;
 
 class MyFeatureTest extends TestCase {
 
@@ -564,7 +564,7 @@ class MyFeatureTest extends TestCase {
     }
 
     public function test_my_feature() {
-        $core = new WP_AI_Core();
+        $core = new Semantic_Knowledge_Core();
         $result = $core->some_method();
 
         $this->assertTrue($result);
@@ -599,7 +599,7 @@ tail -f wp-content/debug.log
 ddev wp shell
 
 # Test code
-php> $core = new WP_AI_Core();
+php> $core = new Semantic_Knowledge_Core();
 php> print_r($core->get_settings());
 ```
 
@@ -666,7 +666,7 @@ console.log('API response:', data);
 
 // Test in browser console
 const nonce = wpAiAssistantChatbot.nonce;
-fetch('/wp-json/ai-assistant/v1/chat', {
+fetch('/wp-json/semantic-knowledge/v1/chat', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -686,7 +686,7 @@ fetch('/wp-json/ai-assistant/v1/chat', {
 #### Debug OpenAI Requests
 
 ```php
-// In WP_AI_OpenAI class
+// In Semantic_Knowledge_OpenAI class
 error_log('OpenAI Request: ' . json_encode($request_body));
 error_log('OpenAI Response: ' . wp_remote_retrieve_body($response));
 ```
@@ -694,7 +694,7 @@ error_log('OpenAI Response: ' . wp_remote_retrieve_body($response));
 #### Debug Pinecone Queries
 
 ```php
-// In WP_AI_Pinecone class
+// In Semantic_Knowledge_Pinecone class
 error_log('Pinecone Query: ' . json_encode([
     'vector_length' => count($vector),
     'top_k' => $top_k,
@@ -712,7 +712,7 @@ ddev wp eval "echo wp_create_nonce('wp_rest');"
 
 # Test chat endpoint
 curl -X POST \
-  https://kanopi-2019.ddev.site/wp-json/ai-assistant/v1/chat \
+  https://kanopi-2019.ddev.site/wp-json/semantic-knowledge/v1/chat \
   -H 'Content-Type: application/json' \
   -H 'X-WP-Nonce: YOUR_NONCE_HERE' \
   -d '{
@@ -722,7 +722,7 @@ curl -X POST \
 
 # Test search endpoint
 curl -X POST \
-  https://kanopi-2019.ddev.site/wp-json/ai-assistant/v1/search \
+  https://kanopi-2019.ddev.site/wp-json/semantic-knowledge/v1/search \
   -H 'Content-Type: application/json' \
   -H 'X-WP-Nonce: YOUR_NONCE_HERE' \
   -d '{
@@ -762,7 +762,7 @@ npm install -g @kanopi/wp-ai-indexer
 
 3. **Verify installation**:
 ```bash
-ddev wp ai-indexer check
+ddev wp sk-indexer check
 ```
 
 ### Issue: "Invalid API key"
@@ -868,10 +868,10 @@ Permission denied when installing or running commands
 1. **Fix file permissions**:
 ```bash
 # DDEV
-ddev exec chmod -R 755 web/wp-content/plugins/wp-ai-assistant
+ddev exec chmod -R 755 web/wp-content/plugins/semantic-knowledge
 
 # Standalone
-chmod -R 755 wp-content/plugins/wp-ai-assistant
+chmod -R 755 wp-content/plugins/semantic-knowledge
 ```
 
 2. **Don't use sudo with npm**:
@@ -900,7 +900,7 @@ ddev start
 git pull origin main
 
 # 3. Update dependencies (if composer.lock or package.json changed)
-ddev composer install --working-dir=web/wp-content/plugins/wp-ai-assistant
+ddev composer install --working-dir=web/wp-content/plugins/semantic-knowledge
 
 # 4. Make changes to code
 
@@ -965,7 +965,7 @@ ddev mysql
 
 # Run queries
 mysql> USE db;
-mysql> SELECT * FROM wp_options WHERE option_name = 'wp_ai_assistant_settings'\G
+mysql> SELECT * FROM wp_options WHERE option_name = 'semantic_knowledge_settings'\G
 
 # Or use GUI (phpMyAdmin)
 ddev launch -p
@@ -979,7 +979,7 @@ ddev launch -p
 ddev export-db --file=backup.sql.gz
 
 # Export specific table
-ddev mysql -e "SELECT * FROM wp_ai_chat_logs" > chat_logs.sql
+ddev mysql -e "SELECT * FROM wp_sk_chat_logs" > chat_logs.sql
 ```
 
 ### Import Database
@@ -1006,13 +1006,13 @@ ddev wp core install \
 
 ```bash
 # View chat logs
-ddev wp db query "SELECT * FROM wp_ai_chat_logs ORDER BY created_at DESC LIMIT 10"
+ddev wp db query "SELECT * FROM wp_sk_chat_logs ORDER BY created_at DESC LIMIT 10"
 
 # View search logs
-ddev wp db query "SELECT * FROM wp_ai_search_logs ORDER BY created_at DESC LIMIT 10"
+ddev wp db query "SELECT * FROM wp_sk_search_logs ORDER BY created_at DESC LIMIT 10"
 
 # Count logs
-ddev wp db query "SELECT COUNT(*) FROM wp_ai_chat_logs"
+ddev wp db query "SELECT COUNT(*) FROM wp_sk_chat_logs"
 ```
 
 ## Cache Management
@@ -1027,7 +1027,7 @@ ddev wp cache flush
 ddev wp redis clear
 
 # Plugin-specific cache
-ddev wp eval "WP_AI_Cache::flush_all();"
+ddev wp eval "Semantic_Knowledge_Cache::flush_all();"
 
 # Transients
 ddev wp transient delete --all
@@ -1040,7 +1040,7 @@ ddev wp rewrite flush
 
 ```bash
 # Plugin cache stats
-ddev wp eval "print_r(WP_AI_Cache::get_stats());"
+ddev wp eval "print_r(Semantic_Knowledge_Cache::get_stats());"
 
 # Redis stats (if using Redis)
 ddev wp redis status
@@ -1079,7 +1079,7 @@ ddev describe           # Show environment info
 composer test           # Run tests
 composer phpcs          # Check code style
 composer phpcbf         # Fix code style
-ddev wp ai-indexer index --debug  # Index content
+ddev wp sk-indexer index --debug  # Index content
 
 # Git
 git status              # Check status
@@ -1091,9 +1091,9 @@ git push                # Push to remote
 ### File Locations
 
 ```
-Plugin root:      web/wp-content/plugins/wp-ai-assistant/
-Settings:         wp_options table (wp_ai_assistant_settings)
-Logs:             wp_ai_chat_logs, wp_ai_search_logs tables
+Plugin root:      web/wp-content/plugins/semantic-knowledge/
+Settings:         wp_options table (semantic_knowledge_settings)
+Logs:             wp_sk_chat_logs, wp_sk_search_logs tables
 Debug log:        wp-content/debug.log
 Tests:            tests/
 Documentation:    docs/

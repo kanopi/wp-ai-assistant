@@ -1,9 +1,10 @@
 <?php
 /**
- * Plugin Name: WP AI Assistant
- * Description: AI-powered chatbot and semantic search using OpenAI and Pinecone with RAG architecture
+ * Plugin Name: Semantic Knowledge
+ * Description: Semantic search and knowledge management for WordPress using OpenAI and Pinecone with RAG architecture
  * Version: 1.0.0
  * Author: Kanopi Studios
+ * Text Domain: semantic-knowledge
  * Requires PHP: 7.4
  */
 
@@ -11,42 +12,42 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'WP_AI_ASSISTANT_VERSION', '1.0.0' );
-define( 'WP_AI_ASSISTANT_SCHEMA_VERSION', 1 );
-define( 'WP_AI_ASSISTANT_DIR', plugin_dir_path( __FILE__ ) );
-define( 'WP_AI_ASSISTANT_URL', plugin_dir_url( __FILE__ ) );
+define( 'SEMANTIC_KNOWLEDGE_VERSION', '1.0.0' );
+define( 'SEMANTIC_KNOWLEDGE_SCHEMA_VERSION', 1 );
+define( 'SEMANTIC_KNOWLEDGE_DIR', plugin_dir_path( __FILE__ ) );
+define( 'SEMANTIC_KNOWLEDGE_URL', plugin_dir_url( __FILE__ ) );
 
 // Load dependencies
-require_once WP_AI_ASSISTANT_DIR . 'includes/class-wp-ai-logger.php';
-require_once WP_AI_ASSISTANT_DIR . 'includes/class-wp-ai-cache.php';
-require_once WP_AI_ASSISTANT_DIR . 'includes/class-wp-ai-database.php';
-require_once WP_AI_ASSISTANT_DIR . 'includes/class-wp-ai-assets.php';
-require_once WP_AI_ASSISTANT_DIR . 'includes/class-wp-ai-core.php';
-require_once WP_AI_ASSISTANT_DIR . 'includes/class-wp-ai-secrets.php';
-require_once WP_AI_ASSISTANT_DIR . 'includes/class-wp-ai-openai.php';
-require_once WP_AI_ASSISTANT_DIR . 'includes/class-wp-ai-pinecone.php';
-require_once WP_AI_ASSISTANT_DIR . 'includes/class-wp-ai-settings.php';
-require_once WP_AI_ASSISTANT_DIR . 'includes/class-wp-ai-indexer-controller.php';
-require_once WP_AI_ASSISTANT_DIR . 'includes/class-wp-ai-system-check.php';
-require_once WP_AI_ASSISTANT_DIR . 'includes/migrations/class-wp-ai-migration.php';
-require_once WP_AI_ASSISTANT_DIR . 'includes/modules/class-wp-ai-chatbot-module.php';
-require_once WP_AI_ASSISTANT_DIR . 'includes/modules/class-wp-ai-search-module.php';
+require_once SEMANTIC_KNOWLEDGE_DIR . 'includes/class-semantic-knowledge-logger.php';
+require_once SEMANTIC_KNOWLEDGE_DIR . 'includes/class-semantic-knowledge-cache.php';
+require_once SEMANTIC_KNOWLEDGE_DIR . 'includes/class-semantic-knowledge-database.php';
+require_once SEMANTIC_KNOWLEDGE_DIR . 'includes/class-semantic-knowledge-assets.php';
+require_once SEMANTIC_KNOWLEDGE_DIR . 'includes/class-semantic-knowledge-core.php';
+require_once SEMANTIC_KNOWLEDGE_DIR . 'includes/class-semantic-knowledge-secrets.php';
+require_once SEMANTIC_KNOWLEDGE_DIR . 'includes/class-semantic-knowledge-openai.php';
+require_once SEMANTIC_KNOWLEDGE_DIR . 'includes/class-semantic-knowledge-pinecone.php';
+require_once SEMANTIC_KNOWLEDGE_DIR . 'includes/class-semantic-knowledge-settings.php';
+require_once SEMANTIC_KNOWLEDGE_DIR . 'includes/class-semantic-knowledge-indexer-controller.php';
+require_once SEMANTIC_KNOWLEDGE_DIR . 'includes/class-semantic-knowledge-system-check.php';
+require_once SEMANTIC_KNOWLEDGE_DIR . 'includes/migrations/class-semantic-knowledge-migration.php';
+require_once SEMANTIC_KNOWLEDGE_DIR . 'includes/modules/class-semantic-knowledge-chatbot-module.php';
+require_once SEMANTIC_KNOWLEDGE_DIR . 'includes/modules/class-semantic-knowledge-search-module.php';
 
 // Load admin notices
 if ( is_admin() ) {
-	require_once WP_AI_ASSISTANT_DIR . 'includes/class-wp-ai-admin-notices.php';
-	new WP_AI_Admin_Notices();
+	require_once SEMANTIC_KNOWLEDGE_DIR . 'includes/class-semantic-knowledge-admin-notices.php';
+	new Semantic_Knowledge_Admin_Notices();
 }
 
 // Load WP-CLI commands if WP-CLI is available
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
-	require_once WP_AI_ASSISTANT_DIR . 'includes/class-wp-ai-cli.php';
+	require_once SEMANTIC_KNOWLEDGE_DIR . 'includes/class-semantic-knowledge-cli.php';
 }
 
-class WP_AI_Assistant {
-	const VERSION = WP_AI_ASSISTANT_VERSION;
-	const SCHEMA_VERSION = WP_AI_ASSISTANT_SCHEMA_VERSION;
-	const OPTION_KEY = 'wp_ai_assistant_settings';
+class Semantic_Knowledge {
+	const VERSION = SEMANTIC_KNOWLEDGE_VERSION;
+	const SCHEMA_VERSION = SEMANTIC_KNOWLEDGE_SCHEMA_VERSION;
+	const OPTION_KEY = 'semantic_knowledge_settings';
 
 	private static $instance = null;
 	private $core;
@@ -71,23 +72,23 @@ class WP_AI_Assistant {
 		$this->register_hooks();
 
 		// Initialize asset optimization
-		WP_AI_Assets::init();
+		Semantic_Knowledge_Assets::init();
 	}
 
 	private function init_core() {
-		$this->core = new WP_AI_Core();
-		$this->secrets = new WP_AI_Secrets();
-		$this->openai = new WP_AI_OpenAI( $this->core, $this->secrets );
-		$this->pinecone = new WP_AI_Pinecone( $this->core, $this->secrets );
-		$this->settings = new WP_AI_Settings( $this->core );
-		$this->indexer_controller = new WP_AI_Indexer_Settings_Controller();
+		$this->core = new Semantic_Knowledge_Core();
+		$this->secrets = new Semantic_Knowledge_Secrets();
+		$this->openai = new Semantic_Knowledge_OpenAI( $this->core, $this->secrets );
+		$this->pinecone = new Semantic_Knowledge_Pinecone( $this->core, $this->secrets );
+		$this->settings = new Semantic_Knowledge_Settings( $this->core );
+		$this->indexer_controller = new Semantic_Knowledge_Indexer_Settings_Controller();
 	}
 
 	private function init_modules() {
 		$settings = $this->core->get_settings();
 
 		if ( ! empty( $settings['chatbot_enabled'] ) ) {
-			$this->chatbot_module = new WP_AI_Chatbot_Module(
+			$this->chatbot_module = new Semantic_Knowledge_Chatbot_Module(
 				$this->core,
 				$this->openai,
 				$this->pinecone
@@ -95,7 +96,7 @@ class WP_AI_Assistant {
 		}
 
 		if ( ! empty( $settings['search_enabled'] ) ) {
-			$this->search_module = new WP_AI_Search_Module(
+			$this->search_module = new Semantic_Knowledge_Search_Module(
 				$this->core,
 				$this->openai,
 				$this->pinecone
@@ -112,15 +113,15 @@ class WP_AI_Assistant {
 		add_action( 'send_headers', array( $this, 'add_security_headers' ) );
 
 		// Cache invalidation on settings update
-		add_action( 'update_option_' . self::OPTION_KEY, array( 'WP_AI_Indexer_Settings_Controller', 'clear_cache' ) );
+		add_action( 'update_option_' . self::OPTION_KEY, array( 'Semantic_Knowledge_Indexer_Settings_Controller', 'clear_cache' ) );
 
 		// System checks
-		add_action( 'admin_notices', array( 'WP_AI_System_Check', 'show_admin_notice' ) );
-		add_action( 'wp_ajax_wp_ai_assistant_dismiss_notice', array( 'WP_AI_System_Check', 'ajax_dismiss_notice' ) );
-		add_action( 'wp_ajax_wp_ai_assistant_recheck', array( 'WP_AI_System_Check', 'ajax_recheck' ) );
+		add_action( 'admin_notices', array( 'Semantic_Knowledge_System_Check', 'show_admin_notice' ) );
+		add_action( 'wp_ajax_semantic_knowledge_dismiss_notice', array( 'Semantic_Knowledge_System_Check', 'ajax_dismiss_notice' ) );
+		add_action( 'wp_ajax_semantic_knowledge_recheck', array( 'Semantic_Knowledge_System_Check', 'ajax_recheck' ) );
 
 		// Cron jobs
-		add_action( 'wp_ai_assistant_cleanup_logs', array( $this, 'cleanup_old_logs' ) );
+		add_action( 'semantic_knowledge_cleanup_logs', array( $this, 'cleanup_old_logs' ) );
 	}
 
 	/**
@@ -128,7 +129,7 @@ class WP_AI_Assistant {
 	 * Implements Content Security Policy and other security headers
 	 *
 	 * Note: CSP is disabled by default for compatibility with WordPress themes and plugins.
-	 * Enable it by defining WP_AI_ENABLE_CSP constant or using the wp_ai_assistant_enable_csp filter.
+	 * Enable it by defining SEMANTIC_KNOWLEDGE_ENABLE_CSP constant or using the semantic_knowledge_enable_csp filter.
 	 */
 	public function add_security_headers() {
 		// Only add headers on frontend and REST API requests
@@ -137,14 +138,14 @@ class WP_AI_Assistant {
 		}
 
 		// Check if CSP should be enabled (disabled by default for compatibility)
-		$enable_csp = defined( 'WP_AI_ENABLE_CSP' ) && WP_AI_ENABLE_CSP;
-		$enable_csp = apply_filters( 'wp_ai_assistant_enable_csp', $enable_csp );
+		$enable_csp = defined( 'SEMANTIC_KNOWLEDGE_ENABLE_CSP' ) && SEMANTIC_KNOWLEDGE_ENABLE_CSP;
+		$enable_csp = apply_filters( 'semantic_knowledge_enable_csp', $enable_csp );
 
 		if ( $enable_csp ) {
 			// Generate CSP nonce if not already set
-			if ( ! defined( 'WP_AI_CSP_NONCE' ) ) {
+			if ( ! defined( 'SEMANTIC_KNOWLEDGE_CSP_NONCE' ) ) {
 				$nonce = base64_encode( wp_generate_password( 32, false ) );
-				define( 'WP_AI_CSP_NONCE', $nonce );
+				define( 'SEMANTIC_KNOWLEDGE_CSP_NONCE', $nonce );
 			}
 
 			// Content Security Policy
@@ -162,11 +163,11 @@ class WP_AI_Assistant {
 			);
 
 			/**
-			 * Filter CSP directives for WP AI Assistant
+			 * Filter CSP directives for Semantic Knowledge
 			 *
 			 * @param array $csp_directives Array of CSP directives
 			 */
-			$csp_directives = apply_filters( 'wp_ai_assistant_csp_directives', $csp_directives );
+			$csp_directives = apply_filters( 'semantic_knowledge_csp_directives', $csp_directives );
 
 			// Only set CSP if not already set
 			if ( ! headers_sent() ) {
@@ -182,7 +183,7 @@ class WP_AI_Assistant {
 			// We use the filter instead of manually setting the header
 			add_filter( 'x_frame_options_header', function( $header_value ) {
 				// Allow filtering but default to SAMEORIGIN for security
-				return apply_filters( 'wp_ai_assistant_frame_options', 'SAMEORIGIN' );
+				return apply_filters( 'semantic_knowledge_frame_options', 'SAMEORIGIN' );
 			}, 10 );
 			header( 'Referrer-Policy: strict-origin-when-cross-origin', false );
 		}
@@ -194,15 +195,15 @@ class WP_AI_Assistant {
 	 * @return string CSP nonce
 	 */
 	public function get_csp_nonce() {
-		if ( defined( 'WP_AI_CSP_NONCE' ) ) {
-			return WP_AI_CSP_NONCE;
+		if ( defined( 'SEMANTIC_KNOWLEDGE_CSP_NONCE' ) ) {
+			return SEMANTIC_KNOWLEDGE_CSP_NONCE;
 		}
 		return '';
 	}
 
 	public function activate() {
 		// Initialize database tables
-		WP_AI_Database::init();
+		Semantic_Knowledge_Database::init();
 
 		// Set default settings if none exist
 		if ( ! get_option( self::OPTION_KEY ) ) {
@@ -211,25 +212,25 @@ class WP_AI_Assistant {
 
 		// Create minified assets (in production)
 		if ( ! defined( 'WP_DEBUG' ) || ! WP_DEBUG ) {
-			WP_AI_Assets::create_minified_assets();
+			Semantic_Knowledge_Assets::create_minified_assets();
 		}
 
 		// Schedule log cleanup cron job (daily)
-		if ( ! wp_next_scheduled( 'wp_ai_assistant_cleanup_logs' ) ) {
-			wp_schedule_event( time(), 'daily', 'wp_ai_assistant_cleanup_logs' );
+		if ( ! wp_next_scheduled( 'semantic_knowledge_cleanup_logs' ) ) {
+			wp_schedule_event( time(), 'daily', 'semantic_knowledge_cleanup_logs' );
 		}
 
 		// Clear system check cache on activation
-		WP_AI_System_Check::clear_cache();
+		Semantic_Knowledge_System_Check::clear_cache();
 
 		// Run checks and store results
-		$status = WP_AI_System_Check::run_checks( false );
+		$status = Semantic_Knowledge_System_Check::run_checks( false );
 
 		// Initialize data retention policies
-		WP_AI_Migration::init_retention_policies();
+		Semantic_Knowledge_Migration::init_retention_policies();
 
 		// Warm the indexer settings cache
-		WP_AI_Indexer_Settings_Controller::clear_cache();
+		Semantic_Knowledge_Indexer_Settings_Controller::clear_cache();
 	}
 
 	/**
@@ -237,10 +238,10 @@ class WP_AI_Assistant {
 	 */
 	public function deactivate() {
 		// Unschedule cleanup tasks
-		WP_AI_Migration::unschedule_cleanup();
+		Semantic_Knowledge_Migration::unschedule_cleanup();
 
 		// Unschedule log cleanup
-		wp_clear_scheduled_hook( 'wp_ai_assistant_cleanup_logs' );
+		wp_clear_scheduled_hook( 'semantic_knowledge_cleanup_logs' );
 	}
 
 	/**
@@ -251,7 +252,7 @@ class WP_AI_Assistant {
 		$settings = $this->core->get_settings();
 		$days_to_keep = isset( $settings['log_retention_days'] ) ? (int) $settings['log_retention_days'] : 90;
 
-		$result = WP_AI_Database::cleanup_old_logs( $days_to_keep );
+		$result = Semantic_Knowledge_Database::cleanup_old_logs( $days_to_keep );
 
 		$this->core->log( 'Log cleanup completed: ' . json_encode( $result ) );
 	}
@@ -270,7 +271,7 @@ class WP_AI_Assistant {
 }
 
 // Initialize plugin
-WP_AI_Assistant::instance();
+Semantic_Knowledge::instance();
 
 // ============================================================================
 // Template Functions for Themes
@@ -283,10 +284,10 @@ WP_AI_Assistant::instance();
  *
  * Example usage:
  * <?php
- * if ( function_exists( 'wp_ai_get_search_summary' ) ) {
- *     $summary = wp_ai_get_search_summary();
+ * if ( function_exists( 'semantic_knowledge_get_search_summary' ) ) {
+ *     $summary = semantic_knowledge_get_search_summary();
  *     if ( $summary ) {
- *         echo '<div class="ai-search-summary">';
+ *         echo '<div class="sk-search-summary">';
  *         echo '<h2>AI Summary</h2>';
  *         echo wp_kses_post( $summary );
  *         echo '</div>';
@@ -297,8 +298,8 @@ WP_AI_Assistant::instance();
  * @param WP_Query|null $query Optional query object. Uses global $wp_query if not provided.
  * @return string|null AI summary or null if not available
  */
-function wp_ai_get_search_summary( $query = null ) {
-	return WP_AI_Search_Module::get_search_summary( $query );
+function semantic_knowledge_get_search_summary( $query = null ) {
+	return Semantic_Knowledge_Search_Module::get_search_summary( $query );
 }
 
 /**
@@ -307,8 +308,8 @@ function wp_ai_get_search_summary( $query = null ) {
  * @param WP_Query|null $query Optional query object
  * @return bool
  */
-function wp_ai_is_search( $query = null ) {
-	return WP_AI_Search_Module::is_ai_search( $query );
+function semantic_knowledge_is_search( $query = null ) {
+	return Semantic_Knowledge_Search_Module::is_ai_search( $query );
 }
 
 /**
@@ -316,12 +317,12 @@ function wp_ai_is_search( $query = null ) {
  *
  * @param array $args Optional display arguments
  */
-function wp_ai_the_search_summary( $args = array() ) {
+function semantic_knowledge_the_search_summary( $args = array() ) {
 	$defaults = array(
-		'before'         => '<div class="ai-search-summary">',
+		'before'         => '<div class="sk-search-summary">',
 		'after'          => '</div>',
-		'title'          => '<h2 class="ai-search-summary__title">AI Summary</h2>',
-		'content_before' => '<div class="ai-search-summary__content">',
+		'title'          => '<h2 class="sk-search-summary__title">AI Summary</h2>',
+		'content_before' => '<div class="sk-search-summary__content">',
 		'content_after'  => '</div>',
 		'show_badge'     => true,
 		'badge_text'     => 'AI-Generated',
@@ -329,7 +330,7 @@ function wp_ai_the_search_summary( $args = array() ) {
 
 	$args = wp_parse_args( $args, $defaults );
 
-	$summary = wp_ai_get_search_summary();
+	$summary = semantic_knowledge_get_search_summary();
 
 	if ( empty( $summary ) ) {
 		return;
@@ -346,7 +347,7 @@ function wp_ai_the_search_summary( $args = array() ) {
 	echo $args['content_after'];
 
 	if ( $args['show_badge'] ) {
-		echo '<div class="ai-search-summary__badge">';
+		echo '<div class="sk-search-summary__badge">';
 		echo '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="vertical-align: middle; margin-right: 4px;"><path d="M8 0L10 6L16 6L11 10L13 16L8 12L3 16L5 10L0 6L6 6Z"/></svg>';
 		echo esc_html( $args['badge_text'] );
 		echo '</div>';

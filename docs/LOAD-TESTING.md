@@ -1,4 +1,4 @@
-# Load Testing Guide for WP AI Assistant
+# Load Testing Guide for Semantic Knowledge
 
 **Version:** 1.0
 **Date:** January 28, 2026
@@ -8,7 +8,7 @@
 
 ## Overview
 
-This guide provides comprehensive instructions for load testing the WP AI Assistant plugin to ensure it can handle expected traffic volumes while maintaining acceptable performance.
+This guide provides comprehensive instructions for load testing the Semantic Knowledge plugin to ensure it can handle expected traffic volumes while maintaining acceptable performance.
 
 ---
 
@@ -209,7 +209,7 @@ export default function () {
   const question = questions[Math.floor(Math.random() * questions.length)];
 
   // Prepare request
-  const url = `${__ENV.BASE_URL}/wp-json/ai-assistant/v1/chat`;
+  const url = `${__ENV.BASE_URL}/wp-json/semantic-knowledge/v1/chat`;
   const payload = JSON.stringify({
     question: question,
     top_k: 5,
@@ -283,7 +283,7 @@ const queries = [
 export default function () {
   const query = queries[Math.floor(Math.random() * queries.length)];
 
-  const url = `${__ENV.BASE_URL}/wp-json/ai-assistant/v1/search`;
+  const url = `${__ENV.BASE_URL}/wp-json/semantic-knowledge/v1/search`;
   const payload = JSON.stringify({
     query: query,
     top_k: 10,
@@ -353,7 +353,7 @@ export default function () {
   if (isChatbot) {
     // Chatbot request
     const question = chatQuestions[Math.floor(Math.random() * chatQuestions.length)];
-    const url = `${__ENV.BASE_URL}/wp-json/ai-assistant/v1/chat`;
+    const url = `${__ENV.BASE_URL}/wp-json/semantic-knowledge/v1/chat`;
     const payload = JSON.stringify({ question, top_k: 5 });
     const params = {
       headers: {
@@ -372,7 +372,7 @@ export default function () {
   } else {
     // Search request
     const query = searchQueries[Math.floor(Math.random() * searchQueries.length)];
-    const url = `${__ENV.BASE_URL}/wp-json/ai-assistant/v1/search`;
+    const url = `${__ENV.BASE_URL}/wp-json/semantic-knowledge/v1/search`;
     const payload = JSON.stringify({ query, top_k: 10 });
     const params = {
       headers: {

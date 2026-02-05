@@ -1,4 +1,4 @@
-# WP AI Assistant - Comprehensive QA Checklist
+# Semantic Knowledge - Comprehensive QA Checklist
 
 **Version:** 1.0
 **Date:** January 28, 2026
@@ -8,7 +8,7 @@
 
 ## Overview
 
-This checklist ensures the WP AI Assistant plugin meets all quality, performance, security, and accessibility standards before production deployment. All items must be verified and signed off.
+This checklist ensures the Semantic Knowledge plugin meets all quality, performance, security, and accessibility standards before production deployment. All items must be verified and signed off.
 
 ---
 
@@ -117,7 +117,7 @@ This checklist ensures the WP AI Assistant plugin meets all quality, performance
 ### Indexer
 
 #### WP-CLI Command
-- [ ] **`wp ai-indexer run`** executes without errors
+- [ ] **`wp sk-indexer run`** executes without errors
 - [ ] **Progress output** displays during indexing
 - [ ] **Success message** displays when complete
 - [ ] **Error messages** are helpful for debugging

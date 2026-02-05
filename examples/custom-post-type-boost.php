@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 /**
  * Add custom post type boosts to relevance configuration
  */
-add_filter('wp_ai_search_relevance_config', 'my_custom_post_type_boosts', 10, 2);
+add_filter('semantic_knowledge_search_relevance_config', 'my_custom_post_type_boosts', 10, 2);
 
 function my_custom_post_type_boosts($config, $query) {
     // Add static boosts for important custom post types
@@ -48,7 +48,7 @@ function my_custom_post_type_boosts($config, $query) {
 /**
  * Alternative: More granular control with post_type_boost filter
  */
-add_filter('wp_ai_search_post_type_boost', 'my_granular_post_type_boost', 10, 4);
+add_filter('semantic_knowledge_search_post_type_boost', 'my_granular_post_type_boost', 10, 4);
 
 function my_granular_post_type_boost($boost, $post_type, $match, $query) {
     // Boost based on post metadata
@@ -83,7 +83,7 @@ function my_granular_post_type_boost($boost, $post_type, $match, $query) {
 /**
  * Example: Custom rule for specific URL patterns
  */
-add_filter('wp_ai_search_relevance_config', 'my_custom_url_rules', 10, 2);
+add_filter('semantic_knowledge_search_relevance_config', 'my_custom_url_rules', 10, 2);
 
 function my_custom_url_rules($config, $query) {
     // Boost /services/ pages for service-related queries
@@ -116,7 +116,7 @@ function my_custom_url_rules($config, $query) {
 /**
  * Example: Taxonomy-based boosting
  */
-add_filter('wp_ai_search_match_score', 'my_taxonomy_based_boost', 10, 5);
+add_filter('semantic_knowledge_search_match_score', 'my_taxonomy_based_boost', 10, 5);
 
 function my_taxonomy_based_boost($final_score, $base_score, $boost, $match, $query) {
     $post_id = $match['metadata']['post_id'] ?? 0;
@@ -150,7 +150,7 @@ function my_taxonomy_based_boost($final_score, $base_score, $boost, $match, $que
 /**
  * Example: Dynamic boosting based on post popularity
  */
-add_filter('wp_ai_search_match_score', 'my_popularity_boost', 20, 5);
+add_filter('semantic_knowledge_search_match_score', 'my_popularity_boost', 20, 5);
 
 function my_popularity_boost($final_score, $base_score, $boost, $match, $query) {
     $post_id = $match['metadata']['post_id'] ?? 0;

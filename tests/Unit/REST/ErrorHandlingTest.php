@@ -1,11 +1,11 @@
 <?php
 /**
- * Tests for WP_AI_Indexer_Settings_Controller error handling
+ * Tests for Semantic_Knowledge_Indexer_Settings_Controller error handling
  */
 
-namespace WP_AI_Tests\Unit\REST;
+namespace Semantic_Knowledge_Tests\Unit\REST;
 
-use WP_AI_Tests\Helpers\TestCase;
+use Semantic_Knowledge_Tests\Helpers\TestCase;
 use WP_Mock;
 use Mockery;
 
@@ -13,7 +13,7 @@ class ErrorHandlingTest extends TestCase {
     /**
      * Controller instance
      *
-     * @var \WP_AI_Indexer_Settings_Controller
+     * @var \Semantic_Knowledge_Indexer_Settings_Controller
      */
     private $controller;
 
@@ -22,7 +22,7 @@ class ErrorHandlingTest extends TestCase {
      */
     protected function setUp(): void {
         parent::setUp();
-        $this->controller = new \WP_AI_Indexer_Settings_Controller();
+        $this->controller = new \Semantic_Knowledge_Indexer_Settings_Controller();
     }
 
     /**
@@ -34,7 +34,7 @@ class ErrorHandlingTest extends TestCase {
         // get_option returns string instead of array
         WP_Mock::userFunction('get_option')
             ->times(3)
-            ->with('wp_ai_assistant_settings', Mockery::any())
+            ->with('semantic_knowledge_settings', Mockery::any())
             ->andReturn('invalid-string');
 
         WP_Mock::userFunction('home_url')
@@ -62,7 +62,7 @@ class ErrorHandlingTest extends TestCase {
     public function testErrorWhenPineconeHostEmpty() {
         $request = Mockery::mock('WP_REST_Request');
 
-        $this->mockGetOption('wp_ai_assistant_settings', [
+        $this->mockGetOption('semantic_knowledge_settings', [
             'post_types' => 'post',
             'embedding_model' => 'text-embedding-3-small',
             'embedding_dimension' => 1536,
@@ -85,7 +85,7 @@ class ErrorHandlingTest extends TestCase {
         $response = $this->controller->get_settings($request);
 
         $this->assertInstanceOf('WP_Error', $response);
-        $this->assertEquals('wp_ai_assistant_missing_config', $response->get_error_code());
+        $this->assertEquals('semantic_knowledge_missing_config', $response->get_error_code());
         $this->assertStringContainsString('Pinecone', $response->get_error_message());
     }
 
@@ -95,7 +95,7 @@ class ErrorHandlingTest extends TestCase {
     public function testErrorWhenPineconeNameEmpty() {
         $request = Mockery::mock('WP_REST_Request');
 
-        $this->mockGetOption('wp_ai_assistant_settings', [
+        $this->mockGetOption('semantic_knowledge_settings', [
             'post_types' => 'post',
             'embedding_model' => 'text-embedding-3-small',
             'embedding_dimension' => 1536,
@@ -118,7 +118,7 @@ class ErrorHandlingTest extends TestCase {
         $response = $this->controller->get_settings($request);
 
         $this->assertInstanceOf('WP_Error', $response);
-        $this->assertEquals('wp_ai_assistant_missing_config', $response->get_error_code());
+        $this->assertEquals('semantic_knowledge_missing_config', $response->get_error_code());
     }
 
     /**
@@ -127,7 +127,7 @@ class ErrorHandlingTest extends TestCase {
     public function testErrorWhenBothPineconeConfigsMissing() {
         $request = Mockery::mock('WP_REST_Request');
 
-        $this->mockGetOption('wp_ai_assistant_settings', [
+        $this->mockGetOption('semantic_knowledge_settings', [
             'post_types' => 'post',
             'embedding_model' => 'text-embedding-3-small',
             'embedding_dimension' => 1536,
@@ -149,7 +149,7 @@ class ErrorHandlingTest extends TestCase {
         $response = $this->controller->get_settings($request);
 
         $this->assertInstanceOf('WP_Error', $response);
-        $this->assertEquals('wp_ai_assistant_missing_config', $response->get_error_code());
+        $this->assertEquals('semantic_knowledge_missing_config', $response->get_error_code());
         $this->assertStringContainsString('incomplete', $response->get_error_message());
     }
 
@@ -171,7 +171,7 @@ class ErrorHandlingTest extends TestCase {
     public function testWpErrorHasCorrectCode() {
         $request = Mockery::mock('WP_REST_Request');
 
-        $this->mockGetOption('wp_ai_assistant_settings', [
+        $this->mockGetOption('semantic_knowledge_settings', [
             'post_types' => 'post',
             'embedding_model' => 'text-embedding-3-small',
             'embedding_dimension' => 1536,
@@ -193,7 +193,7 @@ class ErrorHandlingTest extends TestCase {
 
         $response = $this->controller->get_settings($request);
 
-        $this->assertEquals('wp_ai_assistant_missing_config', $response->get_error_code());
+        $this->assertEquals('semantic_knowledge_missing_config', $response->get_error_code());
     }
 
     /**
@@ -202,7 +202,7 @@ class ErrorHandlingTest extends TestCase {
     public function testWpErrorHasHelpfulMessage() {
         $request = Mockery::mock('WP_REST_Request');
 
-        $this->mockGetOption('wp_ai_assistant_settings', [
+        $this->mockGetOption('semantic_knowledge_settings', [
             'post_types' => 'post',
             'embedding_model' => 'text-embedding-3-small',
             'embedding_dimension' => 1536,
@@ -236,12 +236,12 @@ class ErrorHandlingTest extends TestCase {
      */
     public function testErrorResponseIncludesStatus() {
         $error = new \WP_Error(
-            'wp_ai_assistant_missing_config',
+            'semantic_knowledge_missing_config',
             'Config missing',
             ['status' => 500]
         );
 
-        $this->assertEquals('wp_ai_assistant_missing_config', $error->get_error_code());
+        $this->assertEquals('semantic_knowledge_missing_config', $error->get_error_code());
         $this->assertEquals('Config missing', $error->get_error_message());
     }
 
@@ -251,7 +251,7 @@ class ErrorHandlingTest extends TestCase {
     public function testSuccessfulResponseIsNotWpError() {
         $request = Mockery::mock('WP_REST_Request');
 
-        $this->mockGetOption('wp_ai_assistant_settings', [
+        $this->mockGetOption('semantic_knowledge_settings', [
             'post_types' => 'post',
             'auto_discover' => true,
             'clean_deleted' => true,

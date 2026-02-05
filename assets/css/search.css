@@ -15,12 +15,12 @@
   border-width: 0;
 }
 
-.wp-ai-search {
+.sk-search {
   max-width: 800px;
   margin: 2rem auto;
 }
 
-.wp-ai-search__label {
+.sk-search__label {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -32,7 +32,7 @@
   border-width: 0;
 }
 
-.wp-ai-search__label--visible {
+.sk-search__label--visible {
   position: static;
   width: auto;
   height: auto;
@@ -42,13 +42,13 @@
   clip: auto;
 }
 
-.wp-ai-search__form {
+.sk-search__form {
   display: flex;
   gap: 0.5rem;
   margin-bottom: 2rem;
 }
 
-.wp-ai-search__input {
+.sk-search__input {
   flex: 1;
   padding: 0.75rem 1rem;
   font-size: 1rem;
@@ -57,13 +57,13 @@
   transition: border-color 0.2s ease;
 }
 
-.wp-ai-search__input:focus {
+.sk-search__input:focus {
   outline: none;
   border-color: #0073aa;
   box-shadow: 0 0 0 1px #0073aa;
 }
 
-.wp-ai-search__button {
+.sk-search__button {
   padding: 0.75rem 2rem;
   font-size: 1rem;
   font-weight: 600;
@@ -75,37 +75,37 @@
   transition: background-color 0.2s ease;
 }
 
-.wp-ai-search__button:hover {
+.sk-search__button:hover {
   background-color: #005a87;
 }
 
-.wp-ai-search__button:focus {
+.sk-search__button:focus {
   outline: 3px solid #0073aa;
   outline-offset: 2px;
 }
 
-.wp-ai-search__button:active {
+.sk-search__button:active {
   background-color: #004766;
 }
 
-.wp-ai-search__results {
+.sk-search__results {
   margin-top: 2rem;
 }
 
-.wp-ai-search__results-title {
+.sk-search__results-title {
   font-size: 1.5rem;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
   border-bottom: 2px solid #ddd;
 }
 
-.wp-ai-search__results-list {
+.sk-search__results-list {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-.wp-ai-search__result {
+.sk-search__result {
   padding: 1.5rem;
   background: #f9f9f9;
   border-left: 3px solid #0073aa;
@@ -113,52 +113,52 @@
   transition: background-color 0.2s ease;
 }
 
-.wp-ai-search__result:hover {
+.sk-search__result:hover {
   background-color: #f0f0f0;
 }
 
-.wp-ai-search__result-title {
+.sk-search__result-title {
   margin: 0 0 0.5rem 0;
   font-size: 1.25rem;
 }
 
-.wp-ai-search__result-title a {
+.sk-search__result-title a {
   color: #0073aa;
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
-.wp-ai-search__result-title a:hover {
+.sk-search__result-title a:hover {
   color: #005a87;
   text-decoration: underline;
 }
 
-.wp-ai-search__result-title a:focus {
+.sk-search__result-title a:focus {
   outline: 3px solid #0073aa;
   outline-offset: 2px;
   background-color: #ffffff; /* Ensure contrast against result background */
   box-shadow: 0 0 0 2px #ffffff; /* Create separation for better visibility */
 }
 
-.wp-ai-search__result-excerpt {
+.sk-search__result-excerpt {
   margin: 0 0 1rem 0;
   color: #333;
   line-height: 1.6;
 }
 
-.wp-ai-search__result-meta {
+.sk-search__result-meta {
   margin: 0;
   font-size: 0.875rem;
   color: #666;
 }
 
-.wp-ai-search__result-score {
+.sk-search__result-score {
   font-weight: 600;
 }
 
-.wp-ai-search__loading,
-.wp-ai-search__error,
-.wp-ai-search__no-results {
+.sk-search__loading,
+.sk-search__error,
+.sk-search__no-results {
   padding: 2rem;
   text-align: center;
   color: #666;
@@ -166,24 +166,24 @@
   border-radius: 4px;
 }
 
-.wp-ai-search__loading {
+.sk-search__loading {
   border-left: 4px solid #0073aa; /* Add visual indicator not dependent on color alone */
 }
 
-.wp-ai-search__loading::before {
+.sk-search__loading::before {
   content: '⟳'; /* Loading icon for visual indication */
   display: inline-block;
   margin-right: 8px;
   font-size: 1.2em;
 }
 
-.wp-ai-search__error {
+.sk-search__error {
   color: #d63638;
   background: #fcf0f1;
   border: 1px solid #d63638;
 }
 
-.wp-ai-search__loading::after {
+.sk-search__loading::after {
   content: '...';
   animation: wp-ai-search-dots 1.5s steps(4, end) infinite;
 }
@@ -202,19 +202,19 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .wp-ai-search {
+  .sk-search {
     margin: 1rem;
   }
 
-  .wp-ai-search__form {
+  .sk-search__form {
     flex-direction: column;
   }
 
-  .wp-ai-search__button {
+  .sk-search__button {
     width: 100%;
   }
 
-  .wp-ai-search__result {
+  .sk-search__result {
     padding: 1rem;
   }
 }
@@ -222,16 +222,16 @@
 /* WCAG AA: Reduced Motion Support */
 @media (prefers-reduced-motion: reduce) {
   /* Disable or reduce all animations and transitions */
-  .wp-ai-search__input,
-  .wp-ai-search__button,
-  .wp-ai-search__result,
-  .wp-ai-search__result-title a {
+  .sk-search__input,
+  .sk-search__button,
+  .sk-search__result,
+  .sk-search__result-title a {
     transition: none;
     animation: none;
   }
 
   /* Remove loading animation */
-  .wp-ai-search__loading::after {
+  .sk-search__loading::after {
     animation: none;
     content: '...';
   }

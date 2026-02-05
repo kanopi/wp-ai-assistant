@@ -3,7 +3,7 @@
 # AI Assistant Indexer Execution Script
 #
 # Description:
-#   Executes the WP AI Assistant indexer with comprehensive environment validation,
+#   Executes the Semantic Knowledge indexer with comprehensive environment validation,
 #   content change detection, and metrics capture.
 #
 # Usage:
@@ -225,16 +225,16 @@ fi
 log_header "Activating WordPress Plugin"
 if [[ "$DRY_RUN" == "false" ]]; then
     log_info "Ensuring plugin is activated on ${SITE_ID}.${PANTHEON_ENV}..."
-    terminus wp "${SITE_ID}.${PANTHEON_ENV}" -- plugin activate wp-ai-assistant 2>&1 | grep -v "^Warning:" || true
+    terminus wp "${SITE_ID}.${PANTHEON_ENV}" -- plugin activate semantic-knowledge 2>&1 | grep -v "^Warning:" || true
 
     # Verify plugin is active
-    if terminus wp "${SITE_ID}.${PANTHEON_ENV}" -- plugin list --status=active --name=wp-ai-assistant --format=count 2>&1 | grep -q "1"; then
+    if terminus wp "${SITE_ID}.${PANTHEON_ENV}" -- plugin list --status=active --name=semantic-knowledge --format=count 2>&1 | grep -q "1"; then
         log_success "Plugin is active"
     else
         log_warning "Plugin activation verification failed, but continuing..."
     fi
 else
-    log_info "[DRY RUN] Would activate wp-ai-assistant plugin"
+    log_info "[DRY RUN] Would activate semantic-knowledge plugin"
 fi
 
 # Set WordPress API Base URL
@@ -327,7 +327,7 @@ else
     fi
 
     # Check for changes to the AI plugin itself
-    if echo "$CHANGED_FILES" | grep -q "web/wp-content/plugins/wp-ai-assistant/"; then
+    if echo "$CHANGED_FILES" | grep -q "web/wp-content/plugins/semantic-knowledge/"; then
         log_success "AI Assistant plugin changed"
         CONTENT_CHANGED=true
         REINDEX_REASON="AI Assistant plugin changed"

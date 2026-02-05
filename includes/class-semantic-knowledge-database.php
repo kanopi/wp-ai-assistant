@@ -1,14 +1,14 @@
 <?php
 /**
- * WP AI Assistant Database Manager
+ * Semantic Knowledge Database Manager
  *
  * Handles custom database tables for improved performance
  * Uses custom tables instead of wp_posts for chat/search logs
  *
- * @package WP_AI_Assistant
+ * @package Semantic_Knowledge
  */
 
-class WP_AI_Database {
+class Semantic_Knowledge_Database {
 	/**
 	 * Database version for migrations
 	 *
@@ -21,7 +21,7 @@ class WP_AI_Database {
 	 *
 	 * @var string
 	 */
-	const DB_VERSION_KEY = 'wp_ai_assistant_db_version';
+	const DB_VERSION_KEY = 'semantic_knowledge_db_version';
 
 	/**
 	 * Initialize database tables if needed
@@ -44,7 +44,7 @@ class WP_AI_Database {
 		$charset_collate = $wpdb->get_charset_collate();
 
 		// Chat logs table
-		$chat_logs_table = $wpdb->prefix . 'ai_chat_logs';
+		$chat_logs_table = $wpdb->prefix . 'sk_chat_logs';
 		$chat_logs_sql = "CREATE TABLE IF NOT EXISTS {$chat_logs_table} (
 			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			question text NOT NULL,
@@ -63,7 +63,7 @@ class WP_AI_Database {
 		) $charset_collate;";
 
 		// Search logs table
-		$search_logs_table = $wpdb->prefix . 'ai_search_logs';
+		$search_logs_table = $wpdb->prefix . 'sk_search_logs';
 		$search_logs_sql = "CREATE TABLE IF NOT EXISTS {$search_logs_table} (
 			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			query text NOT NULL,
@@ -98,7 +98,7 @@ class WP_AI_Database {
 	public static function log_chat( $question, $answer, $sources = array(), $response_time = null ) {
 		global $wpdb;
 
-		$table = $wpdb->prefix . 'ai_chat_logs';
+		$table = $wpdb->prefix . 'sk_chat_logs';
 
 		$data = array(
 			'question'      => wp_kses_post( $question ),
@@ -130,7 +130,7 @@ class WP_AI_Database {
 	public static function log_search( $query, $results = array(), $response_time = null ) {
 		global $wpdb;
 
-		$table = $wpdb->prefix . 'ai_search_logs';
+		$table = $wpdb->prefix . 'sk_search_logs';
 
 		$data = array(
 			'query'          => wp_kses_post( $query ),
@@ -162,7 +162,7 @@ class WP_AI_Database {
 	public static function get_chat_logs( $page = 1, $per_page = 20, $args = array() ) {
 		global $wpdb;
 
-		$table = $wpdb->prefix . 'ai_chat_logs';
+		$table = $wpdb->prefix . 'sk_chat_logs';
 		$offset = ( $page - 1 ) * $per_page;
 
 		$where = array( '1=1' );
@@ -222,7 +222,7 @@ class WP_AI_Database {
 	public static function get_search_logs( $page = 1, $per_page = 20, $args = array() ) {
 		global $wpdb;
 
-		$table = $wpdb->prefix . 'ai_search_logs';
+		$table = $wpdb->prefix . 'sk_search_logs';
 		$offset = ( $page - 1 ) * $per_page;
 
 		$where = array( '1=1' );
@@ -280,7 +280,7 @@ class WP_AI_Database {
 	public static function get_chat_logs_count( $args = array() ) {
 		global $wpdb;
 
-		$table = $wpdb->prefix . 'ai_chat_logs';
+		$table = $wpdb->prefix . 'sk_chat_logs';
 
 		$where = array( '1=1' );
 		$where_values = array();
@@ -323,7 +323,7 @@ class WP_AI_Database {
 	public static function get_search_logs_count( $args = array() ) {
 		global $wpdb;
 
-		$table = $wpdb->prefix . 'ai_search_logs';
+		$table = $wpdb->prefix . 'sk_search_logs';
 
 		$where = array( '1=1' );
 		$where_values = array();
@@ -366,8 +366,8 @@ class WP_AI_Database {
 	public static function cleanup_old_logs( $days_to_keep = 90 ) {
 		global $wpdb;
 
-		$chat_table = $wpdb->prefix . 'ai_chat_logs';
-		$search_table = $wpdb->prefix . 'ai_search_logs';
+		$chat_table = $wpdb->prefix . 'sk_chat_logs';
+		$search_table = $wpdb->prefix . 'sk_search_logs';
 
 		$cutoff_date = date( 'Y-m-d H:i:s', strtotime( "-{$days_to_keep} days" ) );
 
@@ -440,8 +440,8 @@ class WP_AI_Database {
 	public static function get_stats() {
 		global $wpdb;
 
-		$chat_table = $wpdb->prefix . 'ai_chat_logs';
-		$search_table = $wpdb->prefix . 'ai_search_logs';
+		$chat_table = $wpdb->prefix . 'sk_chat_logs';
+		$search_table = $wpdb->prefix . 'sk_search_logs';
 
 		$stats = array(
 			'total_chat_logs'   => (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$chat_table}" ),

@@ -1,6 +1,6 @@
 {
-    "name": "kanopi/wp-ai-assistant",
-    "description": "AI-powered chatbot and semantic search for WordPress using RAG (Retrieval-Augmented Generation)",
+    "name": "kanopi/semantic-knowledge",
+    "description": "Semantic search and knowledge management for WordPress using RAG (Retrieval-Augmented Generation)",
     "type": "wordpress-plugin",
     "license": "MIT",
     "authors": [
@@ -25,7 +25,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "WP_AI_Tests\\": "tests/"
+            "Semantic_Knowledge_Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -44,13 +44,13 @@
             "@install-indexer"
         ],
         "install-indexer": [
-            "echo '\\033[0;33m[WP AI Assistant]\\033[0m Installing Node.js indexer locally...'",
+            "echo '\\033[0;33m[Semantic Knowledge]\\033[0m Installing Node.js indexer locally...'",
             "which node || (echo '\\033[0;31m[ERROR]\\033[0m Node.js not found. Please install Node.js 18+' && exit 0)",
             "cd indexer && npm install || echo '\\033[0;33m[WARNING]\\033[0m Failed to install indexer locally'",
             "echo '\\033[0;32m[SUCCESS]\\033[0m Indexer package installed locally in indexer/ directory'"
         ]
     },
     "extra": {
-        "installer-name": "wp-ai-assistant"
+        "installer-name": "semantic-knowledge"
     }
 }

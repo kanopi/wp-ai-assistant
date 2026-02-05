@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 /**
  * Cache search results for repeat queries
  */
-add_action('wp_ai_search_query_end', 'my_cache_search_results', 10, 2);
+add_action('semantic_knowledge_search_query_end', 'my_cache_search_results', 10, 2);
 
 function my_cache_search_results($response, $query) {
     // Generate cache key from query
@@ -35,7 +35,7 @@ function my_cache_search_results($response, $query) {
 /**
  * Return cached results for repeat queries
  */
-add_filter('wp_ai_search_query_text', 'my_check_search_cache', 5, 2);
+add_filter('semantic_knowledge_search_query_text', 'my_check_search_cache', 5, 2);
 
 function my_check_search_cache($query, $request) {
     $cache_key = 'ai_search_' . wp_hash(strtolower(trim($query)));
@@ -61,7 +61,7 @@ function my_check_search_cache($query, $request) {
 /**
  * Cache embeddings for common queries
  */
-add_action('wp_ai_search_before_embedding', 'my_cache_embedding_start');
+add_action('semantic_knowledge_search_before_embedding', 'my_cache_embedding_start');
 
 function my_cache_embedding_start($query) {
     // Store query in global for later use
@@ -71,7 +71,7 @@ function my_cache_embedding_start($query) {
 /**
  * Implement request coalescing for concurrent identical queries
  */
-add_filter('wp_ai_search_query_text', 'my_request_coalescing', 3, 2);
+add_filter('semantic_knowledge_search_query_text', 'my_request_coalescing', 3, 2);
 
 function my_request_coalescing($query, $request) {
     $lock_key = 'ai_search_lock_' . wp_hash(strtolower(trim($query)));
@@ -106,7 +106,7 @@ function my_request_coalescing($query, $request) {
 /**
  * Release lock after query completes
  */
-add_action('wp_ai_search_query_end', 'my_release_query_lock', 999, 2);
+add_action('semantic_knowledge_search_query_end', 'my_release_query_lock', 999, 2);
 
 function my_release_query_lock($response, $query) {
     $lock_key = 'ai_search_lock_' . wp_hash(strtolower(trim($query)));
@@ -116,7 +116,7 @@ function my_release_query_lock($response, $query) {
 /**
  * Optimize match processing by limiting expensive operations
  */
-add_filter('wp_ai_search_raw_matches', 'my_optimize_match_processing', 10, 2);
+add_filter('semantic_knowledge_search_raw_matches', 'my_optimize_match_processing', 10, 2);
 
 function my_optimize_match_processing($matches, $query) {
     // Limit to top 20 matches for processing (reduces boosting overhead)
@@ -130,7 +130,7 @@ function my_optimize_match_processing($matches, $query) {
 /**
  * Lazy load post metadata to reduce database queries
  */
-add_filter('wp_ai_search_result_format', 'my_lazy_load_metadata', 10, 2);
+add_filter('semantic_knowledge_search_result_format', 'my_lazy_load_metadata', 10, 2);
 
 function my_lazy_load_metadata($result, $match) {
     // Don't fetch additional metadata unless needed
@@ -143,7 +143,7 @@ function my_lazy_load_metadata($result, $match) {
 /**
  * Implement result pagination to reduce payload size
  */
-add_filter('wp_ai_search_results', 'my_paginate_results', 10, 3);
+add_filter('semantic_knowledge_search_results', 'my_paginate_results', 10, 3);
 
 function my_paginate_results($results, $query, $matches) {
     // Get pagination parameters from request
@@ -174,7 +174,7 @@ function my_paginate_results($results, $query, $matches) {
 /**
  * Implement selective summary generation
  */
-add_filter('wp_ai_search_summary_enabled', 'my_selective_summary_generation', 10, 3);
+add_filter('semantic_knowledge_search_summary_enabled', 'my_selective_summary_generation', 10, 3);
 
 function my_selective_summary_generation($enabled, $query, $results) {
     // Disable summary for very common queries (use cache instead)
@@ -187,7 +187,7 @@ function my_selective_summary_generation($enabled, $query, $results) {
 
         if ($cached_summary) {
             // Inject cached summary (this is simplified - you'd need proper injection)
-            add_filter('wp_ai_search_summary', function() use ($cached_summary) {
+            add_filter('semantic_knowledge_search_summary', function() use ($cached_summary) {
                 return $cached_summary;
             });
         }
@@ -206,7 +206,7 @@ function my_selective_summary_generation($enabled, $query, $results) {
 /**
  * Use object caching for expensive operations
  */
-add_filter('wp_ai_search_relevance_config', 'my_cache_relevance_config', 10, 2);
+add_filter('semantic_knowledge_search_relevance_config', 'my_cache_relevance_config', 10, 2);
 
 function my_cache_relevance_config($config, $query) {
     // Cache configuration for identical queries
@@ -256,7 +256,7 @@ add_action('ai_search_warm_cache', 'my_warm_search_cache');
 /**
  * Monitor performance metrics
  */
-add_action('wp_ai_search_query_end', 'my_monitor_performance', 10, 2);
+add_action('semantic_knowledge_search_query_end', 'my_monitor_performance', 10, 2);
 
 function my_monitor_performance($response, $query) {
     // Track query execution time
