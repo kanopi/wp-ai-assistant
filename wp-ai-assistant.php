@@ -178,7 +178,12 @@ class WP_AI_Assistant {
 		// Always add basic security headers (these are safe and widely compatible)
 		if ( ! headers_sent() ) {
 			header( 'X-Content-Type-Options: nosniff', false );
-			header( 'X-Frame-Options: SAMEORIGIN', false );
+			// WordPress handles X-Frame-Options via send_frame_options_header()
+			// We use the filter instead of manually setting the header
+			add_filter( 'x_frame_options_header', function( $header_value ) {
+				// Allow filtering but default to SAMEORIGIN for security
+				return apply_filters( 'wp_ai_assistant_frame_options', 'SAMEORIGIN' );
+			}, 10 );
 			header( 'Referrer-Policy: strict-origin-when-cross-origin', false );
 		}
 	}

@@ -21,7 +21,7 @@ add_action('wp_ai_search_query_end', 'my_cache_search_results', 10, 2);
 
 function my_cache_search_results($response, $query) {
     // Generate cache key from query
-    $cache_key = 'ai_search_' . md5(strtolower(trim($query)));
+    $cache_key = 'ai_search_' . wp_hash(strtolower(trim($query)));
 
     // Cache for 1 hour
     set_transient($cache_key, $response, HOUR_IN_SECONDS);
@@ -38,7 +38,7 @@ function my_cache_search_results($response, $query) {
 add_filter('wp_ai_search_query_text', 'my_check_search_cache', 5, 2);
 
 function my_check_search_cache($query, $request) {
-    $cache_key = 'ai_search_' . md5(strtolower(trim($query)));
+    $cache_key = 'ai_search_' . wp_hash(strtolower(trim($query)));
 
     // Check transient cache
     $cached_response = get_transient($cache_key);
@@ -74,7 +74,7 @@ function my_cache_embedding_start($query) {
 add_filter('wp_ai_search_query_text', 'my_request_coalescing', 3, 2);
 
 function my_request_coalescing($query, $request) {
-    $lock_key = 'ai_search_lock_' . md5(strtolower(trim($query)));
+    $lock_key = 'ai_search_lock_' . wp_hash(strtolower(trim($query)));
 
     // Check if another request is already processing this query
     $lock = get_transient($lock_key);
@@ -82,7 +82,7 @@ function my_request_coalescing($query, $request) {
     if ($lock) {
         // Wait for the other request to complete (max 10 seconds)
         $wait_time = 0;
-        $cache_key = 'ai_search_' . md5(strtolower(trim($query)));
+        $cache_key = 'ai_search_' . wp_hash(strtolower(trim($query)));
 
         while ($wait_time < 10) {
             sleep(1);
@@ -109,7 +109,7 @@ function my_request_coalescing($query, $request) {
 add_action('wp_ai_search_query_end', 'my_release_query_lock', 999, 2);
 
 function my_release_query_lock($response, $query) {
-    $lock_key = 'ai_search_lock_' . md5(strtolower(trim($query)));
+    $lock_key = 'ai_search_lock_' . wp_hash(strtolower(trim($query)));
     delete_transient($lock_key);
 }
 
@@ -210,7 +210,7 @@ add_filter('wp_ai_search_relevance_config', 'my_cache_relevance_config', 10, 2);
 
 function my_cache_relevance_config($config, $query) {
     // Cache configuration for identical queries
-    $config_key = 'ai_search_config_' . md5($query);
+    $config_key = 'ai_search_config_' . wp_hash($query);
 
     if (function_exists('wp_cache_get')) {
         $cached_config = wp_cache_get($config_key, 'ai_search');
@@ -236,7 +236,7 @@ function my_warm_search_cache() {
     $top_queries = array_slice($popular_queries, 0, 10, true);
 
     foreach ($top_queries as $query => $count) {
-        $cache_key = 'ai_search_' . md5(strtolower(trim($query)));
+        $cache_key = 'ai_search_' . wp_hash(strtolower(trim($query)));
 
         // Check if cache is expired
         if (get_transient($cache_key) === false) {

@@ -400,7 +400,7 @@ class WP_AI_Database {
 	 */
 	private static function get_session_id() {
 		if ( ! session_id() ) {
-			return md5( wp_get_session_token() );
+			return wp_hash( wp_get_session_token() );
 		}
 		return session_id();
 	}

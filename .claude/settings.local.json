@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(snyk code test:*)",
+      "Skill(beads:init)",
+      "Bash(bd init:*)",
+      "Bash(bd create:*)",
+      "Bash(bd stats:*)",
+      "Bash(bd list:*)",
+      "Bash(bd show:*)",
+      "Bash(bd update:*)",
+      "Bash(bd close:*)",
+      "Bash(git add:*)",
+      "Bash(bd sync:*)"
+    ]
+  }
+}

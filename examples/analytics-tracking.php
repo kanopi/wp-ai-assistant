@@ -70,7 +70,7 @@ function my_track_search_results($response, $query) {
 
     if (!empty($ga_measurement_id) && !empty($ga_api_secret)) {
         $data = array(
-            'client_id' => md5($_SERVER['REMOTE_ADDR'] ?? 'unknown'),
+            'client_id' => wp_hash($_SERVER['REMOTE_ADDR'] ?? 'unknown'),
             'events' => array(
                 array(
                     'name' => 'ai_search',

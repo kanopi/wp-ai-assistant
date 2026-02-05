@@ -37,7 +37,7 @@ class WP_AI_Cache {
 	 * @return mixed|false Cached value or false if not found
 	 */
 	public static function get( $key ) {
-		$cache_key = self::CACHE_PREFIX . md5( $key );
+		$cache_key = self::CACHE_PREFIX . wp_hash( $key );
 
 		// Try to get from object cache first (Redis/Memcached)
 		if ( wp_using_ext_object_cache() ) {
@@ -57,7 +57,7 @@ class WP_AI_Cache {
 	 * @return bool True on success, false on failure
 	 */
 	public static function set( $key, $value, $ttl = self::DEFAULT_TTL ) {
-		$cache_key = self::CACHE_PREFIX . md5( $key );
+		$cache_key = self::CACHE_PREFIX . wp_hash( $key );
 
 		// Use object cache if available (Redis/Memcached)
 		if ( wp_using_ext_object_cache() ) {
@@ -75,7 +75,7 @@ class WP_AI_Cache {
 	 * @return bool True on success, false on failure
 	 */
 	public static function delete( $key ) {
-		$cache_key = self::CACHE_PREFIX . md5( $key );
+		$cache_key = self::CACHE_PREFIX . wp_hash( $key );
 
 		// Delete from object cache if available
 		if ( wp_using_ext_object_cache() ) {
@@ -126,7 +126,7 @@ class WP_AI_Cache {
 	 * @return string Cache key
 	 */
 	public static function get_embedding_cache_key( $text ) {
-		return 'embedding_' . md5( $text );
+		return 'embedding_' . wp_hash( $text );
 	}
 
 	/**
@@ -138,7 +138,7 @@ class WP_AI_Cache {
 	 */
 	public static function get_query_cache_key( $embedding, $top_k ) {
 		// Create a hash of the embedding vector
-		$embedding_hash = md5( json_encode( $embedding ) );
+		$embedding_hash = wp_hash( json_encode( $embedding ) );
 		return 'query_' . $embedding_hash . '_k' . $top_k;
 	}
 

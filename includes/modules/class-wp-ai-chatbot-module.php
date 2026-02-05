@@ -149,7 +149,7 @@ class WP_AI_Chatbot_Module {
 		$rate_window = apply_filters( 'wp_ai_chatbot_rate_window', 60 ); // seconds
 
 		// Create transient key
-		$transient_key = 'wp_ai_chatbot_rl_' . md5( $ip_address );
+		$transient_key = 'wp_ai_chatbot_rl_' . wp_hash( $ip_address );
 
 		// Get current request count
 		$requests = get_transient( $transient_key );
